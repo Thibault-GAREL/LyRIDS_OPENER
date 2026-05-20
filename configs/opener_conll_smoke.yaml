@@ -1,0 +1,26 @@
+mention_detection:
+  model: urchade/gliner_medium-v2.1
+  threshold: 0.3
+  label_mode: label-aware
+  open_label: named entity
+embedding:
+  model: nomic-ai/nomic-embed-text-v1.5
+  truncate_dim: 256
+  encoding_mode: span_in_context
+  task_prefix: 'classification: '
+clustering:
+  covariance_type: full
+  random_state: 42
+  anchor_jitter: 0.05
+  ood_log_likelihood_threshold: -20.0
+  hierarchy_overlap_threshold: 0.7
+  hierarchy_mc_samples: 1000
+conll:
+  fit_mode: supervised
+  hf_dataset: eriktks/conll2003
+  train_split: train
+  eval_split: validation
+  max_train_sentences: 50
+  max_eval_sentences: 20
+  batch_size: 64
+  results_dir: outputs/results/conll

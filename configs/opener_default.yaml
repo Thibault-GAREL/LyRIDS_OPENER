@@ -1,0 +1,22 @@
+# Config globale Opener — modèles + dimensions + seuils.
+# Pour la liste des labels, voir labels.yaml (séparé pour itérer plus vite).
+
+mention_detection:
+  model: urchade/gliner_medium-v2.1   # ~200 Mo, zero-shot NER
+  threshold: 0.3                      # score min pour qu'un span soit retenu
+  label_mode: label-aware             # 'open' (ouvert) ou 'label-aware' (passe les noms de labels.yaml à GLiNER)
+  open_label: named entity            # libellé utilisé en mode 'open' uniquement
+
+embedding:
+  model: nomic-ai/nomic-embed-text-v1.5
+  truncate_dim: 256                   # Matryoshka : 64 / 128 / 256 / 512 / 768
+  encoding_mode: span_in_context      # 'span' ou 'span_in_context'
+  task_prefix: "classification: "     # Nomic v1.5 attend un préfix de tâche
+
+clustering:
+  covariance_type: full               # 'full' / 'diag' / 'tied' / 'spherical'
+  random_state: 42
+  anchor_jitter: 0.05                 # bruit des composantes 1..K-1 autour de l'anchor (composante 0)
+  ood_log_likelihood_threshold: -20.0 # si log p(x | best_label) < ça → OOD
+  hierarchy_overlap_threshold: 0.7    # si bulle A inclut >70 % de la masse de B → A parent de B
+  hierarchy_mc_samples: 1000          # nb d'échantillons Monte-Carlo pour l'inclusion

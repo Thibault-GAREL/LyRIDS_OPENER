@@ -1,0 +1,26 @@
+# Labels CoNLL-2003 — schéma volontairement réduit à 3 catégories.
+# Utilisé par scripts/run_conll.py pour fit + eval.
+#
+# MISC est exclu du schéma de fit :
+#   - Ses anchor_words seraient incohérents ("miscellaneous", "nationality",
+#     "event"...) — sa bulle GMM explose et pollue les autres labels.
+#   - On le garde côté gold : les spans MISC servent à mesurer l'OOD recall
+#     (combien de spans hors-schéma sont correctement détectés inconnus).
+#
+# Les anchor_words sont choisis pour amorcer le centroid GMM avec un prior
+# fort sur le sens du label. Plus l'anchor est représentatif, mieux EM
+# converge — surtout en mode supervisé pur où chaque GMM ne voit que ses
+# propres spans.
+
+labels:
+  - name: PER
+    anchor_words: [person, individual, human, man, woman, name]
+    n_components: 2          # famille / prénom + nom
+
+  - name: ORG
+    anchor_words: [organization, company, institution, agency, corporation, team]
+    n_components: 2          # entreprise + équipe sportive + parti politique
+
+  - name: LOC
+    anchor_words: [location, place, city, country, region, area]
+    n_components: 2          # ville/pays + zone géographique

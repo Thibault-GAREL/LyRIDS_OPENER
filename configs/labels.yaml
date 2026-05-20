@@ -1,0 +1,40 @@
+# Labels à détecter par Opener.
+# Chaque label a :
+#   - name         : identifiant unique.
+#   - anchor_words : mots dont l'embedding moyen sert de centroid initial pour
+#                    le GMM. Mettre 1-5 synonymes / formes du label.
+#   - n_components : nb de gaussiennes pour modéliser des sous-formes du label.
+#                    Ex: 'person' avec 3 composantes peut capturer scientist /
+#                    politician / artist sans qu'on ait à les déclarer.
+#
+# Ajoute / retire / modifie librement. La hiérarchie (person ⊃ scientist) sera
+# inférée AUTOMATIQUEMENT après fit en regardant les overlaps spatiaux.
+
+labels:
+  - name: person
+    anchor_words: [person, individual, human, man, woman]
+    n_components: 3
+
+  - name: scientist
+    anchor_words: [scientist, researcher, professor, physicist, biologist]
+    n_components: 2
+
+  - name: politician
+    anchor_words: [politician, senator, president, minister, governor]
+    n_components: 2
+
+  - name: organization
+    anchor_words: [organization, company, institution, agency, corporation]
+    n_components: 2
+
+  - name: location
+    anchor_words: [location, place, city, country, region]
+    n_components: 2
+
+  - name: date
+    anchor_words: [date, year, month, day, time]
+    n_components: 1
+
+  - name: artwork
+    anchor_words: [book, novel, film, movie, song, album, painting]
+    n_components: 2

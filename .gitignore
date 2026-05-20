@@ -1,0 +1,54 @@
+# Données (volumineuses, à reproduire localement)
+data/1-raw/*
+data/2-processed/*
+!data/1-raw/.gitkeep
+!data/2-processed/.gitkeep
+!data/1-raw/*.py
+!data/2-processed/*.py
+
+# Outputs : models fittés, résultats
+outputs/models/*
+outputs/results/*
+!outputs/models/.gitkeep
+!outputs/results/.gitkeep
+
+# MLflow (si on l'ajoute plus tard)
+mlruns/
+mlartifacts/
+mlflow.db
+mlflow.db-journal
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+build/
+dist/
+
+# Environments
+.venv/
+venv/
+env/
+.env
+
+# IDE
+.vscode/
+.idea/
+.history/
+
+# Tests / type-checkers
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# HuggingFace cache local
+.hf_cache/

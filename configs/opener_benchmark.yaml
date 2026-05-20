@@ -1,0 +1,29 @@
+# Config pour le benchmark OWNER (run_owner_benchmark.py).
+#
+# Différences avec opener_conll.yaml :
+#   - covariance_type=diag : plus stable en haute dim avec peu de points par label
+#     (les datasets benchmark ont parfois <100 spans/label vs 3000 pour CoNLL).
+#   - ood désactivé (threshold très bas) : pour mesurer la qualité GMM pure
+#     sans pénaliser via le filtre OOD ; l'AMI capture déjà la qualité du clustering.
+
+mention_detection:
+  model: urchade/gliner_medium-v2.1
+  threshold: 0.3
+  label_mode: label-aware
+  open_label: named entity
+
+embedding:
+  model: nomic-ai/nomic-embed-text-v1.5
+  truncate_dim: 256
+  encoding_mode: span_in_context
+  task_prefix: "classification: "
+
+clustering:
+  covariance_type: diag                 # diag : O(D) params, plus stable en haute dim
+  random_state: 42
+  anchor_jitter: 0.05
+  ood_calibration_mode: fixed           # désactivé pour ce benchmark
+  ood_log_likelihood_threshold: -1000000000.0  # effectivement off
+  ood_percentile: 5.0                   # ignoré en mode 'fixed'
+  hierarchy_overlap_threshold: 0.7
+  hierarchy_mc_samples: 1000

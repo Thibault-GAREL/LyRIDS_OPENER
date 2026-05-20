@@ -1,0 +1,45 @@
+# Config Opener pour benchmark CoNLL-2003.
+#
+# Différences avec opener_default.yaml :
+#   - fit_mode: supervised  → utilise les spans gold (bypass GLiNER pour le fit).
+#   - section conll: paramètres spécifiques au benchmark.
+#
+# Le pipeline standard (MD → Embed → GMM) reste utilisable pour predict()
+# une fois fitté ; seul le fit change.
+
+mention_detection:
+  model: urchade/gliner_medium-v2.1
+  threshold: 0.3
+  label_mode: label-aware
+  open_label: named entity
+
+embedding:
+  model: nomic-ai/nomic-embed-text-v1.5
+  truncate_dim: 256
+  encoding_mode: span_in_context
+  task_prefix: "classification: "
+
+clustering:
+  covariance_type: full
+  random_state: 42
+  anchor_jitter: 0.05
+  ood_log_likelihood_threshold: -1500.0   # fallback global, utilisé seulement si
+                                          # ood_calibration_mode = 'fixed'
+  ood_calibration_mode: per_label_percentile   # 'fixed' (seuil global)
+                                               # ou 'per_label_percentile' (seuil propre à chaque label,
+                                               # calibré sur les log-lik des points de fit)
+  ood_percentile: 5.0                     # un span est OOD si log-lik < p5 des points de train du label
+  hierarchy_overlap_threshold: 0.7
+  hierarchy_mc_samples: 1000
+
+conll:
+  fit_mode: supervised        # 'supervised' (chaque GMM sur ses spans gold)
+                              # ou 'semi'    (tous les spans → tous les GMMs)
+  hf_dataset: eriktks/conll2003
+  train_split: train
+  eval_split: validation
+  max_train_sentences: 5000   # bridé pour itérer vite (None = tout)
+  max_eval_sentences: 2000
+  batch_size: 64              # taille des batches d'embedding
+  results_dir: outputs/results/conll
+  clusterer_dir: outputs/models/conll      # où sauvegarder le GMM fitté (joblib)
