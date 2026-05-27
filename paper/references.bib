@@ -1,0 +1,178 @@
+% =====================================================================
+% references.bib — bibliography for Opener paper
+% LyRIDS Symposium 2026 submission
+% =====================================================================
+%
+% Citation style: IEEEtran (numeric, sorted by appearance).
+% Use \cite{key} in the .tex files to reference an entry below.
+%
+% NOTES:
+%   - BibTeX is NOT LaTeX. The percent-sign starts a comment only OUTSIDE
+%     of any entry block. Never put a percent-sign line INSIDE a curly-brace
+%     entry body — BibTeX will fail to parse the rest of the entry.
+%   - Also: never type the "at-sign + word" pattern in a comment, even on a
+%     percent-sign line. BibTeX scans the whole file for that pattern and
+%     will try to parse it as an entry.
+%   - Titles: protect capitalization of acronyms or proper nouns with curly
+%     braces, e.g. NER, EM, GLiNER wrapped in braces — otherwise IEEE style
+%     will lowercase them.
+% =====================================================================
+
+
+% ---------------------------------------------------------------------
+% Mention detection (used by Opener)
+% ---------------------------------------------------------------------
+
+@inproceedings{zaratiana2024gliner,
+  title     = {{GLiNER}: Generalist Model for Named Entity Recognition using Bidirectional Transformer},
+  author    = {Zaratiana, Urchade and Tomeh, Nadi and Holat, Pierre and Charnois, Thierry},
+  booktitle = {Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies ({NAACL-HLT}), Volume 1: Long Papers},
+  pages     = {5364--5376},
+  year      = {2024},
+  publisher = {Association for Computational Linguistics}
+}
+
+
+% ---------------------------------------------------------------------
+% Matryoshka and embedding-based representations
+% ---------------------------------------------------------------------
+
+@inproceedings{kusupati2022matryoshka,
+  title     = {Matryoshka Representation Learning},
+  author    = {Kusupati, Aditya and Bhatt, Gantavya and Rege, Aniket and Wallingford, Matthew and Sinha, Aditya and Ramanujan, Vivek and Howard-Snyder, William and Chen, Kaifeng and Kakade, Sham and Jain, Prateek and Farhadi, Ali},
+  booktitle = {Advances in Neural Information Processing Systems 35 ({NeurIPS} 2022)},
+  year      = {2022}
+}
+
+% Note: this paper describes nomic-embed-text-v1. We use the v1.5 release in
+% practice (same architecture, retrained with Matryoshka objective for
+% truncatable dimensions). No separate paper for v1.5 — this is the canonical
+% technical reference.
+@article{nussbaum2024nomic,
+  title   = {Nomic Embed: Training a Reproducible Long Context Text Embedder},
+  author  = {Nussbaum, Zach and Morris, John X. and Duderstadt, Brandon and Mulyar, Andriy},
+  journal = {Transactions on Machine Learning Research ({TMLR})},
+  year    = {2024},
+  note    = {OpenReview: \url{https://openreview.net/forum?id=IPmzyQSiQE}}
+}
+
+@inproceedings{wang2018joint,
+  title     = {Joint Embedding of Words and Labels for Text Classification},
+  author    = {Wang, Guoyin and Li, Chunyuan and Wang, Wenlin and Zhang, Yizhe and Shen, Dinghan and Zhang, Xinyuan and Henao, Ricardo and Carin, Lawrence},
+  booktitle = {Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics ({ACL})},
+  pages     = {2321--2331},
+  year      = {2018}
+}
+
+
+% ---------------------------------------------------------------------
+% Few-shot, zero-shot, and domain-specific NER
+% ---------------------------------------------------------------------
+
+@inproceedings{tang2024fsponer,
+  title     = {{FsPONER}: Few-shot Prompt Optimization for Named Entity Recognition in Domain-specific Scenarios},
+  author    = {Tang, Yongjian and Hasan, Rakebul and Runkler, Thomas},
+  booktitle = {Proceedings of the 27th European Conference on Artificial Intelligence ({ECAI})},
+  year      = {2024},
+  note      = {arXiv:2407.08035}
+}
+
+@inproceedings{zhang2024kcl,
+  title     = {{KCL}: Few-shot Named Entity Recognition with Knowledge Graph and Contrastive Learning},
+  author    = {Zhang, Shan and Cao, Bin and Fan, Jing},
+  booktitle = {Proceedings of the 2024 Joint International Conference on Computational Linguistics, Language Resources and Evaluation ({LREC-COLING})},
+  pages     = {9681--9692},
+  year      = {2024},
+  publisher = {{ELRA} Language Resource Association}
+}
+
+@inproceedings{nguyen2023span,
+  title     = {Span-based Named Entity Recognition by Generating and Compressing Information},
+  author    = {Nguyen, Nhung T. H. and Miwa, Makoto and Ananiadou, Sophia},
+  booktitle = {Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics ({EACL})},
+  pages     = {1984--1996},
+  year      = {2023}
+}
+
+@article{zhang2025contrastivegaussian,
+  title   = {Contrastive Learning with {Gaussian} Embeddings and Self-Attention for Few-Shot Named Entity Recognition},
+  author  = {Zhang, Yihao and Chen, Wei and Ma, Lei},
+  journal = {Applied Sciences},
+  volume  = {15},
+  number  = {21},
+  pages   = {11819},
+  year    = {2025},
+  doi     = {10.3390/app152111819}
+}
+
+@inproceedings{cai2025handling,
+  title     = {Handling Missing Entities in Zero-Shot Named Entity Recognition: Integrated Recall and Retrieval Augmentation},
+  author    = {Cai, Ruichu and Lu, Junhao and Chen, Zhongjie and Xu, Boyan and Hao, Zhifeng},
+  booktitle = {Proceedings of the 2025 Conference of the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Language Technologies ({NAACL})},
+  pages     = {10790--10802},
+  year      = {2025}
+}
+
+
+% ---------------------------------------------------------------------
+% Open-world / unsupervised NER  (KEY prior work — cited in 3rd person
+% for double-blind anonymity)
+% ---------------------------------------------------------------------
+
+% IMPORTANT: cite this in the third person ("Genest et al. [X] propose ...")
+% rather than "our previous work" — double-blind requirement.
+@article{genest2025owner,
+  title   = {{OWNER}: Toward Unsupervised Open-World Named Entity Recognition},
+  author  = {Genest, Pierre-Yves and Portier, Pierre-Edouard and Egyed-Zsigmond, El{\H{o}}d and Lovisetto, Martino},
+  journal = {{IEEE} Access},
+  volume  = {13},
+  pages   = {50077--50105},
+  year    = {2025},
+  doi     = {10.1109/ACCESS.2025.3552122}
+}
+
+
+% ---------------------------------------------------------------------
+% Data augmentation for NER
+% ---------------------------------------------------------------------
+
+@inproceedings{hu2023entity,
+  title     = {Entity-to-Text based Data Augmentation for various Named Entity Recognition Tasks},
+  author    = {Hu, Xuming and Jiang, Yong and Liu, Aiwei and Huang, Zhongqiang and Xie, Pengjun and Huang, Fei and Wen, Lijie and Yu, Philip S.},
+  booktitle = {Findings of the Association for Computational Linguistics: {ACL} 2023},
+  pages     = {9072--9087},
+  year      = {2023}
+}
+
+
+% ---------------------------------------------------------------------
+% Gaussian Mixture Models — foundational + applications in ML
+% ---------------------------------------------------------------------
+
+@misc{abbahaddou2024gmmgnn,
+  title  = {Gaussian Mixture Models Based Augmentation Enhances {GNN} Generalization},
+  author = {Abbahaddou, Yassine and Malliaros, Fragkiskos D. and Lutzeyer, Johannes F. and Aboussalah, Amine Mohamed and Vazirgiannis, Michalis},
+  year   = {2024},
+  note   = {arXiv:2411.08638 [cs.LG], preprint}
+}
+
+@incollection{reynolds2009gmm,
+  title     = {{Gaussian} Mixture Models},
+  author    = {Reynolds, Douglas A.},
+  booktitle = {Encyclopedia of Biometrics},
+  editor    = {Li, Stan Z. and Jain, Anil K.},
+  pages     = {659--663},
+  publisher = {Springer US},
+  year      = {2009},
+  doi       = {10.1007/978-0-387-73003-5_196}
+}
+
+@article{dempster1977em,
+  title   = {Maximum Likelihood from Incomplete Data via the {EM} Algorithm},
+  author  = {Dempster, Arthur P. and Laird, Nan M. and Rubin, Donald B.},
+  journal = {Journal of the Royal Statistical Society: Series B (Methodological)},
+  volume  = {39},
+  number  = {1},
+  pages   = {1--22},
+  year    = {1977}
+}

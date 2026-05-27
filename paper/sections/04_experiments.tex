@@ -1,0 +1,45 @@
+\section{Experiments}
+\label{sec:experiments}
+
+% TODO: write experiments (≈4 to 6 pages).
+% Suggested structure:
+%
+% \subsection{Datasets}
+%   - CrossNER, WNUT-17, FabNER, CoNLL-2003.
+%   - For each: domain, label set, train/dev/test sizes.
+%   - Justify selection: variety of domains, prior open-NER work uses them.
+%
+% \subsection{Baselines}
+%   - Closed-set: BERT-CRF tagger (oracle upper bound).
+%   - Open: GLiNER zero-shot, prompting an LLM (e.g. via an OpenAI-compatible API).
+%   - Clustering baselines: K-means on Nomic embeddings (unsupervised), the
+%     Triplet-loss / OWNER-style approach (cited anonymously in third person).
+%
+% \subsection{Metrics}
+%   - F1 (span-level, type-level).
+%   - Adjusted Mutual Information (AMI), Adjusted Rand Index (ARI) for clustering.
+%   - OOD detection: AUROC of likelihood scores on in-vs-out entities.
+%
+% \subsection{Implementation Details}
+%   - Hardware: single NVIDIA GTX 1660 Ti Max-Q (6 GB VRAM). [Note: anonymize
+%     hardware specs if they could identify the lab.]
+%   - GLiNER medium (~200 MB), Nomic v1.5 (~140 MB).
+%   - GMM library, anchor word lists, OOD threshold calibration protocol.
+%   - Random seeds, number of runs.
+%
+% \subsection{Main Results}
+%   - Table: Opener vs. baselines across datasets.
+%
+% \subsection{Ablations}
+%   - Matryoshka dim sweep: 768 / 512 / 256 / 128 / 64.
+%   - Anchor-word initialization vs. random init vs. K-means init.
+%   - Number of GMM components per label.
+%   - Span-in-context vs. span-only embedding.
+%
+% \subsection{Hierarchy Inference Case Study}
+%   - Qualitative example: inferred DAG on one dataset.
+%
+% \subsection{OOD Detection Analysis}
+%   - ROC curve, threshold sensitivity.
+
+\emph{[Placeholder — experiments to be written once results are available.]}

@@ -1,0 +1,43 @@
+\section{Method}
+\label{sec:method}
+
+% TODO: write the methodology (≈3 to 5 pages, the heart of the paper).
+% Suggested structure:
+%
+% \subsection{Overview}
+%   - High-level pipeline diagram (figure): Text → MentionDetector → Embedder →
+%     LabelClusterer → {label_id, log-likelihood} or "OOD".
+%   - State the three design principles:
+%     (i)  no encoder training,
+%     (ii) anchor-word semi-supervision,
+%     (iii) Matryoshka-truncatable embeddings for compute/quality trade-offs.
+%
+% \subsection{Mention Detection}
+%   - GLiNER as a frozen black-box component.
+%   - Inputs: raw text + candidate labels.
+%   - Outputs: spans (start, end, surface form).
+%   - Justify the choice: state-of-the-art on open-NER benchmarks, no retraining.
+%
+% \subsection{Matryoshka Embedding of Entities}
+%   - Nomic v1.5 with truncate_dim ∈ {768, 512, 256, 128, 64}.
+%   - Embedding strategy: span-in-context vs. span-only (ablation).
+%   - Formal notation: e_i = Embed(x_i; D) ∈ R^D.
+%
+% \subsection{Per-Label Gaussian Mixture Models}
+%   - For each label ℓ, fit a GMM with K_ℓ components, full covariance.
+%   - Anchor-word initialization: means_init[0] = mean of embeddings of anchor
+%     words (e.g., "person", "scientist", "researcher" for the PERSON label).
+%   - EM refinement on detected entity embeddings.
+%   - Formal: p_ℓ(e) = Σ_k π_k N(e; μ_k, Σ_k).
+%
+% \subsection{Entity Typing and OOD Detection}
+%   - Assignment rule: ℓ* = argmax_ℓ log p_ℓ(e).
+%   - OOD if max_ℓ log p_ℓ(e) < τ (threshold).
+%   - Calibration of τ on held-out in-distribution entities.
+%
+% \subsection{Post-hoc Hierarchy Inference}
+%   - Mahalanobis containment: bubble B is "contained" in bubble A if a
+%     fraction γ ≥ γ_min of B's mass lies within k-σ of A.
+%   - Output: a DAG of label relations.
+
+\emph{[Placeholder — method to be written.]}

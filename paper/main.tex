@@ -1,0 +1,75 @@
+% =====================================================================
+% Opener: Open Partitioning Embedding for Named Entity Recognition
+% LyRIDS Symposium 2026 — anonymous submission (double-blind review)
+%
+% Format: IEEE conference, 10pt, single-column (per conference instructions).
+% Compilation: pdflatex main && bibtex main && pdflatex main && pdflatex main
+% =====================================================================
+
+\documentclass[10pt,conference,onecolumn]{IEEEtran}
+% \IEEEoverridecommandlockouts
+% (Above line commented out: only needed for funding \thanks{}, removed for anonymous submission.)
+
+% --- Core packages from IEEE template ---
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+
+% --- Additional packages we will likely need ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{url}
+\usepackage{booktabs}      % nicer tables
+\usepackage{hyperref}      % clickable links/cross-refs
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = black,
+  citecolor  = black,
+  urlcolor   = blue,
+  pdfborder  = {0 0 0}
+}
+
+% --- Custom BibTeX command from the IEEE template ---
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% =====================================================================
+\begin{document}
+
+\title{Opener: Open Partitioning Embedding for Named Entity Recognition}
+
+\author{\IEEEauthorblockN{Anonymous Author(s)}
+\IEEEauthorblockA{\textit{Paper submitted for double-blind review} \\
+LyRIDS Symposium 2026}
+}
+
+\maketitle
+
+% --- Abstract ---
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+\begin{IEEEkeywords}
+named entity recognition, open NER, Matryoshka embeddings, Gaussian mixture models, semi-supervised clustering, out-of-distribution detection
+\end{IEEEkeywords}
+
+% --- Body sections (one file per section for ease of editing) ---
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_method}
+\input{sections/04_experiments}
+\input{sections/05_conclusion}
+\input{sections/06_acknowledgments}
+
+% --- Bibliography (managed via references.bib, formatted with IEEEtran.bst) ---
+% NOTE: \nocite{*} forces all .bib entries to appear in the references list,
+% even those not yet \cite{}d in the body. Remove it once real citations are in.
+\nocite{*}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

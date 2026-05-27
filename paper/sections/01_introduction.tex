@@ -1,0 +1,26 @@
+\section{Introduction}
+\label{sec:introduction}
+
+% TODO: write the introduction (≈1 to 1.5 pages).
+% Suggested structure:
+%   - Motivation: NER pipelines in production face an open-world setting — new
+%     entity types appear, and re-annotating + retraining is expensive.
+%   - Limitations of existing approaches:
+%       * Closed-set NER (BIO tagging) cannot generalize beyond training labels.
+%       * Triplet-loss + K-means (e.g. OWNER) requires training a dedicated encoder.
+%       * Prompting LLMs is costly and brittle at scale.
+%   - Our contribution: a *no-encoder-training* approach that leverages a
+%     pre-trained Matryoshka embedding (Nomic v1.5) and per-label GMMs initialized
+%     on anchor words. The pipeline is modular: each component (detector, embedder,
+%     clusterer) is independently swappable.
+%   - Contributions list:
+%       1. A semi-supervised open-NER pipeline that requires no fine-tuning.
+%       2. Anchor-word initialization of per-label GMMs, providing interpretable
+%          decision regions.
+%       3. Native OOD detection via log-likelihood thresholding.
+%       4. Post-hoc hierarchy inference via spatial containment of GMM components.
+%   - Paper roadmap (\S\ref{sec:related} discusses related work, \S\ref{sec:method}
+%     details the Opener pipeline, \S\ref{sec:experiments} evaluates on
+%     [datasets], and \S\ref{sec:conclusion} concludes).
+
+\emph{[Placeholder — introduction to be written.]}

@@ -1,0 +1,47 @@
+# LaTeX compilation artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.nav
+*.snm
+*.vrb
+*.bcf
+*.run.xml
+*.idx
+*.ind
+*.ilg
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+*.xdy
+
+# Build PDFs are kept tracked manually only when ready to share.
+# Uncomment to ignore intermediate compilations:
+# main.pdf
+
+# Editor/OS junk
+.vscode/
+*~
+.DS_Store
+Thumbs.db
+
+# Temp folders from extraction
+tmp_bst/
+IEEE-conference-template-062824/
+
+# Local backup folder (anciens templates, zips IEEE, PDFs HOWTO, .synctex.gz):
+# utile en local pour référence, inutile à push.
+ref/
