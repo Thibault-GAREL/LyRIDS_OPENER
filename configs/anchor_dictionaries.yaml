@@ -1,0 +1,93 @@
+# Curated anchor words per dataset (axis 2 — "enriched anchor words").
+#
+# Used by scripts/run_owner_benchmark.py with --anchor-mode dict.
+# For each (dataset, label) we hand-pick semantically rich seed words so the
+# GMM centroid starts near the optimal bubble — instead of the auto-generated
+# anchors derived mechanically from the label name (which fail on opaque
+# acronyms like FabNER's APPL).
+#
+# Rules:
+#   - 3 to 6 words per label, in the embedder's natural vocabulary.
+#   - A label NOT listed here falls back to the auto anchors (_split_anchor_words).
+#   - These are GMM init priors, not gold definitions — closeness matters more
+#     than exactness.
+
+# ---------------------------------------------------------------------------
+conll2003:
+  PER:  [person, individual, people, name, human]
+  ORG:  [organization, company, institution, agency, corporation]
+  LOC:  [location, place, city, country, region]
+  MISC: [nationality, language, event, group, miscellaneous]
+
+# ---------------------------------------------------------------------------
+wnut17:
+  person:        [person, individual, people, name, human]
+  location:      [location, place, city, country, region]
+  group:         [group, band, team, association, organization]
+  corporation:   [corporation, company, business, firm, enterprise]
+  creative-work: [book, song, movie, album, film, artwork]
+  product:       [product, device, gadget, brand, item]
+
+# ---------------------------------------------------------------------------
+mit_restaurant:
+  Cuisine:         [cuisine, food type, italian, chinese, mexican]
+  Dish:            [dish, meal, plate, food, course]
+  Amenity:         [amenity, facility, service, wifi, parking]
+  Hours:           [opening hours, schedule, time, open, closing]
+  Price:           [price, cost, cheap, expensive, affordable]
+  Rating:          [rating, review, stars, score, ranking]
+  Location:        [location, place, area, neighborhood, address]
+  Restaurant_Name: [restaurant, diner, eatery, bistro, place name]
+
+# ---------------------------------------------------------------------------
+bionlp2004:
+  protein:   [protein, enzyme, receptor, antibody, peptide]
+  DNA:       [dna, gene, genome, nucleotide sequence, deoxyribonucleic acid]
+  RNA:       [rna, messenger rna, transcript, ribonucleic acid]
+  cell_type: [cell type, lymphocyte, neuron, macrophage, T cell]
+  cell_line: [cell line, cultured cells, cell culture, HeLa]
+
+# ---------------------------------------------------------------------------
+# FabNER — the critical case: labels are opaque manufacturing acronyms.
+# Expansions follow the FabNER label scheme (Kumar & Starly, 2022); anchors are
+# domain seed words chosen to place each GMM in the right semantic region.
+fabner:
+  MATE:   [material, alloy, steel, polymer, metal, composite]
+  MANP:   [manufacturing process, machining, welding, casting, additive manufacturing]
+  MACEQ:  [machine, equipment, tool, lathe, printer, device]
+  APPL:   [application, use case, aerospace, automotive, industry]
+  FEAT:   [engineering feature, geometry, surface, hole, shape]
+  PRO:    [mechanical property, strength, hardness, stiffness, tensile]
+  CHAR:   [characterization, measurement, microscopy, inspection, analysis]
+  PARA:   [process parameter, temperature, pressure, speed, setting]
+  ENAT:   [enabling technology, simulation, sensor, software, automation]
+  CONPRI: [concept, principle, theory, mechanism, law]
+  MANS:   [manufacturing standard, specification, ISO, ASTM, norm]
+  BIOP:   [biomedical, tissue, implant, biological, medical]
+
+# ---------------------------------------------------------------------------
+# CrossNER — most labels are already real words (auto anchors work well),
+# but we enrich the compound / camelCase ones for cleaner centroids.
+crossner:
+  academicjournal:    [academic journal, scientific journal, periodical, publication]
+  astronomicalobject: [astronomical object, planet, star, galaxy, asteroid]
+  chemicalcompound:   [chemical compound, molecule, substance, reagent]
+  chemicalelement:    [chemical element, atom, periodic table element]
+  literarygenre:      [literary genre, fiction, poetry, novel category]
+  musicalartist:      [musical artist, singer, musician, performer, band]
+  musicalinstrument:  [musical instrument, guitar, piano, violin, drum]
+  musicgenre:         [music genre, rock, jazz, classical, pop]
+  politicalparty:     [political party, party, coalition, movement]
+  programlang:        [programming language, code language, python, java]
+  enzyme:             [enzyme, protein catalyst, kinase, polymerase]
+  protein:            [protein, peptide, receptor, antibody]
+  scientist:          [scientist, researcher, physicist, biologist, chemist]
+  researcher:         [researcher, scholar, academic, scientist]
+  politician:         [politician, senator, minister, president, governor]
+  writer:             [writer, author, novelist, poet]
+  organisation:       [organization, company, institution, agency]
+  discipline:         [discipline, academic field, branch of science]
+  metrics:            [metric, measure, evaluation score, benchmark]
+  algorithm:          [algorithm, method, procedure, technique]
+  theory:             [theory, principle, model, hypothesis]
+  conference:         [conference, symposium, workshop, meeting]

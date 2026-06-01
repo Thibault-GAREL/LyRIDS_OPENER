@@ -1,0 +1,267 @@
+<svg viewBox="0 0 1300 1180" xmlns="http://www.w3.org/2000/svg" width="1300" height="1180" preserveAspectRatio="xMidYMid meet">
+  <title>Opener — Improvement Roadmap and Experiment Plan</title>
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+    </style>
+    <filter id="shadow-sm" x="-5%" y="-5%" width="115%" height="125%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#00000018"/>
+    </filter>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#E2E8F0" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <rect width="1300" height="1180" fill="#FFFFFF"/>
+  <rect width="1300" height="1180" fill="url(#grid)" opacity="0.55"/>
+
+  <!-- Title -->
+  <text x="40" y="52" font-size="20" font-weight="700" fill="#111827">Opener — Improvement Roadmap &amp; Experiment Plan</text>
+  <text x="40" y="74" font-size="12" font-weight="400" fill="#6B7280">Five axes to move from "frozen embedding + GMM" toward a competitive open-world system</text>
+  <line x1="40" y1="84" x2="380" y2="84" stroke="#6366F1" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- ============================================================= -->
+  <!-- ROW 1 : panels 1, 2, 3                                          -->
+  <!-- ============================================================= -->
+
+  <!-- Panel 1 : Matryoshka sweep (cyan) -->
+  <g>
+    <rect x="40" y="104" width="390" height="250" rx="14" fill="#06B6D40F" stroke="#06B6D4" stroke-width="1.5"/>
+    <rect x="52" y="94" width="232" height="24" rx="12" fill="#06B6D4"/>
+    <text x="168" y="110" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">1 · Matryoshka dimension sweep</text>
+
+    <text x="60" y="146" font-size="11" font-weight="400" fill="#0E7490">Truncate to 64 / 128 / 256 / 512 / 768 dims</text>
+    <text x="60" y="165" font-size="11" font-weight="400" fill="#0E7490">Measured: mean AMI rises with dim (no plateau)</text>
+    <text x="60" y="184" font-size="11" font-weight="400" fill="#0E7490">Embedding cost is flat — only storage/fit shrink</text>
+
+    <!-- legend (top-right) -->
+    <rect x="296" y="128" width="124" height="44" rx="8" fill="#FFFFFF" stroke="#06B6D4" stroke-width="1"/>
+    <line x1="306" y1="144" x2="326" y2="144" stroke="#06B6D4" stroke-width="2.5"/>
+    <text x="332" y="147" font-size="9" fill="#0E7490">AMI (mean)</text>
+    <line x1="306" y1="160" x2="326" y2="160" stroke="#F43F5E" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="332" y="163" font-size="9" fill="#9F1239">embed. cost</text>
+
+    <text x="60" y="206" font-size="9.5" font-style="italic" fill="#94A3B8">real sweep — 6 datasets, mean AMI per dim (2026-05-29)</text>
+
+    <!-- mini chart : real data -->
+    <line x1="70" y1="330" x2="410" y2="330" stroke="#CBD5E1" stroke-width="1"/>
+    <line x1="70" y1="216" x2="70" y2="330" stroke="#CBD5E1" stroke-width="1"/>
+    <text x="64" y="227" font-size="8" fill="#94A3B8" text-anchor="end">.19</text>
+    <text x="64" y="316" font-size="8" fill="#94A3B8" text-anchor="end">.15</text>
+    <!-- AMI curve (monotone rising) -->
+    <polyline points="95,312 157,305 240,255 322,242 398,231" fill="none" stroke="#06B6D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="95" cy="312" r="2.5" fill="#06B6D4"/>
+    <circle cx="157" cy="305" r="2.5" fill="#06B6D4"/>
+    <circle cx="240" cy="255" r="2.5" fill="#06B6D4"/>
+    <circle cx="322" cy="242" r="2.5" fill="#06B6D4"/>
+    <!-- embedding cost (constant) -->
+    <line x1="95" y1="288" x2="398" y2="288" stroke="#F43F5E" stroke-width="2" stroke-dasharray="5,3" stroke-linecap="round"/>
+    <text x="95" y="346" font-size="9" fill="#94A3B8" text-anchor="middle">64</text>
+    <text x="157" y="346" font-size="9" fill="#94A3B8" text-anchor="middle">128</text>
+    <text x="240" y="346" font-size="9" fill="#94A3B8" text-anchor="middle">256</text>
+    <text x="322" y="346" font-size="9" fill="#94A3B8" text-anchor="middle">512</text>
+    <text x="398" y="346" font-size="9" fill="#94A3B8" text-anchor="middle">768</text>
+    <circle cx="398" cy="231" r="4" fill="#06B6D4"/>
+    <text x="392" y="226" font-size="9" font-weight="600" fill="#0E7490" text-anchor="end">best 768</text>
+  </g>
+
+  <!-- Panel 2 : Anchor words (amber) -->
+  <g>
+    <rect x="455" y="104" width="390" height="250" rx="14" fill="#F59E0B0F" stroke="#F59E0B" stroke-width="1.5"/>
+    <rect x="467" y="94" width="210" height="24" rx="12" fill="#F59E0B"/>
+    <text x="572" y="110" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">2 · Enriched anchor words</text>
+
+    <text x="475" y="146" font-size="11" font-weight="400" fill="#92400E">Opaque abbreviations → poorly placed GMM centroid</text>
+
+    <rect x="475" y="160" width="350" height="32" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1"/>
+    <text x="487" y="180" font-size="10" font-weight="500" fill="#92400E">ECE → "École Centrale d'Électronique"</text>
+    <rect x="475" y="198" width="350" height="32" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1"/>
+    <text x="487" y="218" font-size="10" font-weight="500" fill="#92400E">APPL → application · software · system</text>
+
+    <text x="475" y="254" font-size="11" font-weight="600" fill="#92400E">Two methods:</text>
+    <rect x="475" y="264" width="160" height="26" rx="13" fill="#FFFFFF" stroke="#F59E0B" stroke-width="1"/>
+    <text x="555" y="281" font-size="10" font-weight="500" fill="#92400E" text-anchor="middle">📖 manual dictionary</text>
+    <rect x="645" y="264" width="160" height="26" rx="13" fill="#FFFFFF" stroke="#F59E0B" stroke-width="1"/>
+    <text x="725" y="281" font-size="10" font-weight="500" fill="#92400E" text-anchor="middle">🤖 LLM expansion</text>
+
+    <text x="475" y="322" font-size="11" font-weight="600" fill="#B45309">→ initial centroid ≈ optimal bubble position</text>
+    <text x="475" y="340" font-size="10" font-weight="400" fill="#92400E">EM converges better and faster</text>
+  </g>
+
+  <!-- Panel 3 : Model variants (indigo) -->
+  <g>
+    <rect x="870" y="104" width="390" height="250" rx="14" fill="#6366F10F" stroke="#6366F1" stroke-width="1.5"/>
+    <rect x="882" y="94" width="200" height="24" rx="12" fill="#6366F1"/>
+    <text x="982" y="110" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">3 · Swappable bricks</text>
+
+    <!-- three sub-blocks -->
+    <text x="890" y="144" font-size="11" font-weight="600" fill="#3730A3">Mention Detection</text>
+    <text x="890" y="162" font-size="10" fill="#4338CA">GLiNER ★ · BERT-NER</text>
+    <text x="890" y="178" font-size="10" fill="#4338CA">spaCy · span-based</text>
+
+    <text x="890" y="210" font-size="11" font-weight="600" fill="#3730A3">Embedding (Matryoshka)</text>
+    <text x="890" y="228" font-size="10" fill="#4338CA">Nomic v1.5 ★ · E5 · BGE</text>
+    <text x="890" y="244" font-size="10" fill="#4338CA">GTE · Jina · Stella</text>
+
+    <text x="890" y="276" font-size="11" font-weight="600" fill="#3730A3">Clustering / typing</text>
+    <text x="890" y="294" font-size="10" fill="#4338CA">GMM ★ · Bayesian GMM</text>
+    <text x="890" y="310" font-size="10" fill="#4338CA">k-means · HDBSCAN</text>
+
+    <text x="890" y="340" font-size="10" font-weight="500" fill="#6366F1">★ = current brick · all plug-and-play</text>
+  </g>
+
+  <!-- ============================================================= -->
+  <!-- ROW 2 : panel 4 metrics (violet, big)                          -->
+  <!-- ============================================================= -->
+  <g>
+    <rect x="40" y="378" width="1220" height="480" rx="14" fill="#8B5CF60D" stroke="#8B5CF6" stroke-width="1.5"/>
+    <rect x="52" y="368" width="210" height="24" rx="12" fill="#8B5CF6"/>
+    <text x="157" y="384" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">4 · Metrics battery</text>
+    <text x="280" y="385" font-size="10" font-weight="400" fill="#7C3AED">classic + open-world specific</text>
+
+    <!-- Row 1 of metric sub-cards -->
+    <!-- a) supervised -->
+    <g>
+      <rect x="60" y="416" width="282" height="190" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow-sm)"/>
+      <rect x="60" y="416" width="4" height="190" rx="2" fill="#6366F1"/>
+      <text x="78" y="442" font-size="12" font-weight="600" fill="#1E293B">Supervised quality</text>
+      <text x="78" y="468" font-size="10.5" fill="#475569">• Precision · Recall · F1</text>
+      <text x="78" y="490" font-size="10.5" fill="#475569">• Relaxed F1 (lenient boundaries)</text>
+      <text x="78" y="512" font-size="10.5" fill="#475569">• In-schema accuracy</text>
+      <text x="78" y="540" font-size="9.5" fill="#94A3B8">→ direct comparison to</text>
+      <text x="78" y="555" font-size="9.5" fill="#94A3B8">  classic NER baselines</text>
+    </g>
+    <!-- b) clustering quality -->
+    <g>
+      <rect x="362" y="416" width="282" height="190" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow-sm)"/>
+      <rect x="362" y="416" width="4" height="190" rx="2" fill="#06B6D4"/>
+      <text x="380" y="442" font-size="12" font-weight="600" fill="#1E293B">Clustering quality</text>
+      <text x="380" y="468" font-size="10.5" fill="#475569">• AMI / ARI (vs gold)</text>
+      <text x="380" y="490" font-size="10.5" fill="#475569">• Silhouette score</text>
+      <text x="380" y="512" font-size="10.5" fill="#475569">• Inter-bubble separation</text>
+      <text x="380" y="534" font-size="10.5" fill="#475569">  (overlap / partitioning)</text>
+      <text x="380" y="560" font-size="9.5" fill="#94A3B8">→ are the bubbles disjoint?</text>
+    </g>
+    <!-- c) stability -->
+    <g>
+      <rect x="664" y="416" width="282" height="190" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow-sm)"/>
+      <rect x="664" y="416" width="4" height="190" rx="2" fill="#8B5CF6"/>
+      <text x="682" y="442" font-size="12" font-weight="600" fill="#1E293B">Cluster stability</text>
+      <text x="682" y="468" font-size="10.5" fill="#475569">• Elasticity on re-fit</text>
+      <text x="682" y="490" font-size="10.5" fill="#475569">• Stability to seeds /</text>
+      <text x="682" y="505" font-size="10.5" fill="#475569">  subsampling</text>
+      <text x="682" y="530" font-size="10.5" fill="#475569">• Centroid drift</text>
+      <text x="682" y="558" font-size="9.5" fill="#94A3B8">→ robustness / reproducibility</text>
+    </g>
+    <!-- d) open-world -->
+    <g>
+      <rect x="966" y="416" width="282" height="190" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow-sm)"/>
+      <rect x="966" y="416" width="4" height="190" rx="2" fill="#F43F5E"/>
+      <text x="984" y="442" font-size="12" font-weight="600" fill="#1E293B">Open-world "I don't know"</text>
+      <text x="984" y="468" font-size="10.5" fill="#475569">• Invention rate (false OOD)</text>
+      <text x="984" y="490" font-size="10.5" fill="#475569">• Rejection rate / OOD recall</text>
+      <text x="984" y="512" font-size="10.5" fill="#475569">• Precision on the unknown</text>
+      <text x="984" y="540" font-size="9.5" fill="#94A3B8">→ say "unknown" without</text>
+      <text x="984" y="555" font-size="9.5" fill="#94A3B8">  over-rejecting the known</text>
+    </g>
+
+    <!-- Row 2 of metric sub-cards -->
+    <!-- e) few-shot -->
+    <g>
+      <rect x="60" y="626" width="282" height="190" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow-sm)"/>
+      <rect x="60" y="626" width="4" height="190" rx="2" fill="#F59E0B"/>
+      <text x="78" y="652" font-size="12" font-weight="600" fill="#1E293B">Few-shot</text>
+      <text x="78" y="676" font-size="10.5" fill="#475569">• F1 vs N curve</text>
+      <text x="78" y="694" font-size="10.5" fill="#475569">  (examples per label)</text>
+      <!-- mini curve -->
+      <line x1="86" y1="790" x2="320" y2="790" stroke="#CBD5E1" stroke-width="1"/>
+      <line x1="86" y1="712" x2="86" y2="790" stroke="#CBD5E1" stroke-width="1"/>
+      <polyline points="86,784 134,758 184,738 244,726 320,722" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="170" y="806" font-size="9" fill="#94A3B8">N examples →</text>
+      <text x="70" y="730" font-size="9" fill="#94A3B8" transform="rotate(-90 70 730)">F1</text>
+    </g>
+    <!-- f) robustness -->
+    <g>
+      <rect x="362" y="626" width="282" height="190" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow-sm)"/>
+      <rect x="362" y="626" width="4" height="190" rx="2" fill="#64748B"/>
+      <text x="380" y="652" font-size="12" font-weight="600" fill="#1E293B">Cross-domain robustness</text>
+      <text x="380" y="678" font-size="10.5" fill="#475569">• Cross-domain drop</text>
+      <text x="380" y="700" font-size="10.5" fill="#475569">  F1(source domain)</text>
+      <text x="380" y="718" font-size="10.5" fill="#475569">  − F1(target domain)</text>
+      <text x="380" y="746" font-size="10.5" fill="#475569">• Out-of-domain generalization</text>
+      <text x="380" y="776" font-size="9.5" fill="#94A3B8">→ drop when switching</text>
+      <text x="380" y="791" font-size="9.5" fill="#94A3B8">  domain (news → bio…)</text>
+    </g>
+    <!-- g) cost / frugality -->
+    <g>
+      <rect x="664" y="626" width="282" height="190" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow-sm)"/>
+      <rect x="664" y="626" width="4" height="190" rx="2" fill="#10B981"/>
+      <text x="682" y="652" font-size="12" font-weight="600" fill="#1E293B">Cost &amp; frugality</text>
+      <text x="682" y="678" font-size="10.5" fill="#475569">• Latency (ms / entity)</text>
+      <text x="682" y="700" font-size="10.5" fill="#475569">• Throughput (entities / s)</text>
+      <text x="682" y="722" font-size="10.5" fill="#475569">• VRAM usage</text>
+      <text x="682" y="744" font-size="10.5" fill="#475569">• CodeCarbon (CO₂ / kWh)</text>
+      <text x="682" y="772" font-size="9.5" fill="#94A3B8">→ strong selling point: Opener</text>
+      <text x="682" y="787" font-size="9.5" fill="#94A3B8">  is lightweight vs heavy LLMs</text>
+    </g>
+    <!-- h) meta / LLM judge -->
+    <g>
+      <rect x="966" y="626" width="282" height="190" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow-sm)"/>
+      <rect x="966" y="626" width="4" height="190" rx="2" fill="#0EA5E9"/>
+      <text x="984" y="652" font-size="12" font-weight="600" fill="#1E293B">Meta — hierarchy quality</text>
+      <text x="984" y="678" font-size="10.5" fill="#475569">• LLM-as-a-judge</text>
+      <text x="984" y="700" font-size="10.5" fill="#475569">• Is the inferred</text>
+      <text x="984" y="718" font-size="10.5" fill="#475569">  hierarchy coherent?</text>
+      <text x="984" y="744" font-size="10.5" fill="#475569">  person ⊃ scientist ✓ ?</text>
+      <text x="984" y="772" font-size="9.5" fill="#94A3B8">→ auto-score the bubble</text>
+      <text x="984" y="787" font-size="9.5" fill="#94A3B8">  tree structure</text>
+    </g>
+  </g>
+
+  <!-- ============================================================= -->
+  <!-- ROW 3 : panel 5 per-domain (emerald)                           -->
+  <!-- ============================================================= -->
+  <g>
+    <rect x="40" y="882" width="1220" height="266" rx="14" fill="#10B9810D" stroke="#10B981" stroke-width="1.5"/>
+    <rect x="52" y="872" width="360" height="24" rx="12" fill="#10B981"/>
+    <text x="232" y="888" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">5 · Strengths &amp; weaknesses per domain (current AMI)</text>
+
+    <!-- bars : scale 600px = 39.3 AMI -->
+    <!-- CrossNER 39.3 -->
+    <text x="56" y="934" font-size="11" font-weight="500" fill="#1E293B">CrossNER</text>
+    <rect x="170" y="922" width="600" height="18" rx="4" fill="#10B981"/>
+    <text x="780" y="936" font-size="10" font-weight="600" fill="#065F46">39.3  strong</text>
+    <!-- CoNLL 16.2 -->
+    <text x="56" y="966" font-size="11" font-weight="500" fill="#1E293B">CoNLL-2003</text>
+    <rect x="170" y="954" width="247" height="18" rx="4" fill="#06B6D4"/>
+    <text x="427" y="968" font-size="10" font-weight="600" fill="#0E7490">16.2</text>
+    <!-- BioNLP 15.1 -->
+    <text x="56" y="998" font-size="11" font-weight="500" fill="#1E293B">BioNLP-2004</text>
+    <rect x="170" y="986" width="231" height="18" rx="4" fill="#06B6D4"/>
+    <text x="411" y="1000" font-size="10" font-weight="600" fill="#0E7490">15.1</text>
+    <!-- MIT-Rest 14.4 -->
+    <text x="56" y="1030" font-size="11" font-weight="500" fill="#1E293B">MIT-Restaurant</text>
+    <rect x="170" y="1018" width="220" height="18" rx="4" fill="#06B6D4"/>
+    <text x="400" y="1032" font-size="10" font-weight="600" fill="#0E7490">14.4</text>
+    <!-- WNUT17 12.4 -->
+    <text x="56" y="1062" font-size="11" font-weight="500" fill="#1E293B">WNUT 17</text>
+    <rect x="170" y="1050" width="189" height="18" rx="4" fill="#F59E0B"/>
+    <text x="369" y="1064" font-size="10" font-weight="600" fill="#92400E">12.4</text>
+    <!-- FabNER 8.8 -->
+    <text x="56" y="1094" font-size="11" font-weight="500" fill="#1E293B">FabNER</text>
+    <rect x="170" y="1082" width="134" height="18" rx="4" fill="#F43F5E"/>
+    <text x="314" y="1096" font-size="10" font-weight="600" fill="#9F1239">8.8  weak</text>
+
+    <!-- interpretation note -->
+    <rect x="840" y="922" width="400" height="178" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+    <text x="858" y="948" font-size="12" font-weight="600" fill="#065F46">Why the gap?</text>
+    <text x="858" y="974" font-size="10.5" fill="#475569">✓ Strong: rich semantic labels</text>
+    <text x="858" y="992" font-size="10.5" fill="#475569">   (academicjournal, chemicalcompound…)</text>
+    <text x="858" y="1010" font-size="10.5" fill="#475569">   → anchor = word known to the embedder</text>
+    <text x="858" y="1036" font-size="10.5" fill="#475569">✗ Weak: opaque acronyms</text>
+    <text x="858" y="1054" font-size="10.5" fill="#475569">   (APPL, BIOP, CONPRI…)</text>
+    <text x="858" y="1072" font-size="10.5" fill="#475569">   → meaningless anchor → fuzzy bubble</text>
+    <text x="858" y="1094" font-size="10" font-weight="600" fill="#10B981">⇒ axis 2 (anchors) unlocks axis 5</text>
+  </g>
+</svg>

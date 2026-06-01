@@ -140,15 +140,50 @@ def _split_anchor_words(label_name: str) -> list[str]:
     return out
 
 
-def _build_label_specs(label_names: list[str]) -> list[LabelSpec]:
-    return [
-        LabelSpec(name=lbl, anchor_words=_split_anchor_words(lbl), n_components=2)
-        for lbl in label_names
-    ]
+def _build_label_specs(
+    label_names: list[str],
+    anchor_overrides: dict | None = None,
+) -> tuple[list[LabelSpec], int]:
+    """Construit les LabelSpec. Si anchor_overrides[label] existe, on utilise
+    ces anchor words curés ; sinon fallback sur l'auto-génération.
+
+    Returns:
+        (specs, n_curated) — n_curated = nb de labels ayant utilisé le dictionnaire.
+    """
+    anchor_overrides = anchor_overrides or {}
+    specs = []
+    n_curated = 0
+    for lbl in label_names:
+        override = anchor_overrides.get(lbl)
+        if override:
+            anchors = list(override)
+            n_curated += 1
+        else:
+            anchors = _split_anchor_words(lbl)
+        specs.append(LabelSpec(name=lbl, anchor_words=anchors, n_components=2))
+    return specs, n_curated
 
 
 def _build_anchor_embeddings(embedder: Embedder, specs: list[LabelSpec]) -> dict:
     return {spec.name: embedder.embed_anchor_words(spec.anchor_words) for spec in specs}
+
+
+def _default_task_prefix(model_name: str) -> str:
+    """Préfixe de tâche recommandé par famille de modèle d'embedding.
+
+    Comparer équitablement implique d'utiliser le préfixe attendu par chaque
+    modèle (sinon on le pénalise). Familles connues :
+      - Nomic  → 'classification: '
+      - E5     → 'query: '
+      - autres (BGE, MPNet, GTE, MiniLM, mxbai) → pas de préfixe pour des
+        passages / entités.
+    """
+    m = model_name.lower()
+    if 'nomic' in m:
+        return 'classification: '
+    if 'e5' in m:
+        return 'query: '
+    return ''
 
 
 # ----------------------------------------------------------------------
@@ -162,6 +197,7 @@ def evaluate_dataset(
     max_train: int,
     max_eval: int,
     batch_size: int,
+    anchor_overrides: dict | None = None,
 ) -> dict:
     """Run complet sur un dataset : fit + eval + retour métriques."""
     t0 = time.time()
@@ -195,7 +231,9 @@ def evaluate_dataset(
           f"{sum(len(s) for _,s in eval_corpus)} spans, {len(eval_labels)} labels")
 
     # Construit specs + clusterer pour CE dataset (réutilisable, on réinit le LabelClusterer)
-    specs = _build_label_specs(train_labels)
+    specs, n_curated = _build_label_specs(train_labels, anchor_overrides)
+    print(f"  anchors: {n_curated}/{len(train_labels)} labels curés (dictionnaire), "
+          f"{len(train_labels) - n_curated} auto")
     clusterer = LabelClusterer(
         label_specs=specs,
         ood_log_likelihood_threshold=clu_cfg.get('ood_log_likelihood_threshold', -1500.0),
@@ -265,6 +303,7 @@ def evaluate_dataset(
         'n_eval_spans': n_total,
         'n_train_labels': len(train_labels),
         'n_eval_labels': len(eval_labels),
+        'n_curated_anchors': n_curated,
         'train_labels': train_labels,
         'unknown_eval_labels': sorted(set(eval_labels) - set(train_labels)),
         'ami_with_ood': round(ami_with_ood, 4),
@@ -315,7 +354,9 @@ def generate_markdown_report(results: dict, output_path: Path, params: dict) -> 
     lines.append(f"- **OOD calibration** : {params['ood_calibration_mode']} (p = {params['ood_percentile']})")
     lines.append(f"- **Max train sentences / dataset** : {params['max_train']}")
     lines.append(f"- **Max eval sentences / dataset** : {params['max_eval']}")
-    lines.append(f"- **Anchor words** : générés automatiquement depuis le nom du label")
+    _anchor_desc = ("curés (dictionnaire) avec fallback auto" if params.get('anchor_mode') == 'dict'
+                    else "générés automatiquement depuis le nom du label")
+    lines.append(f"- **Anchor words** : {_anchor_desc}  (mode = `{params.get('anchor_mode', 'auto')}`)")
     lines.append(f"- **n_components / GMM** : 2")
     lines.append("")
     lines.append("## Setting (important)")
@@ -333,14 +374,16 @@ def generate_markdown_report(results: dict, output_path: Path, params: dict) -> 
     lines.append("")
     lines.append("## Résultats")
     lines.append("")
-    lines.append("| Dataset | n_test_spans | n_labels | AMI (avec OOD) | AMI (best, no OOD) | Acc in-schema | OOD rate | Temps (s) |")
-    lines.append("|---|---:|---:|---:|---:|---:|---:|---:|")
+    lines.append("| Dataset | n_test_spans | n_labels | curated/auto | AMI (avec OOD) | AMI (best, no OOD) | Acc in-schema | OOD rate | Temps (s) |")
+    lines.append("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
     for name, r in results.items():
         if r.get('status') != 'ok':
-            lines.append(f"| {name} | — | — | **{r.get('status','?')}** | — | — | — | — |")
+            lines.append(f"| {name} | — | — | — | **{r.get('status','?')}** | — | — | — | — |")
             continue
+        n_cur = r.get('n_curated_anchors', 0)
         lines.append(
             f"| {name} | {r['n_eval_spans']} | {r['n_eval_labels']} | "
+            f"{n_cur}/{r['n_train_labels']} | "
             f"{r['ami_with_ood']:.4f} | {r['ami_best_label_no_ood']:.4f} | "
             f"{r['accuracy_in_schema']:.4f} | {r['ood_rate']:.4f} | {r['elapsed_seconds']:.1f} |"
         )
@@ -409,18 +452,55 @@ def main():
     parser.add_argument('--max-eval', type=int, default=1000)
     parser.add_argument('--batch-size', type=int, default=64)
     parser.add_argument('--output-dir', default='outputs/results/owner_benchmark')
+    parser.add_argument('--anchor-mode', choices=['auto', 'dict'], default='auto',
+                        help="'auto' : anchors générés depuis le label name ; "
+                             "'dict' : anchors curés depuis --anchor-dict (fallback auto)")
+    parser.add_argument('--anchor-dict', default='configs/anchor_dictionaries.yaml',
+                        help='Fichier YAML des anchor words curés par dataset')
+    parser.add_argument('--truncate-dim', type=int, default=None,
+                        help='Override embedding.truncate_dim du config. 0 = dim native (pas de troncature)')
+    parser.add_argument('--embedder', default=None,
+                        help='Override du modèle d\'embedding (pour comparer E5/BGE/MPNet/mxbai…)')
+    parser.add_argument('--task-prefix', default=None,
+                        help="Override du préfixe de tâche. 'NONE' = aucun préfixe. "
+                             "Par défaut : préfixe recommandé par famille de modèle.")
     args = parser.parse_args()
 
     opener_cfg = load_config(args.config)
     emb_cfg = opener_cfg['embedding']
     clu_cfg = opener_cfg['clustering']
 
-    print(f"Chargement de l'embedder {emb_cfg['model']} (truncate_dim={emb_cfg.get('truncate_dim')})...")
+    # Modèle d'embedding (override possible pour comparaison)
+    model_name = args.embedder or emb_cfg['model']
+
+    # Préfixe de tâche : flag explicite > recommandé par famille (si modèle override) > config
+    if args.task_prefix is not None:
+        task_prefix = '' if args.task_prefix == 'NONE' else args.task_prefix
+    elif args.embedder:
+        task_prefix = _default_task_prefix(model_name)
+    else:
+        task_prefix = emb_cfg.get('task_prefix', 'classification: ')
+
+    # Dimension : override possible ; 0 → None (dim native, pour modèles non-Matryoshka)
+    trunc_dim = args.truncate_dim if args.truncate_dim is not None else emb_cfg.get('truncate_dim')
+    if trunc_dim == 0:
+        trunc_dim = None
+
+    # Dictionnaire d'anchor words curés (si mode 'dict')
+    anchor_dicts = {}
+    if args.anchor_mode == 'dict':
+        anchor_dicts = load_config(args.anchor_dict) or {}
+        print(f"Mode anchor = 'dict' : dictionnaire chargé depuis {args.anchor_dict} "
+              f"({len(anchor_dicts)} datasets curés)")
+    else:
+        print("Mode anchor = 'auto' : anchors générés depuis le nom du label")
+
+    print(f"Chargement de l'embedder {model_name} (truncate_dim={trunc_dim}, task_prefix={task_prefix!r})...")
     embedder = Embedder(
-        model_name=emb_cfg['model'],
-        truncate_dim=emb_cfg.get('truncate_dim'),
+        model_name=model_name,
+        truncate_dim=trunc_dim,
         encoding_mode=emb_cfg.get('encoding_mode', 'span_in_context'),
-        task_prefix=emb_cfg.get('task_prefix', 'classification: '),
+        task_prefix=task_prefix,
     )
 
     datasets = args.datasets or list_supported_datasets()
@@ -434,29 +514,35 @@ def main():
                 max_train=args.max_train,
                 max_eval=args.max_eval,
                 batch_size=args.batch_size,
+                anchor_overrides=anchor_dicts.get(name),
             )
         except Exception as e:
             results[name] = {'status': 'crashed', 'error': repr(e)[:300]}
             print(f"  CRASHED: {e!r}")
 
-    # Sauvegarde rapport .md daté
+    # Sauvegarde rapport .md daté (modèle + dim + mode anchor dans le nom)
     now = datetime.now()
     date_str = now.strftime('%Y-%m-%d_%H%M%S')
-    output_md = Path(args.output_dir) / f"benchmark_{date_str}.md"
+    model_slug = model_name.split('/')[-1].replace('.', '-')
+    dim_tag = f"dim{trunc_dim}" if trunc_dim else "dimnative"
+    stem = f"benchmark_{model_slug}_{dim_tag}_{args.anchor_mode}_{date_str}"
+    output_md = Path(args.output_dir) / f"{stem}.md"
     params = {
-        'embedder_model': emb_cfg['model'],
-        'truncate_dim': emb_cfg.get('truncate_dim'),
+        'embedder_model': model_name,
+        'truncate_dim': trunc_dim,
+        'task_prefix': task_prefix,
         'encoding_mode': emb_cfg.get('encoding_mode'),
         'covariance_type': clu_cfg.get('covariance_type'),
         'ood_calibration_mode': clu_cfg.get('ood_calibration_mode'),
         'ood_percentile': clu_cfg.get('ood_percentile'),
+        'anchor_mode': args.anchor_mode,
         'max_train': args.max_train,
         'max_eval': args.max_eval,
     }
     generate_markdown_report(results, output_md, params)
 
     # Sauvegarde aussi en JSON pour exploitation ultérieure
-    output_json = Path(args.output_dir) / f"benchmark_{date_str}.json"
+    output_json = Path(args.output_dir) / f"{stem}.json"
     with open(output_json, 'w', encoding='utf-8') as f:
         json.dump({'params': params, 'results': results}, f, indent=2, ensure_ascii=False)
     print(f"JSON écrit dans {output_json}")

@@ -15,7 +15,9 @@ mention_detection:
 
 embedding:
   model: nomic-ai/nomic-embed-text-v1.5
-  truncate_dim: 256
+  truncate_dim: 768                   # dim native : meilleur AMI sur 5/6 datasets
+                                      # (sweep 2026-05-29). L'embedding coûte pareil
+                                      # à toute dim — tronquer ne fait gagner que stockage + fit GMM.
   encoding_mode: span_in_context
   task_prefix: "classification: "
 

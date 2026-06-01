@@ -133,7 +133,48 @@ Benchmark on **CoNLL-2003** (5000 train / 2000 eval sentences, Nomic 256-dim, su
 - `ood_calibration_mode` = per_label_percentile
 - `ood_percentile` = 5.0
 
-> A polished SVG version of this diagram is on the roadmap — drop the file in `img/architecture.svg` and replace the ASCII block above.
+And the same pipeline as a polished figure:
+
+![Opener architecture diagram](assets/opener-architecture.svg)
+
+---
+
+## 🔬 Roadmap & Experiments
+
+Five axes to push Opener from "frozen embedding + GMM" toward a competitive open-world system:
+
+![Opener improvement roadmap](assets/opener-roadmap.svg)
+
+  🪆 **1 · Matryoshka dimension sweep** — benchmark 64 / 128 / 256 / 512 / 768 dims and find the quality ↔ speed ↔ CO₂ sweet spot.
+
+  🧲 **2 · Enriched anchor words** — expand opaque abbreviations (e.g. `ECE → École Centrale d'Électronique`) via dictionaries or an LLM, so each GMM centroid starts near its optimal bubble.
+
+  🧩 **3 · Swappable bricks** — try alternative models per stage: Mention Detection (GLiNER / BERT-NER / spaCy), Embedding (Nomic / E5 / BGE / GTE / Jina), Clustering (GMM / Bayesian GMM / k-means / HDBSCAN).
+
+  📊 **4 · Metrics battery** — classic (Precision / Recall / F1 / relaxed F1) plus clustering quality (silhouette, AMI/ARI, inter-bubble separation), cluster stability, open-world rates (invention / rejection / OOD recall), few-shot F1-vs-N curve, cross-domain drop, cost & frugality (latency, CodeCarbon), and LLM-as-a-judge for hierarchy quality.
+
+  🌍 **5 · Per-domain analysis** — where Opener is strong (rich semantic labels like CrossNER's `academicjournal`) vs weak (opaque acronyms like FabNER's `APPL`). Axis 2 directly unlocks axis 5.
+
+---
+
+## 📚 Benchmark Datasets
+
+The benchmark ([`scripts/run_owner_benchmark.py`](scripts/run_owner_benchmark.py)) reu  ses the test sets from the **OWNER** paper. They span very different domains, text styles and label granularities — which is exactly what stresses an open-world NER system.
+
+| Dataset | Domain / theme | Text style | Example entity types | # types | HF source |
+|---|---|---|---|---:|---|
+| **CrossNER** | Cross-domain: AI, literature, music, politics, science (merged) | Wikipedia-style encyclopedic | `academicjournal`, `chemicalcompound`, `musicalartist`, `politician`, `astronomicalobject` | 39 | `P3ps/Cross_ner` |
+| **CoNLL-2003** | General news | Reuters newswire | `PER`, `ORG`, `LOC`, `MISC` | 4 | `eriktks/conll2003` |
+| **BioNLP-2004** | Biomedical / molecular biology | PubMed abstracts | `protein`, `DNA`, `RNA`, `cell_type`, `cell_line` | 5 | `tner/bionlp2004` |
+| **MIT-Restaurant** | Restaurant search | Spoken-style queries | `Cuisine`, `Dish`, `Amenity`, `Hours`, `Price`, `Rating`, `Location` | 8 | `tner/mit_restaurant` |
+| **WNUT 17** | Social media / emerging entities | Noisy user-generated (tweets, forums) | `person`, `location`, `group`, `corporation`, `creative-work`, `product` | 6 | `wnut_17` |
+| **FabNER** | Manufacturing process science | Scientific papers (manufacturing) | opaque acronyms: `MATE` (material), `MANP` (manuf. process), `MACEQ` (machine/equipment), `APPL`, `FEAT`, `PARA` … | 12 | `DFKI-SLT/fabner` |
+
+**Reading the table:**
+- **Rich, self-explanatory labels** (CrossNER) → anchor words are real dictionary words the embedder understands → Opener does well (AMI 39.3).
+- **Opaque acronym labels** (FabNER) → anchor words are meaningless to the embedder → Opener struggles (AMI 8.8). This is the gap that **axis 2 (enriched anchor words)** is meant to close.
+
+> **Not yet covered**: GENIA and i2b2 (license-gated), GENTLE and GUM (not on HF Hub as Parquet). CrossNER's five sub-domains are merged here (the `P3ps/Cross_ner` mirror does not carry the sub-domain split), so the score is not directly comparable to the paper's per-sub-domain figures.
 
 ---
 
@@ -170,7 +211,7 @@ LyRIDS_Opener/
 │   ├── models/conll/                # fitted GMMs (joblib)
 │   └── results/conll/               # JSON eval reports
 │
-├── img/                             # README assets
+├── assets/                             # README assets
 │
 ├── README.md
 ├── CLAUDE.md                        # project notes for Claude Code

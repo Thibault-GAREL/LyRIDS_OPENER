@@ -9,7 +9,8 @@ mention_detection:
 
 embedding:
   model: nomic-ai/nomic-embed-text-v1.5
-  truncate_dim: 256                   # Matryoshka : 64 / 128 / 256 / 512 / 768
+  truncate_dim: 768                   # Matryoshka : 64 / 128 / 256 / 512 / 768
+                                      # 768 = meilleur AMI (sweep 2026-05-29) ; coût embedding identique à toute dim
   encoding_mode: span_in_context      # 'span' ou 'span_in_context'
   task_prefix: "classification: "     # Nomic v1.5 attend un préfix de tâche
 
