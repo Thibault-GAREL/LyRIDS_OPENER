@@ -117,6 +117,13 @@ _DATASET_SPECS = {
         'tag_col': 'ner_tags',
         'source': 'classlabel',
     },
+    # ----- CrossNER par sous-domaine (téléchargé depuis github.com/zliucr/CrossNER) -----
+    # Permet la comparaison directe avec les 5 colonnes du papier OWNER Table 1.
+    'crossner_ai':         {'source': 'crossner_raw', 'subdomain': 'ai'},
+    'crossner_literature': {'source': 'crossner_raw', 'subdomain': 'literature'},
+    'crossner_music':      {'source': 'crossner_raw', 'subdomain': 'music'},
+    'crossner_politics':   {'source': 'crossner_raw', 'subdomain': 'politics'},
+    'crossner_science':    {'source': 'crossner_raw', 'subdomain': 'science'},
 }
 
 
@@ -142,6 +149,13 @@ def load_owner_dataset(
     if name not in _DATASET_SPECS:
         raise KeyError(f"Dataset {name!r} non supporté. Voir list_supported_datasets().")
     spec = _DATASET_SPECS[name]
+
+    # CrossNER par sous-domaine : délégué au crossner_loader (téléchargé depuis GitHub).
+    if spec.get('source') == 'crossner_raw':
+        from src.data.crossner_loader import load_crossner_subdomain
+        return load_crossner_subdomain(
+            spec['subdomain'], split=split, max_sentences=max_sentences,
+        )
 
     from datasets import load_dataset
 
