@@ -21,7 +21,7 @@
 **Opener** is an **open-world NER** system that combines three off-the-shelf building blocks rather than training a custom encoder:
 
 1. **Mention Detection** via a pre-trained zero-shot model ([GLiNER](https://github.com/urchade/GLiNER)) — *no training needed* for this stage.
-2. **Embedding** via a **Matryoshka model** ([Nomic v1.5](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5)) — truncatable from 768 → 64 dims to trade quality for speed.
+2. **Embedding** via a **Matryoshka model** ([Nomic v1.5](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5)) — truncatable from 768 dims (maximum performance) down to 64 dims to trade quality for speed.
 3. **Entity Typing** with **one Gaussian Mixture Model per label**, initialized on the embedding of user-provided **anchor words** (e.g. centroid of `person` = embedding of `["person", "individual", "human"]`).
 
 This setup lets you **declare new labels in a YAML file** instead of fine-tuning a model. Bubbles can overlap → a **hierarchy** (`person` ⊃ `scientist`) is inferred automatically from spatial inclusion. Entities far from every bubble are flagged **OOD** ("out-of-distribution") — useful to detect concepts the system doesn't yet know about.

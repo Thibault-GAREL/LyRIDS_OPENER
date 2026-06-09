@@ -11,9 +11,9 @@ Document de pilotage du projet. À lire **avant** toute intervention sur le repo
 Approche NER ouverte qui combine :
 1. **Mention Detection** déléguée à un modèle pré-entraîné (GLiNER) — pas d'entraînement de MD.
 2. **Embedding** des entités via un modèle **Matryoshka** (Nomic v1.5) — dim troncable de 768 à 64.
-3. **Entity Typing par GMM** : un GMM par label, initialisé sur l'embedding d'**anchor words** (ex. "person", "scientist") pour avoir un bon point de départ.
-4. **Hiérarchie inférée a posteriori** : si la bulle "scientist" est contenue dans "person", on en déduit la relation parent/enfant.
-5. **Détection OOD** : un embedding éloigné de tous les GMMs → marqué "inconnu", candidat pour entraînement futur.
+3. **Entity Typing par GMM** : un GMM par label, initialisé sur l'embedding d'**anchor words** (ex. "person", "scientist") pour avoir un bon point de départ. Maintenant, on a vu que c'est SVM-balanced + un embedding qui a été entrainné sur du contrastive learning.
+4. **Hiérarchie inférée a posteriori** : si la bulle "scientist" est contenue dans "person", on en déduit la relation parent/enfant.  Pour le premier papier, on laisse cette idée de côté !
+5. **Détection OOD** : un embedding éloigné de tous les GMMs → marqué "inconnu", candidat pour entraînement futur. Pour le premier papier, on laisse cette idée de côté !
 
 **Différence clé avec OWNER** : OWNER apprend un encodeur d'entités via Triplet Loss + clustering K-means non-supervisé. Opener part d'un embedding pré-entraîné et utilise des GMMs **semi-supervisés** (init sur anchor words), sans réentraîner l'embedding lui-même.
 

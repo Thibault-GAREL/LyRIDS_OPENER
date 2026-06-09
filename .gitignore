@@ -1,8 +1,12 @@
 # Données (volumineuses, à reproduire localement)
 data/1-raw/*
 data/2-processed/*
+data/gum_raw/*
+data/crossner_raw/*
 !data/1-raw/.gitkeep
 !data/2-processed/.gitkeep
+!data/gum_raw/.gitkeep
+!data/crossner_raw/.gitkeep
 !data/1-raw/*.py
 !data/2-processed/*.py
 

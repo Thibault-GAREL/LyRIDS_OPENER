@@ -70,6 +70,19 @@ _TNER_LABEL_MAPS = {
         'B-cell_type', 'I-cell_type', 'B-cell_line', 'I-cell_line',
         'B-RNA', 'I-RNA',
     ],
+    # MIT-Movie trivia : 25 IDs. Mapping standard tner (asahi417/tner Python lib).
+    # Convention bizarre : I- tags numérotés en premier, puis B-.
+    'tner/mit_movie_trivia': [
+        'O',
+        'I-ACTOR', 'I-YEAR', 'I-TITLE', 'I-GENRE',
+        'I-DIRECTOR', 'I-SONG', 'I-PLOT', 'I-REVIEW',
+        'I-CHARACTER', 'I-RATING', 'I-RATINGS_AVERAGE',
+        'I-TRAILER',
+        'B-ACTOR', 'B-YEAR', 'B-TITLE', 'B-GENRE',
+        'B-DIRECTOR', 'B-SONG', 'B-PLOT', 'B-REVIEW',
+        'B-CHARACTER', 'B-RATING', 'B-RATINGS_AVERAGE',
+        'B-TRAILER',
+    ],
 }
 
 
@@ -124,6 +137,16 @@ _DATASET_SPECS = {
     'crossner_music':      {'source': 'crossner_raw', 'subdomain': 'music'},
     'crossner_politics':   {'source': 'crossner_raw', 'subdomain': 'politics'},
     'crossner_science':    {'source': 'crossner_raw', 'subdomain': 'science'},
+    # ----- MIT-Movie (tner mirror avec mapping hardcodé) -----
+    'mit_movie': {
+        'hf': 'tner/mit_movie_trivia',
+        'token_col': 'tokens',
+        'tag_col': 'tags',
+        'source': 'tner_static',
+    },
+    # ----- GUM + GENTLE (téléchargés depuis github.com/amir-zeldes/gum, CC BY-SA) -----
+    'gum':    {'source': 'gum_raw', 'subcorpus': 'gum'},
+    'gentle': {'source': 'gum_raw', 'subcorpus': 'gentle'},
 }
 
 
@@ -156,6 +179,12 @@ def load_owner_dataset(
         return load_crossner_subdomain(
             spec['subdomain'], split=split, max_sentences=max_sentences,
         )
+
+    # GUM / GENTLE : délégué au gum_loader (CC BY-SA, github.com/amir-zeldes/gum).
+    if spec.get('source') == 'gum_raw':
+        from src.data.gum_loader import load_gum, load_gentle
+        loader = load_gentle if spec['subcorpus'] == 'gentle' else load_gum
+        return loader(split=split, max_sentences=max_sentences)
 
     from datasets import load_dataset
 
