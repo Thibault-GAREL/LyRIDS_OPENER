@@ -1,0 +1,154 @@
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Embedder       : outputs/models/embedder_contrastive
+MD (GLiNER)    : urchade/gliner_large-v2.1  (threshold=0.3)
+Loading GLiNER urchade/gliner_large-v2.1 on cuda...
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<?, ?it/s]
+<All keys matched successfully>
+Datasets : ['crossner_ai', 'crossner_literature', 'crossner_music', 'crossner_politics', 'crossner_science', 'wnut17', 'mit_restaurant', 'mit_movie', 'fabner', 'bionlp2004', 'conll2003', 'gum', 'gentle']
+
+=== crossner_ai ===
+  100 train / 430 test sentences, 14 labels
+  fit : train embeddings (532, 768), 14 classes
+  MD recall (offset) : 1356/1809 = 0.750  (2038 spans prédits)
+    logreg                 AMI=0.2491  acc=0.1204  macro_f1=0.0819
+    logreg_balanced        AMI=0.3537  acc=0.3300  macro_f1=0.3415
+    linear_svm             AMI=0.3402  acc=0.2927  macro_f1=0.2779
+    linear_svm_balanced    AMI=0.3907  acc=0.3613  macro_f1=0.3549
+  energy : {'kwh': 0.000863, 'gco2eq': 0.0484, 'seconds': 49.1, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=104.8ms/phrase  thrpt=8.8 sent/s
+
+=== crossner_literature ===
+  100 train / 416 test sentences, 12 labels
+  fit : train embeddings (541, 768), 12 classes
+  MD recall (offset) : 1833/2266 = 0.809  (2467 spans prédits)
+    logreg                 AMI=0.2897  acc=0.2876  macro_f1=0.0739
+    logreg_balanced        AMI=0.3414  acc=0.3238  macro_f1=0.2931
+    linear_svm             AMI=0.3569  acc=0.3966  macro_f1=0.2687
+    linear_svm_balanced    AMI=0.3927  acc=0.4203  macro_f1=0.3650
+  energy : {'kwh': 0.002163, 'gco2eq': 0.1212, 'seconds': 212.16, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=518.7ms/phrase  thrpt=2.0 sent/s
+
+=== crossner_music ===
+  100 train / 465 test sentences, 13 labels
+  fit : train embeddings (648, 768), 13 classes
+  MD recall (offset) : 2837/3336 = 0.850  (3568 spans prédits)
+    logreg                 AMI=0.3057  acc=0.2951  macro_f1=0.1427
+    logreg_balanced        AMI=0.4369  acc=0.3809  macro_f1=0.3499
+    linear_svm             AMI=0.4489  acc=0.4647  macro_f1=0.2847
+    linear_svm_balanced    AMI=0.4924  acc=0.5343  macro_f1=0.4524
+  energy : {'kwh': 0.022764, 'gco2eq': 1.2757, 'seconds': 2194.44, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=246.9ms/phrase  thrpt=0.2 sent/s
+
+=== crossner_politics ===
+  200 train / 651 test sentences, 9 labels
+  fit : train embeddings (1304, 768), 9 classes
+  MD recall (offset) : 3230/4209 = 0.767  (4491 spans prédits)
+    logreg                 AMI=0.4048  acc=0.3380  macro_f1=0.2056
+    logreg_balanced        AMI=0.4175  acc=0.3601  macro_f1=0.2983
+    linear_svm             AMI=0.4307  acc=0.3740  macro_f1=0.2440
+    linear_svm_balanced    AMI=0.4424  acc=0.3978  macro_f1=0.2997
+  energy : {'kwh': 0.00189, 'gco2eq': 0.1059, 'seconds': 109.42, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=153.0ms/phrase  thrpt=6.0 sent/s
+
+=== crossner_science ===
+  200 train / 543 test sentences, 17 labels
+  fit : train embeddings (1075, 768), 17 classes
+  MD recall (offset) : 2517/3089 = 0.815  (3620 spans prédits)
+    logreg                 AMI=0.3635  acc=0.2667  macro_f1=0.1228
+    logreg_balanced        AMI=0.4090  acc=0.3454  macro_f1=0.3407
+    linear_svm             AMI=0.4442  acc=0.3855  macro_f1=0.2577
+    linear_svm_balanced    AMI=0.4775  acc=0.4625  macro_f1=0.4669
+  energy : {'kwh': 0.002206, 'gco2eq': 0.1236, 'seconds': 129.89, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=227.3ms/phrase  thrpt=4.2 sent/s
+
+=== wnut17 ===
+  1228 train / 689 test sentences, 6 labels
+  fit : train embeddings (1975, 768), 6 classes
+  MD recall (offset) : 710/1079 = 0.658  (1483 spans prédits)
+    logreg                 AMI=0.2199  acc=0.2522  macro_f1=0.1661
+    logreg_balanced        AMI=0.2434  acc=0.2862  macro_f1=0.2607
+    linear_svm             AMI=0.2347  acc=0.2808  macro_f1=0.2460
+    linear_svm_balanced    AMI=0.2480  acc=0.2954  macro_f1=0.2714
+  energy : {'kwh': 0.001267, 'gco2eq': 0.071, 'seconds': 77.63, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=102.8ms/phrase  thrpt=8.9 sent/s
+
+=== mit_restaurant ===
+  2000 train / 1000 test sentences, 8 labels
+  fit : train embeddings (4525, 768), 8 classes
+  MD recall (offset) : 1072/2503 = 0.428  (2050 spans prédits)
+    logreg                 AMI=0.2548  acc=0.1994  macro_f1=0.1636
+    logreg_balanced        AMI=0.2792  acc=0.2246  macro_f1=0.2325
+    linear_svm             AMI=0.3050  acc=0.2439  macro_f1=0.2497
+    linear_svm_balanced    AMI=0.3065  acc=0.2473  macro_f1=0.2588
+  energy : {'kwh': 0.001663, 'gco2eq': 0.0932, 'seconds': 102.0, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=96.9ms/phrase  thrpt=9.8 sent/s
+
+=== mit_movie ===
+  2000 train / 1000 test sentences, 12 labels
+  fit : train embeddings (10419, 768), 12 classes
+  MD recall (offset) : 734/5224 = 0.141  (4022 spans prédits)
+    logreg                 AMI=0.3758  acc=0.0580  macro_f1=0.0751
+    logreg_balanced        AMI=0.3633  acc=0.0590  macro_f1=0.0960
+    linear_svm             AMI=0.3750  acc=0.0604  macro_f1=0.0953
+    linear_svm_balanced    AMI=0.3672  acc=0.0630  macro_f1=0.1033
+  energy : {'kwh': 0.002062, 'gco2eq': 0.1156, 'seconds': 124.3, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=110.6ms/phrase  thrpt=8.1 sent/s
+
+=== fabner ===
+  2000 train / 1000 test sentences, 12 labels
+  fit : train embeddings (9670, 768), 12 classes
+  MD recall (offset) : 417/4452 = 0.094  (1955 spans prédits)
+    logreg                 AMI=0.3030  acc=0.0312  macro_f1=0.0229
+    logreg_balanced        AMI=0.2797  acc=0.0299  macro_f1=0.0347
+    linear_svm             AMI=0.2964  acc=0.0349  macro_f1=0.0304
+    linear_svm_balanced    AMI=0.2827  acc=0.0361  macro_f1=0.0544
+  energy : {'kwh': 0.001663, 'gco2eq': 0.0932, 'seconds': 96.95, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=95.9ms/phrase  thrpt=10.3 sent/s
+
+=== bionlp2004 ===
+  2000 train / 1000 test sentences, 5 labels
+  fit : train embeddings (6275, 768), 5 classes
+  MD recall (offset) : 1769/2430 = 0.728  (2818 spans prédits)
+    logreg                 AMI=0.1788  acc=0.3521  macro_f1=0.1730
+    logreg_balanced        AMI=0.2811  acc=0.4085  macro_f1=0.3175
+    linear_svm             AMI=0.2826  acc=0.4217  macro_f1=0.2975
+    linear_svm_balanced    AMI=0.3141  acc=0.4406  macro_f1=0.3720
+  energy : {'kwh': 0.002079, 'gco2eq': 0.1165, 'seconds': 126.42, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=119.1ms/phrase  thrpt=7.9 sent/s
+
+=== conll2003 ===
+  2000 train / 1000 test sentences, 4 labels
+  fit : train embeddings (4495, 768), 4 classes
+  MD recall (offset) : 857/2180 = 0.393  (1924 spans prédits)
+    logreg                 AMI=0.3861  acc=0.2359  macro_f1=0.2182
+    logreg_balanced        AMI=0.3921  acc=0.2341  macro_f1=0.2238
+    linear_svm             AMI=0.3919  acc=0.2371  macro_f1=0.2211
+    linear_svm_balanced    AMI=0.3938  acc=0.2368  macro_f1=0.2238
+  energy : {'kwh': 0.001704, 'gco2eq': 0.0955, 'seconds': 107.86, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=100.1ms/phrase  thrpt=9.3 sent/s
+
+=== gum ===
+  2000 train / 1000 test sentences, 10 labels
+  fit : train embeddings (7371, 768), 10 classes
+  MD recall (offset) : 738/3631 = 0.203  (4314 spans prédits)
+    logreg                 AMI=0.3433  acc=0.0648  macro_f1=0.0770
+    logreg_balanced        AMI=0.3071  acc=0.0697  macro_f1=0.0944
+    linear_svm             AMI=0.3414  acc=0.0795  macro_f1=0.0958
+    linear_svm_balanced    AMI=0.3251  acc=0.0816  macro_f1=0.1094
+  energy : {'kwh': 0.001929, 'gco2eq': 0.1081, 'seconds': 112.53, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=104.5ms/phrase  thrpt=8.9 sent/s
+
+=== gentle ===
+  2000 train / 1000 test sentences, 10 labels
+  fit : train embeddings (7371, 768), 10 classes
+  MD recall (offset) : 652/2711 = 0.241  (3583 spans prédits)
+    logreg                 AMI=0.3518  acc=0.0720  macro_f1=0.0703
+    logreg_balanced        AMI=0.3035  acc=0.0619  macro_f1=0.1031
+    linear_svm             AMI=0.3519  acc=0.0883  macro_f1=0.1066
+    linear_svm_balanced    AMI=0.3252  acc=0.0867  macro_f1=0.1247
+  energy : {'kwh': 0.001819, 'gco2eq': 0.1019, 'seconds': 109.36, 'country': 'FRA', 'method': 'codecarbon'}
+  timing : p50=100.9ms/phrase  thrpt=9.2 sent/s
+
+Rapport : outputs\results\opener_e2e\SUMMARY_opener_e2e_2026-06-09_154507.md
+Moyennes AMI : {'logreg': 0.3097, 'logreg_balanced': 0.3391, 'linear_svm': 0.3538, 'linear_svm_balanced': 0.366}
