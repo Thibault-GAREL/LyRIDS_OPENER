@@ -329,7 +329,34 @@ def main():
     parser.add_argument('--dtype', default='float32',
                         choices=['bfloat16', 'float16', 'float32'])
     parser.add_argument('--output-dir', default='outputs/results/baselines/gner')
+    parser.add_argument('--resume', action='store_true',
+                        help='Reprend : saute les datasets deja presents (status ok) '
+                             'dans gner_progress.json.')
     args = parser.parse_args()
+
+    out_dir = Path(args.output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    # Fichier de progression a nom FIXE : ecrit apres chaque dataset (robuste a
+    # une interruption) et relu par --resume.
+    progress_json = out_dir / 'gner_progress.json'
+
+    results = {}
+    if args.resume and progress_json.exists():
+        try:
+            prev = json.loads(progress_json.read_text(encoding='utf-8'))
+            results = prev.get('results', {})
+            done = [k for k, v in results.items() if 'ami' in v]
+            print(f"[resume] {len(done)} datasets deja faits : {done}")
+        except Exception as e:
+            print(f"[resume] lecture impossible ({e!r}), on repart de zero.")
+
+    def _flush():
+        progress_json.write_text(json.dumps(
+            {'params': vars(args), 'results': results},
+            indent=2, ensure_ascii=False), encoding='utf-8')
+
+    datasets = args.datasets or _DEFAULT_DATASETS
+    print(f"Datasets : {datasets}")
 
     print(f"Loading GNER from {args.checkpoint}...")
     import torch
@@ -343,11 +370,10 @@ def main():
     model = model.to(device).eval()
     print(f"Loaded on {device} ({args.dtype})")
 
-    datasets = args.datasets or _DEFAULT_DATASETS
-    print(f"Datasets : {datasets}")
-
-    results = {}
     for name in datasets:
+        if args.resume and name in results and 'ami' in results[name]:
+            print(f"=== {name} === [skip: deja fait]")
+            continue
         try:
             results[name] = run_dataset(
                 model, tokenizer, name, args.max_test, device,
@@ -359,9 +385,9 @@ def main():
             print(f"  CRASH on {name}: {e!r}")
             traceback.print_exc()
             results[name] = {'status': 'crashed', 'error': repr(e)[:300]}
+        _flush()  # sauvegarde incrementale apres CHAQUE dataset
 
-    out_dir = Path(args.output_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
+    # Copie finale horodatee (snapshot immuable du run complet)
     date_str = datetime.now().strftime('%Y-%m-%d_%H%M%S')
     out_json = out_dir / f'gner_{date_str}.json'
     out_json.write_text(json.dumps({
@@ -369,6 +395,7 @@ def main():
         'results': results,
     }, indent=2, ensure_ascii=False), encoding='utf-8')
     print(f"\nJSON : {out_json}")
+    print(f"Progress : {progress_json}")
 
 
 if __name__ == '__main__':
