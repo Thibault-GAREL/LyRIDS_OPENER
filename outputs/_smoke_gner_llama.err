@@ -1,0 +1,23 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\file_download.py:138: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in D:\hf_cache\hub\models--dyyyyyyyy--GNER-LLaMA-7B. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+Fetching 2 files:  50%|█████     | 1/2 [08:47<08:47, 527.53s/it]Fetching 2 files: 100%|██████████| 2/2 [08:47<00:00, 263.77s/it]
+Traceback (most recent call last):
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\garel\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "D:\Loisir\Code_python\LyRIDS_Opener\scripts\baselines\run_llm_int4.py", line 402, in <module>
+    main()
+  File "D:\Loisir\Code_python\LyRIDS_Opener\scripts\baselines\run_llm_int4.py", line 361, in main
+    model, tokenizer = load_int4_model(adapter.checkpoint)
+  File "D:\Loisir\Code_python\LyRIDS_Opener\scripts\baselines\run_llm_int4.py", line 302, in load_int4_model
+    model = AutoModelForCausalLM.from_pretrained(
+  File "C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\transformers\models\auto\auto_factory.py", line 374, in from_pretrained
+    return model_class.from_pretrained(
+  File "C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\transformers\modeling_utils.py", line 4063, in from_pretrained
+    loading_info, disk_offload_index = cls._load_pretrained_model(model, state_dict, checkpoint_files, load_config)
+  File "C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\transformers\modeling_utils.py", line 4170, in _load_pretrained_model
+    file_pointer = safe_open(file, framework="pt", device="cpu")
+OSError: Le fichier de pagination est insuffisant pour terminer cette opération. (os error 1455)

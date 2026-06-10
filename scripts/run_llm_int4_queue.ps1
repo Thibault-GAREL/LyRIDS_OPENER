@@ -27,7 +27,7 @@ Log "QUEUE LLM int4 START (pid=$PID, max_eval=$maxEval)"
 foreach ($m in $models) {
     Log "$m : start"
     & $py -u -m scripts.baselines.run_llm_int4 `
-        --model $m --max-eval $maxEval --resume `
+        --model $m --max-eval $maxEval --resume --purge-cache `
         *> (Join-Path $logdir "${m}_$ts.log")
     Log "$m : done (exit=$LASTEXITCODE)"
 }

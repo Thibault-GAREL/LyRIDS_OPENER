@@ -29,6 +29,7 @@ Lancer en process détaché (cf. scripts/run_baselines_queue.ps1).
 """
 import argparse
 import json
+import os
 import re
 from datetime import datetime
 from pathlib import Path
@@ -266,6 +267,26 @@ _DEFAULT_DATASETS = [
 ]
 
 
+def purge_model_cache(checkpoint):
+    """Supprime les poids du modèle du cache HF (API officielle huggingface_hub).
+
+    Évite l'accumulation disque (chaque 7B ~13 Go). Appelé en fin de run si
+    --purge-cache. N'utilise PAS Remove-Item (bloqué par hook PowerShell)."""
+    try:
+        from huggingface_hub import scan_cache_dir
+        cache = scan_cache_dir()
+        hashes = [r.commit_hash for repo in cache.repos
+                  if repo.repo_id == checkpoint for r in repo.revisions]
+        if hashes:
+            freed = cache.delete_revisions(*hashes).execute()
+            print(f"[purge] {checkpoint} supprimé du cache "
+                  f"({len(hashes)} révision(s)).")
+        else:
+            print(f"[purge] rien à supprimer pour {checkpoint}.")
+    except Exception as e:
+        print(f"[purge] échec ({e!r}) — à nettoyer manuellement si besoin.")
+
+
 def load_int4_model(checkpoint):
     import torch
     from transformers import (AutoModelForCausalLM, AutoTokenizer,
@@ -278,9 +299,15 @@ def load_int4_model(checkpoint):
     tok = AutoTokenizer.from_pretrained(checkpoint, trust_remote_code=True)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
+    # Anti-pic-RAM au chargement (machine 16 Go) : low_cpu_mem_usage charge
+    # shard par shard, offload_state_dict ecrit le reste sur disque au lieu de
+    # saturer la RAM. Le modele int4 final (~4 Go) tient sur le GPU 6 Go.
+    offload_dir = os.path.join(os.environ.get('HF_HOME', '.'), 'offload')
+    os.makedirs(offload_dir, exist_ok=True)
     model = AutoModelForCausalLM.from_pretrained(
         checkpoint, quantization_config=bnb, device_map='auto',
-        trust_remote_code=True)
+        trust_remote_code=True, low_cpu_mem_usage=True,
+        offload_state_dict=True, offload_folder=offload_dir)
     model.eval()
     return model, tok
 
@@ -297,7 +324,26 @@ def main():
                         help='Défaut : outputs/results/baselines/<model>')
     parser.add_argument('--resume', action='store_true',
                         help='Saute les datasets déjà présents (status ok).')
+    parser.add_argument('--purge-cache', action='store_true',
+                        help='Supprime les poids du modèle du cache HF en fin de '
+                             'run (évite ~13 Go/modèle qui s accumulent).')
+    parser.add_argument('--hf-cache', default=None,
+                        help='Répertoire cache HF pour CE run (ex: D:\\hf_cache). '
+                             'Redirige modèles + datasets si C: est plein.')
     args = parser.parse_args()
+
+    # Downloader classique (robuste) plutot que hf_xet : ce dernier peut crasher
+    # SILENCIEUSEMENT (sortie sans traceback) sur un partiel corrompu ou un
+    # reseau instable. Le classique donne aussi de vraies barres de progression.
+    os.environ.setdefault('HF_HUB_DISABLE_XET', '1')
+
+    # IMPORTANT : doit être positionné AVANT tout import de transformers /
+    # huggingface_hub (faits paresseusement dans load_int4_model).
+    if args.hf_cache:
+        os.environ['HF_HOME'] = args.hf_cache
+        os.environ['HF_HUB_CACHE'] = os.path.join(args.hf_cache, 'hub')
+        os.makedirs(os.environ['HF_HUB_CACHE'], exist_ok=True)
+        print(f"[hf-cache] HF_HOME -> {args.hf_cache}")
 
     adapter = ADAPTERS[args.model]
     out_dir = Path(args.output_dir or f'outputs/results/baselines/{adapter.key}')
@@ -349,6 +395,18 @@ def main():
                                    indent=2, ensure_ascii=False), encoding='utf-8')
     print(f"\nJSON : {out_json}")
     print(f"Progress : {progress_json}")
+
+    if args.purge_cache:
+        try:
+            del model
+        except Exception:
+            pass
+        import gc
+        import torch
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        purge_model_cache(adapter.checkpoint)
 
 
 if __name__ == '__main__':

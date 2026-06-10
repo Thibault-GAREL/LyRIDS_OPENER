@@ -1,45 +1,143 @@
 \section{Experiments}
 \label{sec:experiments}
 
-% TODO: write experiments (≈4 to 6 pages).
-% Suggested structure:
-%
-% \subsection{Datasets}
-%   - CrossNER, WNUT-17, FabNER, CoNLL-2003.
-%   - For each: domain, label set, train/dev/test sizes.
-%   - Justify selection: variety of domains, prior open-NER work uses them.
-%
-% \subsection{Baselines}
-%   - Closed-set: BERT-CRF tagger (oracle upper bound).
-%   - Open: GLiNER zero-shot, prompting an LLM (e.g. via an OpenAI-compatible API).
-%   - Clustering baselines: K-means on Nomic embeddings (unsupervised), the
-%     Triplet-loss / OWNER-style approach (cited anonymously in third person).
-%
-% \subsection{Metrics}
-%   - F1 (span-level, type-level).
-%   - Adjusted Mutual Information (AMI), Adjusted Rand Index (ARI) for clustering.
-%   - OOD detection: AUROC of likelihood scores on in-vs-out entities.
-%
-% \subsection{Implementation Details}
-%   - Hardware: single NVIDIA GTX 1660 Ti Max-Q (6 GB VRAM). [Note: anonymize
-%     hardware specs if they could identify the lab.]
-%   - GLiNER medium (~200 MB), Nomic v1.5 (~140 MB).
-%   - GMM library, anchor word lists, OOD threshold calibration protocol.
-%   - Random seeds, number of runs.
-%
-% \subsection{Main Results}
-%   - Table: Opener vs. baselines across datasets.
-%
-% \subsection{Ablations}
-%   - Matryoshka dim sweep: 768 / 512 / 256 / 128 / 64.
-%   - Anchor-word initialization vs. random init vs. K-means init.
-%   - Number of GMM components per label.
-%   - Span-in-context vs. span-only embedding.
-%
-% \subsection{Hierarchy Inference Case Study}
-%   - Qualitative example: inferred DAG on one dataset.
-%
-% \subsection{OOD Detection Analysis}
-%   - ROC curve, threshold sensitivity.
+% Setup v1 (2026-06-10). Sous-sections independantes des resultats finaux :
+% Datasets, Baselines, Metrics, Evaluation Protocol, Implementation Details.
+% Les resultats / ablations restent en placeholder (attendent les chiffres).
+% Materiel ANONYMISE (double-blind) : "consumer-grade GPU, 6 GB VRAM".
 
-\emph{[Placeholder — experiments to be written once results are available.]}
+\subsection{Datasets}
+\label{sec:exp:datasets}
+We evaluate on \textbf{13 evaluation sets} that span news, social media, spoken queries, encyclopedic text, biomedical abstracts and manufacturing literature, following the dataset selection of Genest et al. \cite{genest2025owner}.
+CrossNER \cite{liu2021crossner} contributes five domain-specific sets, evaluated separately (artificial intelligence, literature, music, politics, science).
+The remaining eight are CoNLL-2003 \cite{tjongkimsang2003conll}, WNUT-17 \cite{derczynski2017wnut}, the MIT-Restaurant and MIT-Movie spoken-query corpora \cite{liu2013asgard}, FabNER \cite{kumar2022fabner}, the BioNLP/JNLPBA-2004 biomedical task \cite{kim2004jnlpba}, and the GUM \cite{zeldes2017gum} and GENTLE \cite{aoyama2023gentle} multi-genre corpora.
+Label granularity ranges from four coarse types in CoNLL-2003 to twelve fine-grained categories in FabNER, including opaque domain acronyms.
+Two datasets used by \cite{genest2025owner}, GENIA \cite{kim2003genia} and i2b2, are license-gated and therefore not re-measured here; BioNLP/JNLPBA-2004 serves as our biomedical proxy.
+To homogenise evaluation cost across systems, we cap each test split at $1000$ sentences (the full split is used when it is smaller).
+\autoref{tab:datasets} summarises the benchmark.
+
+\begin{table}[t]
+\centering
+\caption{The 13 evaluation sets. ``Test'' is the number of test sentences used (capped at 1000).}
+\label{tab:datasets}
+\begin{tabular}{lllr}
+\toprule
+Dataset & Abbr. & Domain & Test \\
+\midrule
+CrossNER-AI         & AI    & Encyclopedic (AI)         & 430 \\
+CrossNER-Literature & Lit   & Encyclopedic (literature) & 416 \\
+CrossNER-Music      & Mus   & Encyclopedic (music)      & 465 \\
+CrossNER-Politics   & Pol   & Encyclopedic (politics)   & 651 \\
+CrossNER-Science    & Sci   & Encyclopedic (science)    & 543 \\
+WNUT-17             & WNUT  & Social media              & 689 \\
+MIT-Restaurant      & Rest  & Spoken queries            & 1000 \\
+MIT-Movie           & Movie & Spoken queries            & 1000 \\
+FabNER              & Fab   & Manufacturing             & 1000 \\
+BioNLP/JNLPBA-2004  & Bio   & Biomedical                & 1000 \\
+CoNLL-2003          & CoNLL & News                      & 1000 \\
+GUM                 & GUM   & Multi-genre               & 1000 \\
+GENTLE              & GEN   & Multi-genre (OOD)         & 1000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Baselines}
+\label{sec:exp:baselines}
+We compare Opener against representative open-world NER systems run end-to-end on the same splits.
+GLiNER \cite{zaratiana2024gliner} is evaluated in its small, medium and large variants to trace a size/efficiency trade-off.
+GNER \cite{ding2024gner} is a generative tagger built on T5 \cite{raffel2020t5}; we run the T5-base checkpoint.
+We further compare against OWNER \cite{genest2025owner}, executed in its original environment.
+Instruction-tuned and few-shot large-language-model NER systems, namely UniversalNER \cite{zhou2024universalner}, GoLLIE \cite{sainz2024gollie} and ChatIE \cite{wei2024chatie}, rely on 7B-parameter backbones \cite{touvron2023llama} that do not fit our hardware budget even under 4-bit NF4 quantization \cite{dettmers2023qlora}; for these we report the figures published by their authors rather than re-measuring them.
+
+\subsection{Metrics}
+\label{sec:exp:metrics}
+Our primary metric is the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between predicted and gold type assignments, following \cite{genest2025owner}, complemented by macro-averaged $F_1$ and accuracy.
+Because open-world predictions need not share the gold label vocabulary, AMI is computed over the aligned set of mentions, which makes it well suited to comparing dynamically named types.
+Beyond quality, we report two efficiency axes: inference \emph{speed}, as the median (p50) latency per sentence, and \emph{energy}, as kilowatt-hours and grams of CO\textsubscript{2}eq per run.
+
+\subsection{Evaluation Protocol}
+\label{sec:exp:protocol}
+Predicted and gold mentions are aligned by exact character offsets.
+Following \cite{genest2025owner}, an unmatched gold mention (a false negative) and an unmatched predicted mention (a false positive) are each assigned a distinct sentinel label before computing AMI, so that detection errors are penalised rather than ignored.
+We distinguish two protocols that must not be mixed in the same comparison.
+In the \emph{typing-on-gold} protocol, the entity-typing component is applied to gold mention spans, which measures typing quality in isolation under perfect detection.
+In the \emph{end-to-end} protocol, mentions are produced by the detector and the sentinel labels above are active, which is the setting comparable to the baselines.
+All runs use a single fixed random seed ($42$); we note this as a limitation, since we do not report variance over seeds.
+
+\subsection{Implementation Details}
+\label{sec:exp:impl}
+All experiments run on a single consumer-grade GPU with $6$\,GB of VRAM (CUDA~12.1, PyTorch~2.5.1 \cite{paszke2019pytorch}).
+We use the HuggingFace Transformers library \cite{wolf2020transformers} for the baselines, sentence-transformers \cite{reimers2019sbert} for the Matryoshka embedder \cite{nussbaum2024nomic, kusupati2022matryoshka}, and scikit-learn \cite{pedregosa2011scikit} for the linear classifier, whose solver is LIBLINEAR \cite{fan2008liblinear}.
+Latency is measured with two warmup passes followed by timed passes with GPU synchronisation, reporting p50, p95 and p99 per sentence.
+Energy is measured with CodeCarbon \cite{lacoste2019codecarbon} in offline mode using the French grid carbon intensity; when hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
+To keep the energy comparison fair, all systems are measured on the same machine within a single session, under comparable thermal conditions.
+
+\subsection{Main Results}
+\label{sec:exp:results}
+% PLACEHOLDER TABLES. Toutes les cellules numeriques sont "--" en attendant les
+% runs finaux. A remplir + mettre en gras le meilleur de chaque ligne/colonne.
+% Source des chiffres a venir : outputs/results/ (aggregate_results.py).
+\emph{[Narrative to be written once the numbers are in; the tables below give the target structure.]}
+
+\begin{table*}[t]
+\centering
+\caption{Open-world NER. Adjusted Mutual Information (AMI, $\uparrow$) per dataset, end-to-end protocol. Dataset abbreviations follow \autoref{tab:datasets}; best per column in bold.}
+\label{tab:main}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{l*{13}{c}c}
+\toprule
+Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
+\midrule
+OWNER    & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+GLiNER-S & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+GLiNER-M & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+GLiNER-L & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+GNER     & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Opener   & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table}[t]
+\centering
+\caption{Efficiency. Median per-sentence latency, energy and carbon per run, with parameter count. Lower is better for all but params.}
+\label{tab:efficiency}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Model & Params & p50 (ms) & Energy (kWh) & CO\textsubscript{2} (g) \\
+\midrule
+OWNER     & -- & -- & -- & -- \\
+GLiNER-S  & -- & -- & -- & -- \\
+GLiNER-M  & -- & -- & -- & -- \\
+GLiNER-L  & -- & -- & -- & -- \\
+GNER      & -- & -- & -- & -- \\
+Opener    & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{Per-subdomain CrossNER (AMI, $\uparrow$). Best per column in bold.}
+\label{tab:crossner}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+Model & AI & Lit. & Music & Pol. & Sci. & Mean \\
+\midrule
+OWNER     & -- & -- & -- & -- & -- & -- \\
+GLiNER-L  & -- & -- & -- & -- & -- & -- \\
+GNER      & -- & -- & -- & -- & -- & -- \\
+Opener    & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablations}
+\label{sec:exp:ablations}
+% PLACEHOLDER. Table 4 a remplir : effet du contrastive (on/off), du class_weight
+% balanced (on/off), typing-on-gold vs end-to-end, sweep dimension Matryoshka
+% (64/128/256/512/768), choix du classifieur (GMM/LogReg/SVM).
+\emph{[Ablation study to be added: contrastive on/off, balanced on/off, typing-on-gold vs end-to-end, Matryoshka dimension sweep, and classifier choice.]}
