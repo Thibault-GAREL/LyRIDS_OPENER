@@ -77,18 +77,24 @@ python -m tests.test_opener_pipeline configs/my_experiment.yaml
 
 ---
 
-## ✅ État actuel
+## ✅ État actuel (2026-06-11)
 
-Projet en démarrage. Architecture en place, modules core implémentés. Pas encore d'entraînement / évaluation systématique.
+**V2 benchmarkée, méthode en cours de refonte.** Pipeline retenu : `GLiNER (MD) → Nomic v1.5 Matryoshka fine-tuné contrastif → LinearSVC class_weight='balanced'`. La V1 (GMM + anchor words + OOD + hiérarchie) reste une ablation, plus la voie principale.
+
+- **Benchmark 13 datasets** consolidé dans `outputs/results/aggregate/results_all.json` : GLiNER S/M/L, GNER T5-base, OPENER (e2e + typing-gold) complets ; OWNER **en cours** (gold 11/13, e2e 4/13).
+- **Constats clés** : en end-to-end, OPENER (AMI 0.366) reste **sous** GLiNER-L (0.389) ; sur mentions gold, OWNER (0.590, partiel) **devance** OPENER (0.540, mène 9/11). → d'où la refonte.
+- **Frugalité instrumentée** : 3 axes (AMI + latence p50 + énergie kWh/gCO₂eq via CodeCarbon).
+- **🐛 À vérifier** : énergie OPENER sur `crossner_music` = 22.76 Wh (~10× outlier) → glitch probable, recheck quand tous les runs seront finis.
+- **Paper** (`paper/`, IEEEtran) : Related Work + Setup expérimental rédigés, 6 tables remplies, Abstract réécrit, « OPENER » en majuscules, biblio ~42 réfs vérifiées sur PDF. Brief : voir le bloc « Mise à jour 2026-06-11 » en tête.
 
 ### Composants livrés
 
-- `src/models/mention_detector.py` — wrapper GLiNER.
-- `src/models/embedder.py` — wrapper Nomic Matryoshka (sentence-transformers).
-- `src/models/label_clusterer.py` — GMM par label avec init sur anchor + OOD + hiérarchie spatiale.
-- `src/pipeline.py` — orchestrateur Detect → Embed → Cluster.
-- `configs/labels.yaml` — exemple de configuration de labels.
-- `configs/opener_default.yaml` — config globale.
+- `src/models/{mention_detector,embedder,label_clusterer}.py` — GLiNER / Nomic Matryoshka / GMM (V1).
+- `scripts/train_contrastive_embedder.py` — fine-tuning contrastif (triplet loss).
+- `scripts/run_balanced_classifiers.py` (typing sur gold) + `scripts/run_opener_e2e.py` (end-to-end, offsets + sentinels).
+- `scripts/baselines/` — GLiNER, GNER, LLM int4, OWNER (`owner_export/make_configs/collect` + `run_owner_eval.ps1`).
+- `scripts/_gen_tables.py` — génère les lignes LaTeX des tables depuis l'agrégat.
+- `src/utils/{energy,timing}.py` — mesure énergie + latence (p50/p95/p99).
 - `tests/test_opener_pipeline.py` — smoke test end-to-end.
 
 ---

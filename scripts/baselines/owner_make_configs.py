@@ -29,7 +29,7 @@ template = "{{sentence}} {{entity}} is a [MASK]."
 plm_name = "bert-base-uncased"
 max_len = 256
 batch_size = 8
-num_epochs = 4
+num_epochs = 2
 learning_rate = 2e-5
 k_min = 2
 k_max = 30
@@ -52,7 +52,7 @@ _TEMPLATE = 'seed = 100\nmodel = "entity_typing"\nsave_state = "none"\n\n' \
 _TEMPLATE_NER = 'seed = 100\nmodel = "ner"\nsave_state = "none"\n\n' \
     + _DATA_BLOCK \
     + '[mention_detection]\nplm_name = "microsoft/deberta-v3-base"\n' \
-    + 'max_len = 256\nbatch_size = 8\nnum_epochs = 4\nlearning_rate = 2e-5\n\n' \
+    + 'max_len = 256\nbatch_size = 8\nnum_epochs = 2\nlearning_rate = 2e-5\n\n' \
     + _ET_BLOCK
 
 

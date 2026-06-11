@@ -7,8 +7,8 @@ cols = ['crossner_ai','crossner_literature','crossner_music','crossner_politics'
         'bionlp2004','conll2003','gum','gentle']
 comp = ['GLiNER-S','GLiNER-M','GLiNER-L','GNER-T5-base','Opener-V2-e2e']  # comparables e2e (gras)
 disp = {'GLiNER-S':'GLiNER-S','GLiNER-M':'GLiNER-M','GLiNER-L':'GLiNER-L',
-        'GNER-T5-base':'GNER','OWNER-e2e':r'OWNER$^\dagger$','Opener-V2-e2e':'Opener',
-        'OWNER':r'OWNER$^\dagger$','Opener-V2-gold':'Opener'}
+        'GNER-T5-base':'GNER','OWNER-e2e':r'OWNER$^\dagger$','Opener-V2-e2e':'OPENER',
+        'OWNER':r'OWNER$^\dagger$','Opener-V2-gold':'OPENER'}
 BF = r'\textbf{'
 EOL = r' \\'
 

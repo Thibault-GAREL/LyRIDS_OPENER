@@ -1,16 +1,12 @@
-% TODO: write the abstract (≈150–250 words).
-% Suggested structure:
-%   1. Problem: closed-vocabulary NER cannot handle new entity types without retraining.
-%   2. Gap in prior work: existing open NER methods either train a dedicated encoder
-%      (Triplet Loss + K-means) or rely solely on prompting LLMs.
-%   3. Proposed method: Opener combines a frozen mention detector (GLiNER),
-%      a Matryoshka-truncatable embedding space (Nomic v1.5), and a per-label
-%      Gaussian Mixture Model initialized on anchor words.
-%   4. Key results: (placeholder) competitive performance against closed/open
-%      baselines on [datasets], with native OOD detection and post-hoc hierarchy inference.
-%   5. Take-away: a pre-trained embedding space is already discriminative enough for
-%      semi-supervised entity typing — no encoder retraining required.
+% Abstract draft v2 (2026-06-11). Reflects the current energy-aware framing.
+% Headline numbers are deliberately soft: the method is being reworked and OWNER
+% is still running. Rewrite the last sentences once the final runs are complete.
 
-This paper introduces \textbf{Opener}, an open Named Entity Recognition pipeline that combines a frozen mention detector, a Matryoshka-truncatable embedding space, and per-label Gaussian Mixture Models initialized on anchor words. \emph{[Placeholder — to be rewritten once results are in.]}
-
-Need to be updated with actual methods and results.
+Open-world named entity recognition (NER) must assign entity types that were not fixed at training time.
+Recent systems either train a dedicated encoder or prompt billion-parameter language models, and they are compared almost exclusively on accuracy, ignoring their compute and energy cost.
+We present \textbf{OPENER}, a lightweight open-world NER pipeline assembled from off-the-shelf components: a frozen mention detector, a Matryoshka-truncatable sentence embedder sharpened by a light contrastive fine-tuning, and a balanced linear classifier for entity typing, so that no encoder is trained from scratch.
+We benchmark OPENER against GLiNER, GNER and OWNER on 13 datasets along three axes at once: quality, measured by Adjusted Mutual Information (AMI), inference latency, and energy.
+Our analysis separates entity typing on gold mentions, where the contrastive embedding space is highly discriminative, from the end-to-end setting, where the dominant open-world bottleneck is shown to be mention detection rather than typing.
+The energy-aware comparison further exposes order-of-magnitude efficiency gaps between approaches that a quality-only evaluation would hide.
+\emph{[Headline results to be finalised once all runs, including OWNER, are complete.]}
+We release the code, the per-experiment configurations and the full benchmark.

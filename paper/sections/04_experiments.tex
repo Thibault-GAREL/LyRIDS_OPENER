@@ -43,7 +43,7 @@ GENTLE              & GEN   & Multi-genre (OOD)         & 1000 \\
 
 \subsection{Baselines}
 \label{sec:exp:baselines}
-We compare Opener against representative open-world NER systems run end-to-end on the same splits.
+We compare OPENER against representative open-world NER systems run end-to-end on the same splits.
 GLiNER \cite{zaratiana2024gliner} is evaluated in its small, medium and large variants to trace a size/efficiency trade-off.
 GNER \cite{ding2024gner} is a generative tagger built on T5 \cite{raffel2020t5}; we run the T5-base checkpoint.
 We further compare against OWNER \cite{genest2025owner}, executed in its original environment.
@@ -95,7 +95,7 @@ GLiNER-M & 42.0 & \textbf{50.1} & 57.4 & 50.2 & \textbf{54.2} & 28.1 & 27.9 & 36
 GLiNER-L & \textbf{42.9} & 48.9 & \textbf{58.0} & 49.8 & 52.8 & 28.9 & \textbf{30.9} & \textbf{37.6} & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & \textbf{38.9} \\
 GNER & 41.9 & 46.9 & 53.5 & 48.9 & 49.9 & \textbf{30.0} & 30.0 & 36.8 & 17.0 & 29.1 & \textbf{43.7} & 32.8 & 31.6 & 37.9 \\
 OWNER$^\dagger$ & -- & -- & 45.4 & 53.5 & 53.5 & 29.9 & -- & -- & -- & -- & -- & -- & -- & 45.6$^\dagger$ \\
-Opener & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} & 31.4 & 39.4 & 32.5 & 32.5 & 36.6 \\
+OPENER & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} & 31.4 & 39.4 & 32.5 & 32.5 & 36.6 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -117,7 +117,7 @@ GLiNER-M & 36 & 36 & 37 & 38 & 39 & 39 & 38 & 40 & 41 & 42 & 44 & 46 & 45 & 40 \
 GLiNER-L & 144 & 149 & 153 & 149 & 155 & 137 & 132 & 145 & 147 & 143 & 131 & 141 & 137 & 143 \\
 GNER & 3431 & 5408 & 7461 & 6472 & 7110 & 2906 & 1610 & 3344 & 4310 & 5034 & 2914 & 3435 & 1500 & 4226 \\
 OWNER & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-Opener & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 101 & 160 \\
+OPENER & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 101 & 160 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -139,19 +139,19 @@ GLiNER-M & 0.31 & 0.29 & 0.33 & 0.48 & 0.40 & 0.50 & 0.66 & 0.76 & 0.77 & 0.79 &
 GLiNER-L & 0.68 & 0.67 & 0.77 & 1.04 & 0.91 & 1.01 & 1.37 & 1.51 & 1.54 & 1.49 & 1.38 & 1.52 & 1.43 & 1.18 \\
 GNER & 17.13 & 24.28 & 39.75 & 50.88 & 44.76 & 20.60 & 17.02 & 37.17 & 49.11 & 63.50 & 45.22 & 38.69 & 26.50 & 36.51 \\
 OWNER$^\dagger$ & -- & -- & 47.97 & 90.54 & 77.83 & 275.15 & -- & -- & -- & -- & -- & -- & -- & 122.87$^\dagger$ \\
-Opener & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 1.70 & 1.93 & 1.82 & 3.39 \\
+OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 1.70 & 1.93 & 1.82 & 3.39 \\
 \bottomrule
 \end{tabular}
 \end{table}
 % >>> TODO[FINAL]: add a line chart of per-run energy (one line per dataset) for the
 % >>> frugality comparison.
-% >>> TODO[VERIFY]: Opener energy on crossner_music = 22.76 Wh is a ~10x outlier vs the
+% >>> TODO[VERIFY]: OPENER energy on crossner_music = 22.76 Wh is a ~10x outlier vs the
 % >>> other datasets (~1-2 Wh) -> likely a CodeCarbon measurement glitch. Recheck and
 % >>> decide whether parts must be re-run, ONCE ALL RESULTS ARE IN.
 
 \begin{table}[tbp]
 \centering
-\caption{Summary: quality versus efficiency, averaged over the 13 datasets. AMI ($\times 100$, $\uparrow$); median per-sentence latency (ms), energy (Wh) and carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); and parameter count. $^\dagger$\,OWNER in progress (means over completed datasets); it trains one model per dataset, hence the high energy. Opener additionally reuses the GLiNER-L detector.}
+\caption{Summary: quality versus efficiency, averaged over the 13 datasets. AMI ($\times 100$, $\uparrow$); median per-sentence latency (ms), energy (Wh) and carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); and parameter count. $^\dagger$\,OWNER in progress (means over completed datasets); it trains one model per dataset, hence the high energy. OPENER additionally reuses the GLiNER-L detector.}
 \label{tab:efficiency}
 \small
 \begin{tabular}{lrrrrr}
@@ -163,7 +163,7 @@ GLiNER-M  & 200M & 37.1 & 40 & 0.58 & 0.03 \\
 GLiNER-L  & 330M & 38.9 & 143 & 1.18 & 0.07 \\
 GNER      & 220M & 37.9 & 4226 & 36.51 & 2.05 \\
 OWNER$^\dagger$ & 110M & 45.6$^\dagger$ & -- & 122.87 & 6.39 \\
-Opener    & 137M & 36.6 & 160 & 3.39 & 0.19 \\
+OPENER    & 137M & 36.6 & 160 & 3.39 & 0.19 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -173,12 +173,12 @@ Opener    & 137M & 36.6 & 160 & 3.39 & 0.19 \\
 We justify each architectural choice with a one-factor-at-a-time search.
 Starting from the default pipeline, we vary a single component while holding the others fixed, and keep the setting with the highest mean AMI.
 \autoref{tab:ablation} reports this search; the protocol comparison between typing-on-gold and end-to-end is discussed alongside the main results.
-To isolate the entity-typing component itself, \autoref{tab:et-gold} compares Opener against OWNER on gold mentions, where detection errors are removed.
+To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
 \emph{[Some axes are still being re-measured under the current pipeline; see the notes in \autoref{tab:ablation}.]}
 
 \begin{table}[tbp]
 \centering
-\caption{Opener architecture search. One component is varied at a time around the default pipeline (\textbf{bold}). AMI and macro-$F_1$ ($\times100$, $\uparrow$); per-run latency, energy and carbon ($\downarrow$). $^\ddagger$\,entity-typing sweep on a 10-dataset subset with the contrastive embedder; $^\S$\,dimension sweep on a 6-dataset pilot with the frozen embedder. Latency and energy are dominated by the embedder and detector, hence near-constant across classifiers; per-axis efficiency for the current pipeline is being re-measured.}
+\caption{OPENER architecture search. One component is varied at a time around the default pipeline (\textbf{bold}). AMI and macro-$F_1$ ($\times100$, $\uparrow$); per-run latency, energy and carbon ($\downarrow$). $^\ddagger$\,entity-typing sweep on a 10-dataset subset with the contrastive embedder; $^\S$\,dimension sweep on a 6-dataset pilot with the frozen embedder. Latency and energy are dominated by the embedder and detector, hence near-constant across classifiers; per-axis efficiency for the current pipeline is being re-measured.}
 \label{tab:ablation}
 \small
 \begin{tabular}{lccrrr}
@@ -213,7 +213,7 @@ Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscr
 
 \begin{table}[tbp]
 \centering
-\caption{Entity typing on gold mentions: Opener vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the per-dataset winner. $^\dagger$\,OWNER run in progress; on the completed datasets OWNER currently leads (9 of 11).}
+\caption{Entity typing on gold mentions: OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the per-dataset winner. $^\dagger$\,OWNER run in progress; on the completed datasets OWNER currently leads (9 of 11).}
 \label{tab:et-gold}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -222,11 +222,11 @@ Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscr
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
 \midrule
 OWNER$^\dagger$ & \textbf{60.8} & \textbf{59.7} & \textbf{66.9} & 65.6 & \textbf{68.4} & \textbf{42.6} & \textbf{62.8} & \textbf{64.0} & \textbf{57.9} & -- & 50.5 & -- & \textbf{49.9} & 59.0$^\dagger$ \\
-Opener & 55.6 & 53.5 & 64.2 & \textbf{66.6} & 66.1 & 41.8 & 51.2 & 54.2 & 36.5 & \textbf{60.2} & \textbf{70.7} & \textbf{37.7} & 44.2 & 54.0 \\
+OPENER & 55.6 & 53.5 & 64.2 & \textbf{66.6} & 66.1 & 41.8 & 51.2 & 54.2 & 36.5 & \textbf{60.2} & \textbf{70.7} & \textbf{37.7} & 44.2 & 54.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
-% >>> TODO[FINAL]: add a line chart for this gold ET comparison (Opener vs OWNER per dataset).
+% >>> TODO[FINAL]: add a line chart for this gold ET comparison (OPENER vs OWNER per dataset).
 
 % Keep all of the tables above from floating past this section into the
 % references. Once the body sections carry real text, placement will be natural.

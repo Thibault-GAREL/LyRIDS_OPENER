@@ -38,7 +38,7 @@ import torch
 from sentence_transformers import InputExample, SentenceTransformer, losses
 from torch.utils.data import DataLoader
 
-from src.data.owner_datasets import load_owner_dataset
+from src.data.owner_datasets import list_supported_datasets, load_owner_dataset
 
 
 # Mêmes balises et préfixe que src/models/embedder.py — IMPORTANT pour
@@ -97,17 +97,18 @@ def build_triplets(corpus, max_per_anchor=2, exclude_labels=(), seed=42):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--source', default='conll2003',
-                        choices=['conll2003', 'crossner', 'wnut17', 'mit_restaurant',
-                                 'bionlp2004', 'fabner'],
-                        help='Dataset source pour le contrastive (par défaut CoNLL-2003 — '
-                             'cohérent OWNER, petit et propre)')
+    parser.add_argument('--sources', nargs='+', default=['conll2003'],
+                        help='Dataset(s) source(s) du contrastive (Axe 3). Multi-source = '
+                             'concatenation, ex: --sources conll2003 fabner (comme OWNER). '
+                             f'Dispo : {sorted(list_supported_datasets())}')
     parser.add_argument('--max-source-sentences', type=int, default=3000,
-                        help='Limite de phrases du source (3000 ≈ 20 min sur 1660 Ti)')
+                        help='Limite de phrases par source (3000 ~ 20 min sur 1660 Ti)')
     parser.add_argument('--exclude-labels', nargs='+', default=['MISC'],
                         help="Labels à exclure du training (MISC pollue par défaut)")
     parser.add_argument('--base-model', default='nomic-ai/nomic-embed-text-v1.5')
-    parser.add_argument('--output-dir', default='outputs/models/embedder_contrastive')
+    parser.add_argument('--output-dir', default=None,
+                        help="Defaut : outputs/models/embedder_contrastive_<sources> "
+                             "(ne JAMAIS ecraser embedder_contrastive de reference)")
 
     parser.add_argument('--batch-size', type=int, default=16)
     parser.add_argument('--epochs', type=int, default=3)
@@ -121,21 +122,34 @@ def main():
     parser.add_argument('--seed', type=int, default=42)
     args = parser.parse_args()
 
+    # Validation des sources + auto-nommage du dossier de sortie
+    supported = set(list_supported_datasets())
+    for s in args.sources:
+        if s not in supported:
+            raise SystemExit(f"Source {s!r} inconnue. Dispo : {sorted(supported)}")
+    if args.output_dir is None:
+        tag = f'multi{len(args.sources)}' if len(args.sources) > 3 else '+'.join(args.sources)
+        args.output_dir = 'outputs/models/embedder_contrastive_' + tag
+
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
 
-    # ------- Charge corpus source -------
-    print(f"Source domain : {args.source} (max {args.max_source_sentences} phrases)")
-    try:
-        corpus = load_owner_dataset(args.source, split='train',
+    # ------- Charge corpus source(s) (multi-source = concatenation) -------
+    print(f"Sources : {args.sources} (max {args.max_source_sentences} phrases / source)")
+    corpus = []
+    for src in args.sources:
+        try:
+            sub = load_owner_dataset(src, split='train',
                                      max_sentences=args.max_source_sentences)
-    except Exception:
-        print("  (pas de split 'train' → utilise 'validation')")
-        corpus = load_owner_dataset(args.source, split='validation',
+        except Exception:
+            print(f"  ({src}: pas de split 'train' → utilise 'validation')")
+            sub = load_owner_dataset(src, split='validation',
                                      max_sentences=args.max_source_sentences)
+        print(f"  {src}: {len(sub)} phrases")
+        corpus.extend(sub)
     n_spans = sum(len(s) for _, s in corpus)
-    print(f"  {len(corpus)} phrases, {n_spans} spans gold")
+    print(f"  TOTAL : {len(corpus)} phrases, {n_spans} spans gold")
     if args.exclude_labels:
         print(f"  Labels exclus : {args.exclude_labels}")
 

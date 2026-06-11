@@ -6,8 +6,8 @@
 % Cles encore manquantes (PDF non fourni), laissees en commentaire si besoin :
 %   BERT (Devlin 2019), survey DL-NER (Li et al. 2022), InstructUIE, GPT-NER.
 
-Opener sits at the intersection of three lines of research: open-world and zero-shot named entity recognition (NER), pretrained entity representations refined by contrastive learning, and energy-aware machine learning.
-We review each in turn and state how Opener differs.
+OPENER sits at the intersection of three lines of research: open-world and zero-shot named entity recognition (NER), pretrained entity representations refined by contrastive learning, and energy-aware machine learning.
+We review each in turn and state how OPENER differs.
 
 \subsection{Closed-set and Span-based NER}
 \label{sec:related:closed}
@@ -23,7 +23,7 @@ GLiNER \cite{zaratiana2024gliner} treats the candidate type names as queries to 
 GNER \cite{ding2024gner} instead casts NER as text generation with a sequence-to-sequence model \cite{raffel2020t5} and shows that explicitly modeling negative, non-entity instances sharpens type boundaries.
 Closest to our work, Genest et al. \cite{genest2025owner} propose OWNER, an unsupervised open-world pipeline that decouples mention detection from entity typing: it embeds detected mentions with an encoder refined by contrastive learning and then clusters them into dynamically named types.
 Other approaches prompt a general-purpose large language model to perform extraction directly, as in ChatIE \cite{wei2024chatie}, or focus on recovering entities that detectors tend to miss \cite{cai2025handling}.
-Opener adopts the decoupled detect-then-type view of OWNER, but replaces the trained encoder and the unsupervised clustering with a pretrained, Matryoshka-truncatable embedding space and a balanced linear classifier, so that no encoder is trained from scratch.
+OPENER adopts the decoupled detect-then-type view of OWNER, but replaces the trained encoder and the unsupervised clustering with a pretrained, Matryoshka-truncatable embedding space and a balanced linear classifier, so that no encoder is trained from scratch.
 
 \subsection{LLM-based and Few-shot NER}
 \label{sec:related:llm}
@@ -31,15 +31,15 @@ A complementary line distils or instruction-tunes large language models for open
 UniversalNER \cite{zhou2024universalner} distils a chat model into a smaller LLaMA-based student \cite{touvron2023llama} over tens of thousands of entity types, while GoLLIE \cite{sainz2024gollie} conditions a code language model on annotation guidelines to follow unseen schemas.
 Few-shot methods reduce supervision further through prompt optimization \cite{tang2024fsponer}, knowledge-graph-guided contrastive learning \cite{zhang2024kcl}, or token-level contrastive objectives such as CONTaiNER \cite{das2022container}.
 These methods are accurate but rest on models with billions of parameters, whose inference cost, latency and energy use are substantial, and which may not even fit on commodity hardware.
-This cost is precisely what motivates the lightweight design and the energy-aware evaluation of Opener.
+This cost is precisely what motivates the lightweight design and the energy-aware evaluation of OPENER.
 
 \subsection{Entity Representations and Contrastive Learning}
 \label{sec:related:repr}
-Opener relies on a pretrained sentence embedder rather than a task-specific encoder.
+OPENER relies on a pretrained sentence embedder rather than a task-specific encoder.
 Nomic Embed \cite{nussbaum2024nomic} provides an open, long-context model trained with the Matryoshka objective \cite{kusupati2022matryoshka}, whose representations can be truncated to lower dimensions without retraining, trading quality for compute.
 Such embedders build on the Sentence-BERT line of work \cite{reimers2019sbert}, and we sharpen the entity-type geometry with a triplet margin objective in the spirit of FaceNet \cite{schroff2015facenet}.
 Embedding labels and entities in a shared space \cite{wang2018joint}, modeling entity types with Gaussian components \cite{zhang2025contrastivegaussian}, generating synthetic entity-bearing text for augmentation \cite{hu2023entity}, and using mixtures to augment training data \cite{abbahaddou2024gmmgnn} are recurring ideas in low-resource NER, all grounded in classical Gaussian mixture models fitted by expectation-maximization \cite{reynolds2009gmm, dempster1977em}.
-Unlike methods that train a dedicated encoder, Opener keeps the pretrained space largely frozen and only applies a light contrastive fine-tuning, which tests whether a general-purpose embedding is already discriminative enough for entity typing.
+Unlike methods that train a dedicated encoder, OPENER keeps the pretrained space largely frozen and only applies a light contrastive fine-tuning, which tests whether a general-purpose embedding is already discriminative enough for entity typing.
 
 \subsection{Efficient and Green AI}
 \label{sec:related:green}
@@ -47,7 +47,7 @@ A growing body of work argues that efficiency should be reported alongside accur
 Strubell et al. \cite{strubell2019energy} quantify the financial and environmental cost of training NLP models, Schwartz et al. \cite{schwartz2020greenai} advocate efficiency as a first-class evaluation criterion, and Patterson et al. \cite{patterson2022carbon} analyse the carbon footprint of machine-learning training and how to reduce it.
 Tools such as CodeCarbon \cite{lacoste2019codecarbon} make per-run energy and carbon estimates practical.
 Open-world NER systems, however, are still compared almost exclusively on quality.
-Opener instead reports a three-axis comparison of quality, measured by Adjusted Mutual Information \cite{vinh2010ami}, inference speed, and energy, placing the frugality of each method on an equal footing with its accuracy.
+OPENER instead reports a three-axis comparison of quality, measured by Adjusted Mutual Information \cite{vinh2010ami}, inference speed, and energy, placing the frugality of each method on an equal footing with its accuracy.
 
 In summary, existing open-world NER methods either train a dedicated encoder \cite{genest2025owner} or query costly large language models \cite{zhou2024universalner, sainz2024gollie}, and they are compared on accuracy alone.
-Opener fills both gaps: it reuses pretrained components with only a light contrastive step and a balanced linear classifier, and it is evaluated jointly on quality, speed and energy.
+OPENER fills both gaps: it reuses pretrained components with only a light contrastive step and a balanced linear classifier, and it is evaluated jointly on quality, speed and energy.
