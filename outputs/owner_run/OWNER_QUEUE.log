@@ -8,3 +8,21 @@
 [2026-06-10 23:00:53] crossner_science : start
 [2026-06-10 23:17:11] crossner_science : done exit=0 978s
 [2026-06-10 23:17:11] crossner_politics : start
+[2026-06-11 00:14:33] crossner_politics : done exit=0 3442s
+[2026-06-11 00:14:33] wnut17 : start
+[2026-06-11 00:29:00] wnut17 : done exit=0 867s
+[2026-06-11 00:29:00] conll2003 : start
+[2026-06-11 00:54:43] conll2003 : done exit=0 1543s
+[2026-06-11 00:54:43] mit_restaurant : start
+[2026-06-11 01:32:10] mit_restaurant : done exit=0 2247s
+[2026-06-11 01:32:10] bionlp2004 : start
+[2026-06-11 02:02:04] bionlp2004 : done exit=1 1793s
+[2026-06-11 02:02:04] gum : start
+[2026-06-11 02:37:59] gum : done exit=1 2156s
+[2026-06-11 02:37:59] gentle : start
+[2026-06-11 03:18:08] gentle : done exit=0 2408s
+[2026-06-11 03:18:08] fabner : start
+[2026-06-11 04:11:02] fabner : done exit=0 3175s
+[2026-06-11 04:11:02] mit_movie : start
+[2026-06-11 05:08:37] mit_movie : done exit=0 3454s
+[2026-06-11 05:08:37] QUEUE OWNER DONE

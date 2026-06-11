@@ -1,0 +1,16 @@
+[2026-06-10 23:56:56] WAIT : file typing-gold en cours...
+[2026-06-11 05:09:11] Typing-gold terminee -> GPU libre. Demarrage end-to-end.
+[2026-06-11 05:09:11] QUEUE OWNER-NER START (pid=11684, 13 datasets)
+[2026-06-11 05:09:11] crossner_ai : start
+[2026-06-11 05:29:50] crossner_ai : done exit=1 1239s
+[2026-06-11 05:29:50] crossner_literature : start
+[2026-06-11 05:48:50] crossner_literature : done exit=1 1140s
+[2026-06-11 05:48:50] crossner_music : start
+[2026-06-11 06:15:00] crossner_music : done exit=0 1570s
+[2026-06-11 06:15:00] crossner_science : start
+[2026-06-11 06:57:28] crossner_science : done exit=0 2547s
+[2026-06-11 06:57:28] crossner_politics : start
+[2026-06-11 07:46:51] crossner_politics : done exit=0 2963s
+[2026-06-11 07:46:51] wnut17 : start
+[2026-06-11 10:16:56] wnut17 : done exit=0 9005s
+[2026-06-11 10:16:56] conll2003 : start

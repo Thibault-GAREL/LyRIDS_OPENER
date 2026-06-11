@@ -84,14 +84,17 @@ def main():
                 f'{O}/opener_extra_3_datasets/SUMMARY*.json'):
         gold.update(_load(pat) or {})
 
+    # Deux familles de PROTOCOLE (comparables seulement intra-famille) :
+    #   end-to-end       : detection + typing, FN/FP penalises (GLiNER, GNER, Opener-e2e)
+    #   typing-on-gold   : clustering/typing sur mentions GOLD (OWNER, Opener-V2-gold)
     sources = {
-        # famille open-world (end-to-end ou typing, comparables AMI)
-        'GLiNER-S':       (f'{B}/gliner_S/gliner_2*.json',  'open-world'),
-        'GLiNER-M':       (f'{B}/gliner_M/gliner_2*.json',  'open-world'),
-        'GLiNER-L':       (f'{B}/gliner_L/gliner_2*.json',  'open-world'),
-        'GNER-T5-base':   (f'{B}/gner/gner_2*.json',        'open-world'),
-        'OWNER':          (f'{B}/owner/owner_2*.json',      'open-world'),
-        'Opener-V2-e2e':  (f'{O}/opener_e2e/SUMMARY*.json', 'open-world'),
+        'GLiNER-S':       (f'{B}/gliner_S/gliner_2*.json',  'end-to-end'),
+        'GLiNER-M':       (f'{B}/gliner_M/gliner_2*.json',  'end-to-end'),
+        'GLiNER-L':       (f'{B}/gliner_L/gliner_2*.json',  'end-to-end'),
+        'GNER-T5-base':   (f'{B}/gner/gner_2*.json',         'end-to-end'),
+        'Opener-V2-e2e':  (f'{O}/opener_e2e/SUMMARY*.json',  'end-to-end'),
+        'OWNER-e2e':      (f'{B}/owner/owner_e2e_2*.json',   'end-to-end'),
+        'OWNER':          (f'{B}/owner/owner_2*.json',       'typing-on-gold'),
     }
 
     models = {}
@@ -99,9 +102,8 @@ def main():
     for name, (pat, fam) in sources.items():
         models[name] = extract(_load(pat))
         families[name] = fam
-    # typing-sur-gold (protocole different : mentions parfaites)
     models['Opener-V2-gold'] = extract(gold)
-    families['Opener-V2-gold'] = 'opener-typing-gold'
+    families['Opener-V2-gold'] = 'typing-on-gold'
 
     # ---- Sauvegarde JSON ----
     out_dir = Path(f'{O}/aggregate')

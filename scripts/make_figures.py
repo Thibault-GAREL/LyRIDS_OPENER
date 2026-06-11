@@ -21,7 +21,7 @@ import numpy as np
 
 AGG = Path('outputs/results/aggregate')
 FIG = AGG / 'figures'
-COLORS = {'open-world': '#1f77b4', 'opener-typing-gold': '#d62728'}
+COLORS = {'end-to-end': '#1f77b4', 'typing-on-gold': '#d62728'}
 
 
 def _mean(rec_by_ds, datasets, metric):

@@ -64,35 +64,21 @@ def _iter_runs(mlruns):
                 yield run_dir
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--mlruns', default='external/OWNER/mlruns',
-                        help='File store MLflow d OWNER.')
-    parser.add_argument('--queue-log', default='outputs/owner_run/OWNER_QUEUE.log',
-                        help='Log de run_owner_all.ps1 (temps wall-clock par dataset).')
-    parser.add_argument('--output-dir', default='outputs/results/baselines/owner')
-    args = parser.parse_args()
-
-    times = _parse_queue_times(Path(args.queue_log))
-
-    mlruns = Path(args.mlruns)
-    if not mlruns.exists():
-        print(f"⚠️ {mlruns} introuvable. As-tu lancé les runs OWNER ?")
-        return
-
-    # ds -> (ami, mtime) : on garde le run le plus récent par dataset.
+def _collect(mlruns, metric):
+    """{ds: (ami, mtime, run_id)} : run le plus recent par dataset pour `metric`."""
     best = {}
-    n_runs = 0
     for run_dir in _iter_runs(mlruns):
         ds = _read_param(run_dir, DATASET_PARAM)
-        ami = _read_metric_last(run_dir, AMI_METRIC)
+        ami = _read_metric_last(run_dir, metric)
         if ds is None or ami is None:
             continue
-        n_runs += 1
         mtime = run_dir.stat().st_mtime
         if ds not in best or mtime > best[ds][1]:
             best[ds] = (ami, mtime, run_dir.name)
+    return best
 
+
+def _build(best, times):
     results = {}
     for ds, (ami, _, run_id) in best.items():
         rec = {'ami': round(ami, 4), 'mlflow_run': run_id}
@@ -107,22 +93,46 @@ def main():
                 'note': 'inclut l entrainement par dataset (methode non inference-only)',
             }
         results[ds] = rec
+    return results
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--mlruns', default='external/OWNER/mlruns')
+    parser.add_argument('--queue-log', default='outputs/owner_run/OWNER_QUEUE.log',
+                        help='Temps wall-clock typing-gold (run_owner_all.ps1).')
+    parser.add_argument('--queue-log-ner', default='outputs/owner_run/OWNER_NER_QUEUE.log',
+                        help='Temps wall-clock end-to-end (run_owner_ner.ps1).')
+    parser.add_argument('--output-dir', default='outputs/results/baselines/owner')
+    args = parser.parse_args()
+
+    mlruns = Path(args.mlruns)
+    if not mlruns.exists():
+        print(f"⚠️ {mlruns} introuvable. As-tu lancé les runs OWNER ?")
+        return
 
     out_dir = Path(args.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     date_str = datetime.now().strftime('%Y-%m-%d_%H%M%S')
-    out_json = out_dir / f'owner_{date_str}.json'
-    out_json.write_text(json.dumps(
-        {'params': {'method': 'owner_entity_typing', 'mlruns': str(mlruns)},
-         'results': results}, indent=2, ensure_ascii=False), encoding='utf-8')
 
-    print(f"{n_runs} runs OWNER lus, {len(results)} datasets avec AMI :")
-    for ds in sorted(results):
-        print(f"  {ds:<22} AMI={results[ds]['ami']:.4f}")
-    if results:
+    # 2 protocoles : typing-sur-gold (et_test_ami) + end-to-end (ner_test_ami)
+    variants = [
+        ('owner', AMI_METRIC, Path(args.queue_log), 'typing-sur-gold'),
+        ('owner_e2e', 'ner_test_ami', Path(args.queue_log_ner), 'end-to-end'),
+    ]
+    for prefix, metric, qlog, label in variants:
+        results = _build(_collect(mlruns, metric), _parse_queue_times(qlog))
+        if not results:
+            print(f"[{prefix}] aucun run avec '{metric}' pour l'instant.")
+            continue
+        out_json = out_dir / f'{prefix}_{date_str}.json'
+        out_json.write_text(json.dumps(
+            {'params': {'method': f'owner_{label}', 'metric': metric},
+             'results': results}, indent=2, ensure_ascii=False), encoding='utf-8')
         mean = sum(r['ami'] for r in results.values()) / len(results)
-        print(f"  {'MOYENNE':<22} AMI={mean:.4f}")
-    print(f"\nJSON : {out_json}")
+        print(f"[{label}] {len(results)} datasets, AMI moyen={mean:.4f} -> {out_json.name}")
+        for ds in sorted(results):
+            print(f"    {ds:<22} AMI={results[ds]['ami']:.4f}")
 
 
 if __name__ == '__main__':
