@@ -16,7 +16,7 @@ Two datasets used by \cite{genest2025owner}, GENIA \cite{kim2003genia} and i2b2,
 To homogenise evaluation cost across systems, we cap each test split at $1000$ sentences (the full split is used when it is smaller).
 \autoref{tab:datasets} summarises the benchmark.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
 \caption{The 13 evaluation sets. ``Test'' is the number of test sentences used (capped at 1000).}
 \label{tab:datasets}
@@ -30,8 +30,8 @@ CrossNER-Music      & Mus   & Encyclopedic (music)      & 465 \\
 CrossNER-Politics   & Pol   & Encyclopedic (politics)   & 651 \\
 CrossNER-Science    & Sci   & Encyclopedic (science)    & 543 \\
 WNUT-17             & WNUT  & Social media              & 689 \\
-MIT-Restaurant      & Rest  & Spoken queries            & 1000 \\
-MIT-Movie           & Movie & Spoken queries            & 1000 \\
+MIT-Restaurant      & Rest  & Restaurant search         & 1000 \\
+MIT-Movie           & Movie & Movie trivia              & 1000 \\
 FabNER              & Fab   & Manufacturing             & 1000 \\
 BioNLP/JNLPBA-2004  & Bio   & Biomedical                & 1000 \\
 CoNLL-2003          & CoNLL & News                      & 1000 \\
@@ -74,14 +74,15 @@ To keep the energy comparison fair, all systems are measured on the same machine
 
 \subsection{Main Results}
 \label{sec:exp:results}
-% PLACEHOLDER TABLES. Toutes les cellules numeriques sont "--" en attendant les
-% runs finaux. A remplir + mettre en gras le meilleur de chaque ligne/colonne.
-% Source des chiffres a venir : outputs/results/ (aggregate_results.py).
-\emph{[Narrative to be written once the numbers are in; the tables below give the target structure.]}
+% Numbers filled from outputs/results/aggregate/results_all.json (2026-06-11).
+% OWNER ($\dagger$) still running -> partial rows. Regenerate via scripts/_gen_tables.py.
+The tables below report the current state of the benchmark.
+OWNER is still running, so its rows (marked $\dagger$) cover only the datasets completed so far and their averages are not directly comparable to the full means.
+\emph{[Narrative analysis to be written once all runs, including OWNER, are complete.]}
 
-\begin{table*}[t]
+\begin{table}[tbp]
 \centering
-\caption{Open-world NER. Adjusted Mutual Information (AMI, $\uparrow$) per dataset, end-to-end protocol. Dataset abbreviations follow \autoref{tab:datasets}; best per column in bold.}
+\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best system per column. $^\dagger$\,OWNER run in progress: average over completed datasets only. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
 \label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -89,55 +90,144 @@ To keep the energy comparison fair, all systems are measured on the same machine
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
 \midrule
-OWNER    & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-GLiNER-S & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-GLiNER-M & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-GLiNER-L & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-GNER     & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-Opener   & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\begin{table}[t]
-\centering
-\caption{Efficiency. Median per-sentence latency, energy and carbon per run, with parameter count. Lower is better for all but params.}
-\label{tab:efficiency}
-\small
-\begin{tabular}{lrrrr}
-\toprule
-Model & Params & p50 (ms) & Energy (kWh) & CO\textsubscript{2} (g) \\
-\midrule
-OWNER     & -- & -- & -- & -- \\
-GLiNER-S  & -- & -- & -- & -- \\
-GLiNER-M  & -- & -- & -- & -- \\
-GLiNER-L  & -- & -- & -- & -- \\
-GNER      & -- & -- & -- & -- \\
-Opener    & -- & -- & -- & -- \\
+GLiNER-S & 41.7 & 49.8 & 56.4 & \textbf{50.6} & 53.3 & 29.7 & 26.1 & 35.6 & 10.7 & 31.8 & 18.9 & \textbf{34.1} & \textbf{36.1} & 36.5 \\
+GLiNER-M & 42.0 & \textbf{50.1} & 57.4 & 50.2 & \textbf{54.2} & 28.1 & 27.9 & 36.4 & 11.3 & \textbf{34.9} & 24.9 & 32.8 & 31.6 & 37.1 \\
+GLiNER-L & \textbf{42.9} & 48.9 & \textbf{58.0} & 49.8 & 52.8 & 28.9 & \textbf{30.9} & \textbf{37.6} & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & \textbf{38.9} \\
+GNER & 41.9 & 46.9 & 53.5 & 48.9 & 49.9 & \textbf{30.0} & 30.0 & 36.8 & 17.0 & 29.1 & \textbf{43.7} & 32.8 & 31.6 & 37.9 \\
+OWNER$^\dagger$ & -- & -- & 45.4 & 53.5 & 53.5 & 29.9 & -- & -- & -- & -- & -- & -- & -- & 45.6$^\dagger$ \\
+Opener & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} & 31.4 & 39.4 & 32.5 & 32.5 & 36.6 \\
 \bottomrule
 \end{tabular}
 \end{table}
+% >>> TODO[FINAL]: add a line chart (x = models ordered by mean AMI, one line per
+% >>> dataset) to visualise who leads whom and the ranking stability across datasets.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
-\caption{Per-subdomain CrossNER (AMI, $\uparrow$). Best per column in bold.}
-\label{tab:crossner}
-\small
-\begin{tabular}{lcccccc}
+\caption{Inference latency. Median per-sentence latency in milliseconds ($\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. OWNER reports wall-clock time only, not per-sentence latency.}
+\label{tab:latency}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{l*{13}{c}c}
 \toprule
-Model & AI & Lit. & Music & Pol. & Sci. & Mean \\
+Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
 \midrule
-OWNER     & -- & -- & -- & -- & -- & -- \\
-GLiNER-L  & -- & -- & -- & -- & -- & -- \\
-GNER      & -- & -- & -- & -- & -- & -- \\
-Opener    & -- & -- & -- & -- & -- & -- \\
+GLiNER-S & \textbf{21} & \textbf{22} & \textbf{21} & \textbf{21} & \textbf{21} & \textbf{20} & \textbf{19} & \textbf{20} & \textbf{20} & \textbf{22} & \textbf{20} & \textbf{21} & \textbf{21} & \textbf{21} \\
+GLiNER-M & 36 & 36 & 37 & 38 & 39 & 39 & 38 & 40 & 41 & 42 & 44 & 46 & 45 & 40 \\
+GLiNER-L & 144 & 149 & 153 & 149 & 155 & 137 & 132 & 145 & 147 & 143 & 131 & 141 & 137 & 143 \\
+GNER & 3431 & 5408 & 7461 & 6472 & 7110 & 2906 & 1610 & 3344 & 4310 & 5034 & 2914 & 3435 & 1500 & 4226 \\
+OWNER & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Opener & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 101 & 160 \\
+\bottomrule
+\end{tabular}
+\end{table}
+% >>> TODO[FINAL]: add a line chart of per-sentence latency (one line per dataset)
+% >>> to make the speed ranking across models legible.
+
+\begin{table}[tbp]
+\centering
+\caption{Energy. Energy per run in watt-hours ($\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. $^\dagger$\,OWNER in progress; it trains one model per dataset, hence the high cost.}
+\label{tab:energy}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{l*{13}{c}c}
+\toprule
+Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
+\midrule
+GLiNER-S & \textbf{0.19} & \textbf{0.17} & \textbf{0.20} & \textbf{0.27} & \textbf{0.22} & \textbf{0.27} & \textbf{0.35} & \textbf{0.39} & \textbf{0.40} & \textbf{0.42} & \textbf{0.37} & \textbf{0.41} & \textbf{0.40} & \textbf{0.31} \\
+GLiNER-M & 0.31 & 0.29 & 0.33 & 0.48 & 0.40 & 0.50 & 0.66 & 0.76 & 0.77 & 0.79 & 0.69 & 0.82 & 0.75 & 0.58 \\
+GLiNER-L & 0.68 & 0.67 & 0.77 & 1.04 & 0.91 & 1.01 & 1.37 & 1.51 & 1.54 & 1.49 & 1.38 & 1.52 & 1.43 & 1.18 \\
+GNER & 17.13 & 24.28 & 39.75 & 50.88 & 44.76 & 20.60 & 17.02 & 37.17 & 49.11 & 63.50 & 45.22 & 38.69 & 26.50 & 36.51 \\
+OWNER$^\dagger$ & -- & -- & 47.97 & 90.54 & 77.83 & 275.15 & -- & -- & -- & -- & -- & -- & -- & 122.87$^\dagger$ \\
+Opener & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 1.70 & 1.93 & 1.82 & 3.39 \\
+\bottomrule
+\end{tabular}
+\end{table}
+% >>> TODO[FINAL]: add a line chart of per-run energy (one line per dataset) for the
+% >>> frugality comparison.
+% >>> TODO[VERIFY]: Opener energy on crossner_music = 22.76 Wh is a ~10x outlier vs the
+% >>> other datasets (~1-2 Wh) -> likely a CodeCarbon measurement glitch. Recheck and
+% >>> decide whether parts must be re-run, ONCE ALL RESULTS ARE IN.
+
+\begin{table}[tbp]
+\centering
+\caption{Summary: quality versus efficiency, averaged over the 13 datasets. AMI ($\times 100$, $\uparrow$); median per-sentence latency (ms), energy (Wh) and carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); and parameter count. $^\dagger$\,OWNER in progress (means over completed datasets); it trains one model per dataset, hence the high energy. Opener additionally reuses the GLiNER-L detector.}
+\label{tab:efficiency}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+Model & Params & AMI & p50 (ms) & Energy (Wh) & CO\textsubscript{2} (g) \\
+\midrule
+GLiNER-S  & 50M  & 36.5 & 21 & 0.31 & 0.02 \\
+GLiNER-M  & 200M & 37.1 & 40 & 0.58 & 0.03 \\
+GLiNER-L  & 330M & 38.9 & 143 & 1.18 & 0.07 \\
+GNER      & 220M & 37.9 & 4226 & 36.51 & 2.05 \\
+OWNER$^\dagger$ & 110M & 45.6$^\dagger$ & -- & 122.87 & 6.39 \\
+Opener    & 137M & 36.6 & 160 & 3.39 & 0.19 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsection{Ablations}
 \label{sec:exp:ablations}
-% PLACEHOLDER. Table 4 a remplir : effet du contrastive (on/off), du class_weight
-% balanced (on/off), typing-on-gold vs end-to-end, sweep dimension Matryoshka
-% (64/128/256/512/768), choix du classifieur (GMM/LogReg/SVM).
-\emph{[Ablation study to be added: contrastive on/off, balanced on/off, typing-on-gold vs end-to-end, Matryoshka dimension sweep, and classifier choice.]}
+We justify each architectural choice with a one-factor-at-a-time search.
+Starting from the default pipeline, we vary a single component while holding the others fixed, and keep the setting with the highest mean AMI.
+\autoref{tab:ablation} reports this search; the protocol comparison between typing-on-gold and end-to-end is discussed alongside the main results.
+To isolate the entity-typing component itself, \autoref{tab:et-gold} compares Opener against OWNER on gold mentions, where detection errors are removed.
+\emph{[Some axes are still being re-measured under the current pipeline; see the notes in \autoref{tab:ablation}.]}
+
+\begin{table}[tbp]
+\centering
+\caption{Opener architecture search. One component is varied at a time around the default pipeline (\textbf{bold}). AMI and macro-$F_1$ ($\times100$, $\uparrow$); per-run latency, energy and carbon ($\downarrow$). $^\ddagger$\,entity-typing sweep on a 10-dataset subset with the contrastive embedder; $^\S$\,dimension sweep on a 6-dataset pilot with the frozen embedder. Latency and energy are dominated by the embedder and detector, hence near-constant across classifiers; per-axis efficiency for the current pipeline is being re-measured.}
+\label{tab:ablation}
+\small
+\begin{tabular}{lccrrr}
+\toprule
+Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscript{2}\,(g) \\
+\midrule
+\multicolumn{6}{l}{\emph{Mention detector}} \\
+\quad GLiNER-S                       & -- & -- & -- & -- & -- \\
+\quad GLiNER-M                       & -- & -- & -- & -- & -- \\
+\quad \textbf{GLiNER-L}              & -- & -- & -- & -- & -- \\
+\addlinespace
+\multicolumn{6}{l}{\emph{Entity embedder}} \\
+\quad frozen Nomic v1.5              & -- & -- & -- & -- & -- \\
+\quad \textbf{+ contrastive fine-tuning} & -- & -- & -- & -- & -- \\
+\addlinespace
+\multicolumn{6}{l}{\emph{Matryoshka dimension}$^\S$} \\
+\quad 64                             & 15.1 & -- & -- & -- & -- \\
+\quad 128                            & 15.4 & -- & -- & -- & -- \\
+\quad 256                            & 17.7 & -- & -- & -- & -- \\
+\quad 512                            & 18.3 & -- & -- & -- & -- \\
+\quad \textbf{768}                   & \textbf{18.8} & -- & -- & -- & -- \\
+\addlinespace
+\multicolumn{6}{l}{\emph{Entity typing}$^\ddagger$} \\
+\quad GMM (anchor warm-start)        & -- & -- & -- & -- & -- \\
+\quad LogReg                         & 39.2 & 30.6 & -- & -- & -- \\
+\quad LogReg (balanced)              & 49.4 & 55.2 & -- & -- & -- \\
+\quad LinearSVC                      & 52.4 & 50.2 & -- & -- & -- \\
+\quad \textbf{LinearSVC (balanced)}  & \textbf{56.6} & \textbf{64.5} & 100 & 3.32 & 0.18 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[tbp]
+\centering
+\caption{Entity typing on gold mentions: Opener vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the per-dataset winner. $^\dagger$\,OWNER run in progress; on the completed datasets OWNER currently leads (9 of 11).}
+\label{tab:et-gold}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{l*{13}{c}c}
+\toprule
+Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
+\midrule
+OWNER$^\dagger$ & \textbf{60.8} & \textbf{59.7} & \textbf{66.9} & 65.6 & \textbf{68.4} & \textbf{42.6} & \textbf{62.8} & \textbf{64.0} & \textbf{57.9} & -- & 50.5 & -- & \textbf{49.9} & 59.0$^\dagger$ \\
+Opener & 55.6 & 53.5 & 64.2 & \textbf{66.6} & 66.1 & 41.8 & 51.2 & 54.2 & 36.5 & \textbf{60.2} & \textbf{70.7} & \textbf{37.7} & 44.2 & 54.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+% >>> TODO[FINAL]: add a line chart for this gold ET comparison (Opener vs OWNER per dataset).
+
+% Keep all of the tables above from floating past this section into the
+% references. Once the body sections carry real text, placement will be natural.
+\FloatBarrier
