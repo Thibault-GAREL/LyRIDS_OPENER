@@ -278,9 +278,19 @@ def main():
         warmup_steps=args.warmup_steps,
         optimizer_params={'lr': args.lr},
         use_amp=args.use_fp16,
-        output_path=args.output_dir,
         show_progress_bar=True,
     )
+    # NB : sauvegarde robuste. La sauvegarde APRES training segfault (exit 139)
+    # si le modele est encore sur GPU (etat CUDA accumule). Fix : passer sur CPU +
+    # vider le cache CUDA + gc AVANT d'ecrire. (La sauvegarde d'un modele frais
+    # marche, c'est bien l'etat post-training le coupable.)
+    import gc
+    log("Training terminé. Libération GPU puis sauvegarde depuis CPU...")
+    del loss_fn, loader
+    model = model.to('cpu')
+    torch.cuda.empty_cache()
+    gc.collect()
+    model.save(args.output_dir, safe_serialization=False, create_model_card=False)
     log(f"OK -> modele sauvegarde dans {args.output_dir}")
     log("Eval : python -m scripts.run_balanced_classifiers "
         f"--embedder {args.output_dir} --output-dir outputs/results/opener_hard")
