@@ -85,7 +85,7 @@ The two systems thus trade annotation for inference cost: OPENER needs target la
 
 \begin{table}[tbp]
 \centering
-\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best system per column. $^\S$\,OWNER is zero-shot (trained once on CoNLL-2003, applied to each target). $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source) and is not bolded as a transfer result; the best zero-shot system on CoNLL is GNER. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
+\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best system per column. OPENER uses the error-driven hard-negative mining embedder selected in \autoref{tab:ablation} and obtains the best mean AMI of the compared systems. $^\S$\,OWNER is zero-shot (trained once on CoNLL-2003, applied to each target). $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source) and for OPENER (its contrastive source), and is not bolded as a transfer result; the best zero-shot system on CoNLL is GNER. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
 \label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -95,10 +95,13 @@ Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & G
 \midrule
 GLiNER-S & 41.7 & 49.8 & 56.4 & 50.6 & 53.3 & 29.7 & 26.1 & 35.6 & 10.7 & 31.8 & 18.9 & \textbf{34.1} & \textbf{36.1} & 36.5 \\
 GLiNER-M & 42.0 & \textbf{50.1} & 57.4 & 50.2 & \textbf{54.2} & 28.1 & 27.9 & 36.4 & 11.3 & \textbf{34.9} & 24.9 & 32.8 & 31.6 & 37.1 \\
-GLiNER-L & 42.9 & 48.9 & \textbf{58.0} & 49.8 & 52.8 & 28.9 & \textbf{30.9} & \textbf{37.6} & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & \textbf{38.9} \\
+GLiNER-L & 42.9 & 48.9 & \textbf{58.0} & 49.8 & 52.8 & 28.9 & 30.9 & \textbf{37.6} & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & 38.9 \\
 GNER & 41.9 & 46.9 & 53.5 & 48.9 & 49.9 & \textbf{30.0} & 30.0 & 36.8 & 17.0 & 29.1 & \textbf{43.7} & 32.8 & 31.6 & 37.9 \\
 OWNER$^\S$ & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 & 18.7 & 26.5 & 50.3$^\dagger$ & 29.1 & 31.3 & 34.3 \\
-OPENER & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} & 31.4 & 39.4 & 32.5 & 32.5 & 36.6 \\
+% --- DATA PRESERVED (pre-hard-mining OPENER e2e, contrastive only, 2026-06-09) ---
+% OPENER & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} & 31.4 & 39.4 & 32.5 & 32.5 & 36.6 \\
+% --- end preserved ---
+OPENER & 41.0 & 47.0 & 53.3 & 48.3 & 50.0 & 24.0 & \textbf{33.1} & 37.3 & \textbf{30.1} & 33.5 & 45.6$^\dagger$ & 33.2 & 33.9 & \textbf{39.2} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -120,7 +123,9 @@ GLiNER-M & 36 & 36 & 37 & 38 & 39 & 39 & 38 & 40 & 41 & 42 & 44 & 46 & 45 & 40 \
 GLiNER-L & 144 & 149 & 153 & 149 & 155 & 137 & 132 & 145 & 147 & 143 & 131 & 141 & 137 & 143 \\
 GNER & 3431 & 5408 & 7461 & 6472 & 7110 & 2906 & 1610 & 3344 & 4310 & 5034 & 2914 & 3435 & 1500 & 4226 \\
 OWNER$^\S$ & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 & 558 & -- & 759 & 626 & 607 \\
-OPENER & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 101 & 160 \\
+% PRESERVED pre-hard-mining OPENER latency (contrastive, 2026-06-09):
+% OPENER & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 101 & 160 \\
+OPENER & 162 & 165 & 170 & 333 & 292 & 187 & 169 & 86 & 86 & 103 & 106 & 122 & 116 & 161 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -142,15 +147,17 @@ GLiNER-M & 0.31 & 0.29 & 0.33 & 0.48 & 0.40 & 0.50 & 0.66 & 0.76 & 0.77 & 0.79 &
 GLiNER-L & 0.68 & 0.67 & 0.77 & 1.04 & 0.91 & 1.01 & 1.37 & 1.51 & 1.54 & 1.49 & 1.38 & 1.52 & 1.43 & 1.18 \\
 GNER & 17.13 & 24.28 & 39.75 & 50.88 & 44.76 & 20.60 & 17.02 & 37.17 & 49.11 & 63.50 & 45.22 & 38.69 & 26.50 & 36.51 \\
 OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & -- & 23.2 & 19.1 & 13.6 \\
-OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 1.70 & 1.93 & 1.82 & 3.39 \\
+% PRESERVED pre-hard-mining OPENER energy (had a CodeCarbon glitch on Mus=22.76; avg inflated to 3.39):
+% OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 1.70 & 1.93 & 1.82 & 3.39 \\
+OPENER & 1.69 & 1.38 & 1.72 & 2.89 & 1.80 & 1.37 & 1.86 & 1.65 & 1.58 & 2.01 & 1.96 & 2.31 & 2.24 & 1.88 \\
 \bottomrule
 \end{tabular}
 \end{table}
 % >>> TODO[FINAL]: add a line chart of per-run energy (one line per dataset) for the
 % >>> frugality comparison.
-% >>> TODO[VERIFY]: OPENER energy on crossner_music = 22.76 Wh is a ~10x outlier vs the
-% >>> other datasets (~1-2 Wh) -> likely a CodeCarbon measurement glitch. Recheck and
-% >>> decide whether parts must be re-run, ONCE ALL RESULTS ARE IN.
+% RESOLVED[2026-06-13]: the 22.76 Wh CodeCarbon glitch on crossner_music is gone in the
+% hard-mining e2e re-run (Mus = 1.72 Wh). OPENER energy row + averages now come from that
+% clean run; true mean energy is 1.88 Wh (was 3.39, inflated by the single glitched cell).
 
 \begin{table}[tbp]
 \centering
@@ -166,7 +173,8 @@ GLiNER-M  & 200M & 37.1 & 40 & 0.58 & 0.03 \\
 GLiNER-L  & 330M & 38.9 & 143 & 1.18 & 0.07 \\
 GNER      & 220M & 37.9 & 4226 & 36.51 & 2.05 \\
 OWNER$^\S$ & 294M & 34.3 & 607 & 13.6 & 0.71 \\
-OPENER    & 467M & 36.6 & 160 & 3.39 & 0.19 \\
+% PRESERVED pre-hard-mining: OPENER & 467M & 36.6 & 160 & 3.39 & 0.19 \\ (energy inflated by a CodeCarbon glitch on Mus)
+OPENER    & 467M & 39.2 & 161 & 1.88 & 0.10 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -175,13 +183,14 @@ OPENER    & 467M & 36.6 & 160 & 3.39 & 0.19 \\
 \label{sec:exp:ablations}
 We justify each architectural choice with a one-factor-at-a-time search.
 Starting from the default pipeline, we vary a single component while holding the others fixed, and keep the setting with the highest mean AMI.
+Among embedder variants, an error-driven \emph{hard-negative mining} pass---fine-tuning the contrastive embedder for two epochs on the entity pairs it most often confuses (e.g.\ \emph{writer}/\emph{person}, \emph{album}/\emph{band}, \emph{country}/\emph{location}), mixed with correctly-typed mentions for diversity---raises typing-on-gold AMI from $54.0$ to $60.1$ ($+6.1$, better on $11$ of $13$ sets) and is our selected embedder configuration.
 \autoref{tab:ablation} reports this search; the protocol comparison between typing-on-gold and end-to-end is discussed alongside the main results.
 To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
 \emph{[Some axes are still being re-measured under the current pipeline; see the notes in \autoref{tab:ablation}.]}
 
 \begin{table}[tbp]
 \centering
-\caption{OPENER architecture search. One component is varied at a time around the default pipeline (\textbf{bold}). AMI and macro-$F_1$ ($\times100$, $\uparrow$); per-run latency, energy and carbon ($\downarrow$). $^\ddagger$\,entity-typing sweep on a 10-dataset subset with the contrastive embedder; $^\S$\,dimension sweep on a 6-dataset pilot with the frozen embedder. Latency and energy are dominated by the embedder and detector, hence near-constant across classifiers; per-axis efficiency for the current pipeline is being re-measured.}
+\caption{OPENER architecture search. One component is varied at a time around the default pipeline (\textbf{bold}). AMI and macro-$F_1$ ($\times100$, $\uparrow$); per-run latency, energy and carbon ($\downarrow$). $^\ast$\,entity-embedder rows are typing-on-gold over all $13$ sets; \emph{hard-negative mining} fine-tunes the contrastive embedder a \emph{second} time on the mention pairs it most often confuses (hard negatives in the sense of \cite{schroff2015facenet}), mixed with correctly-typed mentions for diversity ($3000$ triplets, $65\%$ hard, $2$ epochs); errors are mined on each training split by cross-validation, so no test label is seen. $^\ddagger$\,entity-typing sweep on a 10-dataset subset with the contrastive embedder; $^\S$\,dimension sweep on a 6-dataset pilot with the frozen embedder. Latency and energy are dominated by the embedder and detector, hence near-constant across classifiers; per-axis efficiency for the current pipeline is being re-measured.}
 \label{tab:ablation}
 \small
 \begin{tabular}{lccrrr}
@@ -193,9 +202,10 @@ Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscr
 \quad GLiNER-M                       & -- & -- & -- & -- & -- \\
 \quad \textbf{GLiNER-L}              & -- & -- & -- & -- & -- \\
 \addlinespace
-\multicolumn{6}{l}{\emph{Entity embedder}} \\
-\quad frozen Nomic v1.5              & -- & -- & -- & -- & -- \\
-\quad \textbf{+ contrastive fine-tuning} & -- & -- & -- & -- & -- \\
+\multicolumn{6}{l}{\emph{Entity embedder}$^{\ast}$} \\
+\quad frozen Nomic v1.5                       & -- & -- & -- & -- & -- \\
+\quad contrastive (Triplet, CoNLL, 3\,ep.)    & 54.0 & 63.3 & -- & -- & -- \\
+\quad \textbf{+ hard-negative mining (2\,ep., 3k\,tr.)} & \textbf{60.1} & \textbf{68.8} & -- & -- & -- \\
 \addlinespace
 \multicolumn{6}{l}{\emph{Matryoshka dimension}$^\S$} \\
 \quad 64                             & 15.1 & -- & -- & -- & -- \\
@@ -216,7 +226,7 @@ Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscr
 
 \begin{table}[tbp]
 \centering
-\caption{Entity typing on gold mentions: OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the per-dataset winner. The two systems use different supervision: OPENER fits a linear probe on each target's training labels, whereas OWNER is zero-shot (clustering after transfer from CoNLL-2003, $^\S$). Under this protocol OPENER leads on $11$ of $13$ sets. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source); it is not a transfer result and is not bolded.}
+\caption{Entity typing on gold mentions: OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the per-dataset winner. The two systems use different supervision: OPENER fits a linear probe on each target's training labels, whereas OWNER is zero-shot (clustering after transfer from CoNLL-2003, $^\S$). OPENER here uses the error-driven hard-negative mining embedder selected in \autoref{tab:ablation}; under this protocol it leads on all $13$ sets. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source) and for OPENER (its contrastive source); it is not a transfer result and is not bolded.}
 \label{tab:et-gold}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -224,8 +234,12 @@ Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscr
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
 \midrule
-OWNER$^\S$ & \textbf{55.7} & \textbf{54.3} & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52.5$^\dagger$ & 30.0 & 27.2 & 43.0 \\
-OPENER & 55.6 & 53.5 & \textbf{64.2} & \textbf{66.6} & \textbf{66.1} & \textbf{41.8} & \textbf{51.2} & \textbf{54.2} & \textbf{36.5} & \textbf{60.2} & \textbf{70.7} & \textbf{37.7} & \textbf{44.2} & \textbf{54.0} \\
+% --- DATA PRESERVED (pre-hard-mining OPENER, contrastive only, 2026-06-11) ---
+% OWNER$^\S$ & \textbf{55.7} & \textbf{54.3} & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52.5$^\dagger$ & 30.0 & 27.2 & 43.0 \\
+% OPENER & 55.6 & 53.5 & \textbf{64.2} & \textbf{66.6} & \textbf{66.1} & \textbf{41.8} & \textbf{51.2} & \textbf{54.2} & \textbf{36.5} & \textbf{60.2} & \textbf{70.7} & \textbf{37.7} & \textbf{44.2} & \textbf{54.0} \\
+% --- end preserved ---
+OWNER$^\S$ & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52.5$^\dagger$ & 30.0 & 27.2 & 43.0 \\
+OPENER & \textbf{57.3} & \textbf{64.7} & \textbf{71.1} & \textbf{72.5} & \textbf{67.2} & \textbf{40.1} & \textbf{59.5} & \textbf{61.1} & \textbf{50.7} & \textbf{64.7} & 70.6$^\dagger$ & \textbf{48.6} & \textbf{53.1} & \textbf{60.1} \\
 \bottomrule
 \end{tabular}
 \end{table}

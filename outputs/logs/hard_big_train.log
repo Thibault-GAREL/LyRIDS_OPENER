@@ -1,0 +1,17 @@
+D:\Loisir\Code_python\LyRIDS_Opener\scripts\train_contrastive_hard.py:39: DeprecationWarning: Importing from 'sentence_transformers.losses' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.losses' instead.
+  from sentence_transformers import InputExample, SentenceTransformer, losses
+[00:14:44] === Error-driven contrastive (hard mining) ===
+[00:14:44] base-model=outputs/models/embedder_contrastive  output=outputs/models/embedder_contrastive_hard_big  device=cuda
+[00:14:44] Phase 1-2 : embedding + detection des erreurs (13 datasets)...
+<All keys matched successfully>
+[00:15:02]   crossner_ai          spans=  532  err= 184 (34.6%)  top: algorithm->metrics:17, product->organisation:9, misc->algorithm:9
+[00:15:14]   crossner_literature  spans=  541  err= 221 (40.9%)  top: person->writer:48, book->writer:20, poem->writer:18
+[00:15:28]   crossner_music       spans=  648  err= 171 (26.4%)  top: album->band:21, person->musicalartist:15, album->musicalartist:13
+[00:15:57]   crossner_politics    spans= 1304  err= 264 (20.2%)  top: country->location:59, organisation->politicalparty:50, misc->location:20
+[00:16:24]   crossner_science     spans= 1075  err= 348 (32.4%)  top: person->scientist:41, misc->protein:27, misc->astronomicalobject:21
+[00:17:25]   wnut17               spans= 1975  err= 369 (18.7%)  top: location->group:45, person->group:30, creative-work->person:30
+[00:18:53]   mit_restaurant       spans= 4525  err=1228 (27.1%)  top: Dish->Hours:133, Hours->Dish:92, Restaurant_Name->Location:86
+[00:22:00]   mit_movie            spans=10419  err=3340 (32.1%)  top: TITLE->RATING:417, TITLE->GENRE:326, ACTOR->YEAR:246
+[00:25:17]   fabner               spans= 9670  err=3879 (40.1%)  top: CONPRI->PRO:408, CONPRI->MATE:368, CONPRI->MANP:338
+[00:27:54]   bionlp2004           spans= 6275  err= 939 (15.0%)  top: DNA->protein:306, protein->DNA:227, cell_line->cell_type:117
+[00:29:14]   conll2003            spans= 3834  err=   3 ( 0.1%)  top: LOC->ORG:2, ORG->PER:1
