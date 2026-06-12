@@ -77,15 +77,17 @@ python -m tests.test_opener_pipeline configs/my_experiment.yaml
 
 ---
 
-## ✅ État actuel (2026-06-11)
+## ✅ État actuel (2026-06-12)
 
-**V2 benchmarkée, méthode en cours de refonte.** Pipeline retenu : `GLiNER (MD) → Nomic v1.5 Matryoshka fine-tuné contrastif → LinearSVC class_weight='balanced'`. La V1 (GMM + anchor words + OOD + hiérarchie) reste une ablation, plus la voie principale.
+**V2 benchmarkée, benchmark COMPLET (toutes baselines 13/13).** Pipeline retenu : `GLiNER (MD) → Nomic v1.5 Matryoshka fine-tuné contrastif → LinearSVC class_weight='balanced'`. La V1 (GMM + anchor words + OOD + hiérarchie) reste une ablation, plus la voie principale.
 
-- **Benchmark 13 datasets** consolidé dans `outputs/results/aggregate/results_all.json` : GLiNER S/M/L, GNER T5-base, OPENER (e2e + typing-gold) complets ; OWNER **en cours** (gold 11/13, e2e 4/13).
-- **Constats clés** : en end-to-end, OPENER (AMI 0.366) reste **sous** GLiNER-L (0.389) ; sur mentions gold, OWNER (0.590, partiel) **devance** OPENER (0.540, mène 9/11). → d'où la refonte.
+- **Benchmark 13 datasets** consolidé dans `outputs/results/aggregate/results_all.json` : GLiNER S/M/L, GNER T5-base, OPENER (e2e + typing-gold) **et OWNER** complets 13/13.
+- **🔴 Correction de protocole OWNER (2026-06-12)** : on avait OWNER en **in-domain** (ré-entraîné par cible) = FAUX. Refait en **transfert zéro-shot** (entraîné 1× sur conll2003, 88 min, puis chargé sur chaque cible). Voir `outputs/results/baselines/owner/OWNER_NOTES.md` §7. Agrégation : `aggregate_results.py --owner transfer` (défaut). Fichiers : `owner_transfer*.json`.
+- **Constats clés (transfert)** : end-to-end, OPENER (AMI 0.366) sous GLiNER-L (0.389), OWNER zéro-shot **0.343**. Sur mentions gold, **OPENER (0.540) DEVANCE OWNER zéro-shot (0.430), mène 11/13** (inversion vs l'in-domain obsolète). ⚠️ Asymétrie de supervision à dire dans le papier : OPENER = sonde supervisée sur train cible ; OWNER/GLiNER/GNER = zéro-shot.
+- **Latence OWNER enfin mesurée** : ~607 ms/phrase (wall-clock amorti, pas un vrai p50), énergie 13.6 Wh, CO₂ 0.71 g.
 - **Frugalité instrumentée** : 3 axes (AMI + latence p50 + énergie kWh/gCO₂eq via CodeCarbon).
-- **🐛 À vérifier** : énergie OPENER sur `crossner_music` = 22.76 Wh (~10× outlier) → glitch probable, recheck quand tous les runs seront finis.
-- **Paper** (`paper/`, IEEEtran) : Related Work + Setup expérimental rédigés, 6 tables remplies, Abstract réécrit, « OPENER » en majuscules, biblio ~42 réfs vérifiées sur PDF. Brief : voir le bloc « Mise à jour 2026-06-11 » en tête.
+- **🐛 À vérifier** : énergie OPENER sur `crossner_music` = 22.76 Wh (~10× outlier) → glitch probable, à recheck.
+- **Paper** (`paper/`, IEEEtran) : `04_experiments.tex` = 5 tables remplies avec chiffres transfert (marqueurs `§` zéro-shot, `†` CoNLL in-domain), latence OWNER remplie, abstract finalisé (headline 54.0 vs 43.0 gold, 3.4 Wh). **Compile en 6 p.** Restent à rédiger : Intro, Method, Conclusion (placeholders).
 
 ### Composants livrés
 

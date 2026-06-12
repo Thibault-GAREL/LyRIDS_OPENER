@@ -74,9 +74,17 @@ def extract(results):
     return out
 
 
-def main():
+def main(owner_mode='transfer'):
     B = 'outputs/results/baselines'
     O = 'outputs/results'
+    # OWNER : protocole retenu = transfert zero-shot (train conll2003 -> load cibles).
+    # Les fichiers 'transfer' priment ; 'in-domain' (owner_2*.json) gardes pour ablation.
+    if owner_mode == 'transfer':
+        owner_gold = f'{B}/owner/owner_transfer_2*.json'
+        owner_e2e = f'{B}/owner/owner_transfer_e2e_2*.json'
+    else:
+        owner_gold = f'{B}/owner/owner_2*.json'
+        owner_e2e = f'{B}/owner/owner_e2e_2*.json'
 
     # Opener typing-gold : reparti sur 2 fichiers (10 + 3) -> fusion
     gold = {}
@@ -93,8 +101,8 @@ def main():
         'GLiNER-L':       (f'{B}/gliner_L/gliner_2*.json',  'end-to-end'),
         'GNER-T5-base':   (f'{B}/gner/gner_2*.json',         'end-to-end'),
         'Opener-V2-e2e':  (f'{O}/opener_e2e/SUMMARY*.json',  'end-to-end'),
-        'OWNER-e2e':      (f'{B}/owner/owner_e2e_2*.json',   'end-to-end'),
-        'OWNER':          (f'{B}/owner/owner_2*.json',       'typing-on-gold'),
+        'OWNER-e2e':      (owner_e2e,                         'end-to-end'),
+        'OWNER':          (owner_gold,                        'typing-on-gold'),
     }
 
     models = {}
@@ -149,4 +157,9 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--owner', choices=['transfer', 'in-domain'], default='transfer',
+                    help="protocole OWNER a agreger (defaut: transfer zero-shot)")
+    args = ap.parse_args()
+    main(owner_mode=args.owner)

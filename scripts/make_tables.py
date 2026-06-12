@@ -66,7 +66,9 @@ def efficiency_table(models, order, datasets):
     lines = [
         '\\begin{table}[t]', '\\centering',
         '\\caption{Efficiency: AMI, Macro-F1, latency and energy (means over '
-        'measured datasets). $^\\dagger$OWNER cost includes per-dataset training.}',
+        'measured datasets). $^\\dagger$OWNER is zero-shot transfer (trained once '
+        'on CoNLL-2003, then applied to every target); its energy excludes that '
+        'one-time training.}',
         '\\label{tab:efficiency}',
         '\\begin{tabular}{lccrr}', '\\toprule',
         '\\textbf{Model} & \\textbf{AMI} & \\textbf{Macro-F1} & '

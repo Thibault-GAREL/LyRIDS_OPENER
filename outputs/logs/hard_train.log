@@ -1,0 +1,10 @@
+D:\Loisir\Code_python\LyRIDS_Opener\scripts\train_contrastive_hard.py:39: DeprecationWarning: Importing from 'sentence_transformers.losses' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.losses' instead.
+  from sentence_transformers import InputExample, SentenceTransformer, losses
+[19:13:08] === Error-driven contrastive (hard mining) ===
+[19:13:08] base-model=outputs/models/embedder_contrastive  output=outputs/models/embedder_contrastive_hard  device=cuda
+[19:13:08] Phase 1-2 : embedding + detection des erreurs (13 datasets)...
+<All keys matched successfully>
+[19:13:23]   crossner_ai          spans=  532  err= 184 (34.6%)  top: algorithm->metrics:17, product->organisation:9, misc->algorithm:9
+[19:13:36]   crossner_literature  spans=  541  err= 221 (40.9%)  top: person->writer:48, book->writer:20, poem->writer:18
+[19:13:50]   crossner_music       spans=  648  err= 171 (26.4%)  top: album->band:21, person->musicalartist:15, album->musicalartist:13
+[19:14:21]   crossner_politics    spans= 1304  err= 264 (20.2%)  top: country->location:59, organisation->politicalparty:50, misc->location:20

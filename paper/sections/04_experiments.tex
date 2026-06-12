@@ -74,16 +74,18 @@ To keep the energy comparison fair, all systems are measured on the same machine
 
 \subsection{Main Results}
 \label{sec:exp:results}
-% Numbers filled from outputs/results/aggregate/results_all.json (2026-06-11).
-% OWNER ($\dagger$) still running -> partial rows. Regenerate via scripts/_gen_tables.py.
+% Numbers filled from outputs/results/aggregate/results_all.json (2026-06-12).
+% OWNER now in its native zero-shot transfer protocol (train once on CoNLL-2003,
+% infer on every target). $\S$ = zero-shot transfer; $\dagger$ = in-domain (CoNLL source).
 The tables below report the benchmark on all $13$ sets.
-Because OWNER retrains one model per dataset, its cost on our 6\,GB GPU is high; to cover every set, the slowest seven were trained for a single epoch (cells marked $\ddagger$).
-Entity typing converges quickly, so the typing-on-gold scores remain robust; the end-to-end scores on the single-epoch sets are a lower bound, as the detector is undertrained.
-\emph{[Narrative analysis to be finalised.]}
+OWNER is run in its native protocol \cite{genest2025owner}: a single model is trained once on the CoNLL-2003 source (a one-time cost of $88$ minutes on our 6\,GB GPU) and then applied \emph{zero-shot} to every target set (cells marked $^\S$).
+CoNLL-2003 is therefore in-domain for OWNER (marked $^\dagger$) and is excluded when reading OWNER as a transfer system.
+One protocol asymmetry must be kept in mind when reading the typing scores: OPENER fits a lightweight linear classifier on each target's training split (a supervised probe), whereas OWNER, GLiNER and GNER use no target-side labels.
+The two systems thus trade annotation for inference cost: OPENER needs target labels but stays cheap at test time, while OWNER needs none but pays a heavy per-sentence cost (\autoref{tab:latency}).
 
 \begin{table}[tbp]
 \centering
-\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best system per column. $^\ddagger$\,On these 7 sets OWNER's detector was trained for a single epoch (compute budget); its end-to-end score there is a lower bound, as the detector is undertrained. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
+\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best system per column. $^\S$\,OWNER is zero-shot (trained once on CoNLL-2003, applied to each target). $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source) and is not bolded as a transfer result; the best zero-shot system on CoNLL is GNER. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
 \label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -93,9 +95,9 @@ Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & G
 \midrule
 GLiNER-S & 41.7 & 49.8 & 56.4 & 50.6 & 53.3 & 29.7 & 26.1 & 35.6 & 10.7 & 31.8 & 18.9 & \textbf{34.1} & \textbf{36.1} & 36.5 \\
 GLiNER-M & 42.0 & \textbf{50.1} & 57.4 & 50.2 & \textbf{54.2} & 28.1 & 27.9 & 36.4 & 11.3 & \textbf{34.9} & 24.9 & 32.8 & 31.6 & 37.1 \\
-GLiNER-L & \textbf{42.9} & 48.9 & \textbf{58.0} & 49.8 & 52.8 & 28.9 & \textbf{30.9} & \textbf{37.6} & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & \textbf{38.9} \\
+GLiNER-L & 42.9 & 48.9 & \textbf{58.0} & 49.8 & 52.8 & 28.9 & \textbf{30.9} & \textbf{37.6} & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & \textbf{38.9} \\
 GNER & 41.9 & 46.9 & 53.5 & 48.9 & 49.9 & \textbf{30.0} & 30.0 & 36.8 & 17.0 & 29.1 & \textbf{43.7} & 32.8 & 31.6 & 37.9 \\
-OWNER & 3.9$^\ddagger$ & 23.0$^\ddagger$ & 45.4 & \textbf{53.5} & 53.5 & 29.9 & 36.7$^\ddagger$ & 40.5$^\ddagger$ & 33.8$^\ddagger$ & 35.4 & 49.0 & 28.3$^\ddagger$ & 26.7$^\ddagger$ & 35.4 \\
+OWNER$^\S$ & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 & 18.7 & 26.5 & 50.3$^\dagger$ & 29.1 & 31.3 & 34.3 \\
 OPENER & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} & 31.4 & 39.4 & 32.5 & 32.5 & 36.6 \\
 \bottomrule
 \end{tabular}
@@ -105,7 +107,7 @@ OPENER & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} &
 
 \begin{table}[tbp]
 \centering
-\caption{Inference latency. Median per-sentence latency in milliseconds ($\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. OWNER reports wall-clock time only, not per-sentence latency.}
+\caption{Inference latency. Median per-sentence latency in milliseconds ($\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. $^\S$\,OWNER does not expose a per-sentence call: its figure is the total inference wall-clock divided by the number of sentences (an amortised mean, not a true p50), and excludes the one-time $88$-min training on CoNLL-2003. CoNLL ($^\dagger$ in-domain) is omitted as its timing is folded into that training run. OWNER is an order of magnitude slower than GLiNER because it re-encodes every mention and clusters at inference time.}
 \label{tab:latency}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -117,7 +119,7 @@ GLiNER-S & \textbf{21} & \textbf{22} & \textbf{21} & \textbf{21} & \textbf{21} &
 GLiNER-M & 36 & 36 & 37 & 38 & 39 & 39 & 38 & 40 & 41 & 42 & 44 & 46 & 45 & 40 \\
 GLiNER-L & 144 & 149 & 153 & 149 & 155 & 137 & 132 & 145 & 147 & 143 & 131 & 141 & 137 & 143 \\
 GNER & 3431 & 5408 & 7461 & 6472 & 7110 & 2906 & 1610 & 3344 & 4310 & 5034 & 2914 & 3435 & 1500 & 4226 \\
-OWNER & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+OWNER$^\S$ & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 & 558 & -- & 759 & 626 & 607 \\
 OPENER & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 101 & 160 \\
 \bottomrule
 \end{tabular}
@@ -127,7 +129,7 @@ OPENER & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 1
 
 \begin{table}[tbp]
 \centering
-\caption{Energy. Energy per run in watt-hours ($\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. $^\ddagger$\,OWNER's energy mixes 4-epoch and 1-epoch runs (cf.\ \autoref{tab:main}); it trains one model per dataset, hence the high cost.}
+\caption{Energy. Energy per run in watt-hours ($\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. $^\S$\,OWNER is measured at inference only (zero-shot transfer); its one-time CoNLL-2003 training ($88$ min) is amortised across all targets and not charged per run. CoNLL ($^\dagger$) is omitted as its energy is folded into that training. OWNER remains energy-heavy because each sentence triggers per-mention encoding and clustering.}
 \label{tab:energy}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -139,7 +141,7 @@ GLiNER-S & \textbf{0.19} & \textbf{0.17} & \textbf{0.20} & \textbf{0.27} & \text
 GLiNER-M & 0.31 & 0.29 & 0.33 & 0.48 & 0.40 & 0.50 & 0.66 & 0.76 & 0.77 & 0.79 & 0.69 & 0.82 & 0.75 & 0.58 \\
 GLiNER-L & 0.68 & 0.67 & 0.77 & 1.04 & 0.91 & 1.01 & 1.37 & 1.51 & 1.54 & 1.49 & 1.38 & 1.52 & 1.43 & 1.18 \\
 GNER & 17.13 & 24.28 & 39.75 & 50.88 & 44.76 & 20.60 & 17.02 & 37.17 & 49.11 & 63.50 & 45.22 & 38.69 & 26.50 & 36.51 \\
-OWNER$^\ddagger$ & 18.91 & 21.42 & 47.97 & 90.54 & 77.83 & 275.15 & 109.97 & 191.68 & 180.80 & 559.75 & 392.76 & 146.30 & 144.41 & 173.65 \\
+OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & -- & 23.2 & 19.1 & 13.6 \\
 OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 1.70 & 1.93 & 1.82 & 3.39 \\
 \bottomrule
 \end{tabular}
@@ -152,7 +154,7 @@ OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 
 
 \begin{table}[tbp]
 \centering
-\caption{Summary: quality versus efficiency, averaged over the 13 datasets. AMI ($\times 100$, $\uparrow$); median per-sentence latency (ms), energy (Wh) and carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); and parameter count. $^\ddagger$\,OWNER end-to-end AMI is a lower bound: 7 of 13 detectors were trained for a single epoch (cf.\ \autoref{tab:main}); it trains one model per dataset, hence the high energy. End-to-end OPENER pairs the GLiNER-L detector (330M) with the 137M embedder, hence 467M; on gold mentions the detector is not used (137M). End-to-end OWNER likewise sums a DeBERTa-v3-base detector ($\approx$184M) and a BERT-base typing encoder (110M), hence $\approx$294M; GLiNER-S/M/L sizes are from the project notes and unverified.}
+\caption{Summary: quality versus efficiency, averaged over the 13 datasets. AMI ($\times 100$, $\uparrow$); median per-sentence latency (ms), energy (Wh) and carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); and parameter count. $^\S$\,OWNER is zero-shot (trained once on CoNLL-2003 for $88$ min, then applied to every target); its latency is an amortised wall-clock mean (\autoref{tab:latency}); latency and energy are averaged over the $12$ transfer sets (the in-domain CoNLL cost is folded into training), while AMI is the $13$-set mean of \autoref{tab:main}. End-to-end OPENER pairs the GLiNER-L detector (330M) with the 137M embedder, hence 467M; on gold mentions the detector is not used (137M). End-to-end OWNER likewise sums a DeBERTa-v3-base detector ($\approx$184M) and a BERT-base typing encoder (110M), hence $\approx$294M; GLiNER-S/M/L sizes are from the project notes and unverified.}
 \label{tab:efficiency}
 \small
 \begin{tabular}{lrrrrr}
@@ -163,7 +165,7 @@ GLiNER-S  & 50M  & 36.5 & 21 & 0.31 & 0.02 \\
 GLiNER-M  & 200M & 37.1 & 40 & 0.58 & 0.03 \\
 GLiNER-L  & 330M & 38.9 & 143 & 1.18 & 0.07 \\
 GNER      & 220M & 37.9 & 4226 & 36.51 & 2.05 \\
-OWNER$^\ddagger$ & 294M & 35.4$^\ddagger$ & -- & 173.65 & 9.03 \\
+OWNER$^\S$ & 294M & 34.3 & 607 & 13.6 & 0.71 \\
 OPENER    & 467M & 36.6 & 160 & 3.39 & 0.19 \\
 \bottomrule
 \end{tabular}
@@ -214,7 +216,7 @@ Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscr
 
 \begin{table}[tbp]
 \centering
-\caption{Entity typing on gold mentions: OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the per-dataset winner. OWNER leads on $10$ of $13$ sets. $^\ddagger$\,GUM (and the OWNER average) include one dataset trained for a single epoch; typing converges fast, so the effect is small here.}
+\caption{Entity typing on gold mentions: OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the per-dataset winner. The two systems use different supervision: OPENER fits a linear probe on each target's training labels, whereas OWNER is zero-shot (clustering after transfer from CoNLL-2003, $^\S$). Under this protocol OPENER leads on $11$ of $13$ sets. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source); it is not a transfer result and is not bolded.}
 \label{tab:et-gold}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -222,8 +224,8 @@ Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscr
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
 \midrule
-OWNER$^\ddagger$ & \textbf{60.8} & \textbf{59.7} & \textbf{65.2} & 65.5 & \textbf{68.1} & \textbf{42.1} & \textbf{62.8} & \textbf{64.0} & \textbf{57.9} & 52.3 & 50.5 & \textbf{47.2}$^\ddagger$ & \textbf{49.9} & \textbf{57.4} \\
-OPENER & 55.6 & 53.5 & 64.2 & \textbf{66.6} & 66.1 & 41.8 & 51.2 & 54.2 & 36.5 & \textbf{60.2} & \textbf{70.7} & 37.7 & 44.2 & 54.0 \\
+OWNER$^\S$ & \textbf{55.7} & \textbf{54.3} & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52.5$^\dagger$ & 30.0 & 27.2 & 43.0 \\
+OPENER & 55.6 & 53.5 & \textbf{64.2} & \textbf{66.6} & \textbf{66.1} & \textbf{41.8} & \textbf{51.2} & \textbf{54.2} & \textbf{36.5} & \textbf{60.2} & \textbf{70.7} & \textbf{37.7} & \textbf{44.2} & \textbf{54.0} \\
 \bottomrule
 \end{tabular}
 \end{table}
