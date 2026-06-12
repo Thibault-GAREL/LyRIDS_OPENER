@@ -18,3 +18,22 @@
 [2026-06-11 13:51:10] mit_restaurant : start
 [2026-06-11 14:44:28] mit_restaurant : done exit=-1073740791 3198s
 [2026-06-11 14:44:28] bionlp2004 : start
+[2026-06-11 19:49:48] bionlp2004 : done exit=0 18319s
+[2026-06-11 19:49:48] gum : start
+[2026-06-12 00:48:40] RESUME START (pid=98016)
+[2026-06-12 00:50:54] RESUME START (pid=13260)
+[2026-06-12 01:03:35] crossner_ai : start [RESUME]
+[2026-06-12 01:13:54] crossner_ai : done exit=0 619s [RESUME]
+[2026-06-12 01:13:54] crossner_literature : start [RESUME]
+[2026-06-12 01:25:35] crossner_literature : done exit=0 701s [RESUME]
+[2026-06-12 01:25:35] mit_restaurant : start [RESUME]
+[2026-06-12 02:25:34] mit_restaurant : done exit=0 3599s [RESUME]
+[2026-06-12 02:25:34] gentle : start [RESUME]
+[2026-06-12 03:44:20] gentle : done exit=0 4726s [RESUME]
+[2026-06-12 03:44:20] gum : start [RESUME]
+[2026-06-12 05:04:08] gum : done exit=0 4788s [RESUME]
+[2026-06-12 05:04:08] fabner : start [RESUME]
+[2026-06-12 06:42:45] fabner : done exit=0 5917s [RESUME]
+[2026-06-12 06:42:45] mit_movie : start [RESUME]
+[2026-06-12 08:27:18] mit_movie : done exit=0 6273s [RESUME]
+[2026-06-12 08:27:18] RESUME DONE

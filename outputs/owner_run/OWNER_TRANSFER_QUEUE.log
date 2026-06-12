@@ -1,0 +1,16 @@
+[2026-06-12 11:12:25] TRANSFER START (pid=31312)
+[2026-06-12 11:12:25] conll2003__train : start
+[2026-06-12 11:12:56] conll2003__train : done exit=1 31s
+[2026-06-12 11:12:56] crossner_ai : start
+[2026-06-12 11:13:10] crossner_ai : done exit=1 14s
+[2026-06-12 11:13:10] crossner_literature : start
+[2026-06-12 11:13:22] crossner_literature : done exit=1 12s
+[2026-06-12 11:13:22] crossner_music : start
+[2026-06-12 11:13:34] crossner_music : done exit=1 12s
+[2026-06-12 11:13:34] crossner_politics : start
+[2026-06-12 11:13:46] crossner_politics : done exit=1 12s
+[2026-06-12 11:13:46] crossner_science : start
+[2026-06-12 11:13:57] crossner_science : done exit=1 12s
+[2026-06-12 11:13:57] wnut17 : start
+[2026-06-12 11:15:17] TRANSFER START (pid=35988)
+[2026-06-12 11:15:17] conll2003__train : start

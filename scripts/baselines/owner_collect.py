@@ -64,17 +64,24 @@ def _iter_runs(mlruns):
                 yield run_dir
 
 
-def _collect(mlruns, metric):
-    """{ds: (ami, mtime, run_id)} : run le plus recent par dataset pour `metric`."""
+def _collect(mlruns, metric, prefer_model=None):
+    """{ds: (ami, key, run_id)} : meilleur run par dataset pour `metric`.
+
+    Priorite : runs du mode `prefer_model` d'abord (ex. 'entity_typing' pour le
+    typing-gold, sinon l'eval interne des runs 'ner' ecraserait les valeurs),
+    puis le plus recent.
+    """
     best = {}
     for run_dir in _iter_runs(mlruns):
         ds = _read_param(run_dir, DATASET_PARAM)
         ami = _read_metric_last(run_dir, metric)
         if ds is None or ami is None:
             continue
-        mtime = run_dir.stat().st_mtime
-        if ds not in best or mtime > best[ds][1]:
-            best[ds] = (ami, mtime, run_dir.name)
+        model = _read_param(run_dir, 'config.model')
+        key = (1 if (prefer_model and model == prefer_model) else 0,
+               run_dir.stat().st_mtime)
+        if ds not in best or key > best[ds][1]:
+            best[ds] = (ami, key, run_dir.name)
     return best
 
 
@@ -117,11 +124,11 @@ def main():
 
     # 2 protocoles : typing-sur-gold (et_test_ami) + end-to-end (ner_test_ami)
     variants = [
-        ('owner', AMI_METRIC, Path(args.queue_log), 'typing-sur-gold'),
-        ('owner_e2e', 'ner_test_ami', Path(args.queue_log_ner), 'end-to-end'),
+        ('owner', AMI_METRIC, Path(args.queue_log), 'typing-sur-gold', 'entity_typing'),
+        ('owner_e2e', 'ner_test_ami', Path(args.queue_log_ner), 'end-to-end', None),
     ]
-    for prefix, metric, qlog, label in variants:
-        results = _build(_collect(mlruns, metric), _parse_queue_times(qlog))
+    for prefix, metric, qlog, label, prefer in variants:
+        results = _build(_collect(mlruns, metric, prefer), _parse_queue_times(qlog))
         if not results:
             print(f"[{prefix}] aucun run avec '{metric}' pour l'instant.")
             continue

@@ -26,3 +26,6 @@
 [2026-06-11 04:11:02] mit_movie : start
 [2026-06-11 05:08:37] mit_movie : done exit=0 3454s
 [2026-06-11 05:08:37] QUEUE OWNER DONE
+[2026-06-12 00:48:40] gum : start [RESUME]
+[2026-06-12 00:50:54] gum : start [RESUME]
+[2026-06-12 01:03:35] gum : done exit=0 761s [RESUME]

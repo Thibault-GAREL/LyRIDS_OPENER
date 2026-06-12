@@ -76,13 +76,14 @@ To keep the energy comparison fair, all systems are measured on the same machine
 \label{sec:exp:results}
 % Numbers filled from outputs/results/aggregate/results_all.json (2026-06-11).
 % OWNER ($\dagger$) still running -> partial rows. Regenerate via scripts/_gen_tables.py.
-The tables below report the current state of the benchmark.
-OWNER is still running, so its rows (marked $\dagger$) cover only the datasets completed so far and their averages are not directly comparable to the full means.
-\emph{[Narrative analysis to be written once all runs, including OWNER, are complete.]}
+The tables below report the benchmark on all $13$ sets.
+Because OWNER retrains one model per dataset, its cost on our 6\,GB GPU is high; to cover every set, the slowest seven were trained for a single epoch (cells marked $\ddagger$).
+Entity typing converges quickly, so the typing-on-gold scores remain robust; the end-to-end scores on the single-epoch sets are a lower bound, as the detector is undertrained.
+\emph{[Narrative analysis to be finalised.]}
 
 \begin{table}[tbp]
 \centering
-\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best system per column. $^\dagger$\,OWNER run in progress: average over completed datasets only. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
+\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best system per column. $^\ddagger$\,On these 7 sets OWNER's detector was trained for a single epoch (compute budget); its end-to-end score there is a lower bound, as the detector is undertrained. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
 \label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -90,11 +91,11 @@ OWNER is still running, so its rows (marked $\dagger$) cover only the datasets c
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
 \midrule
-GLiNER-S & 41.7 & 49.8 & 56.4 & \textbf{50.6} & 53.3 & 29.7 & 26.1 & 35.6 & 10.7 & 31.8 & 18.9 & \textbf{34.1} & \textbf{36.1} & 36.5 \\
+GLiNER-S & 41.7 & 49.8 & 56.4 & 50.6 & 53.3 & 29.7 & 26.1 & 35.6 & 10.7 & 31.8 & 18.9 & \textbf{34.1} & \textbf{36.1} & 36.5 \\
 GLiNER-M & 42.0 & \textbf{50.1} & 57.4 & 50.2 & \textbf{54.2} & 28.1 & 27.9 & 36.4 & 11.3 & \textbf{34.9} & 24.9 & 32.8 & 31.6 & 37.1 \\
 GLiNER-L & \textbf{42.9} & 48.9 & \textbf{58.0} & 49.8 & 52.8 & 28.9 & \textbf{30.9} & \textbf{37.6} & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & \textbf{38.9} \\
 GNER & 41.9 & 46.9 & 53.5 & 48.9 & 49.9 & \textbf{30.0} & 30.0 & 36.8 & 17.0 & 29.1 & \textbf{43.7} & 32.8 & 31.6 & 37.9 \\
-OWNER$^\dagger$ & -- & -- & 45.4 & 53.5 & 53.5 & 29.9 & -- & -- & -- & -- & -- & -- & -- & 45.6$^\dagger$ \\
+OWNER & 3.9$^\ddagger$ & 23.0$^\ddagger$ & 45.4 & \textbf{53.5} & 53.5 & 29.9 & 36.7$^\ddagger$ & 40.5$^\ddagger$ & 33.8$^\ddagger$ & 35.4 & 49.0 & 28.3$^\ddagger$ & 26.7$^\ddagger$ & 35.4 \\
 OPENER & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} & 31.4 & 39.4 & 32.5 & 32.5 & 36.6 \\
 \bottomrule
 \end{tabular}
@@ -126,7 +127,7 @@ OPENER & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 1
 
 \begin{table}[tbp]
 \centering
-\caption{Energy. Energy per run in watt-hours ($\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. $^\dagger$\,OWNER in progress; it trains one model per dataset, hence the high cost.}
+\caption{Energy. Energy per run in watt-hours ($\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. $^\ddagger$\,OWNER's energy mixes 4-epoch and 1-epoch runs (cf.\ \autoref{tab:main}); it trains one model per dataset, hence the high cost.}
 \label{tab:energy}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -138,7 +139,7 @@ GLiNER-S & \textbf{0.19} & \textbf{0.17} & \textbf{0.20} & \textbf{0.27} & \text
 GLiNER-M & 0.31 & 0.29 & 0.33 & 0.48 & 0.40 & 0.50 & 0.66 & 0.76 & 0.77 & 0.79 & 0.69 & 0.82 & 0.75 & 0.58 \\
 GLiNER-L & 0.68 & 0.67 & 0.77 & 1.04 & 0.91 & 1.01 & 1.37 & 1.51 & 1.54 & 1.49 & 1.38 & 1.52 & 1.43 & 1.18 \\
 GNER & 17.13 & 24.28 & 39.75 & 50.88 & 44.76 & 20.60 & 17.02 & 37.17 & 49.11 & 63.50 & 45.22 & 38.69 & 26.50 & 36.51 \\
-OWNER$^\dagger$ & -- & -- & 47.97 & 90.54 & 77.83 & 275.15 & -- & -- & -- & -- & -- & -- & -- & 122.87$^\dagger$ \\
+OWNER$^\ddagger$ & 18.91 & 21.42 & 47.97 & 90.54 & 77.83 & 275.15 & 109.97 & 191.68 & 180.80 & 559.75 & 392.76 & 146.30 & 144.41 & 173.65 \\
 OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 1.70 & 1.93 & 1.82 & 3.39 \\
 \bottomrule
 \end{tabular}
@@ -151,7 +152,7 @@ OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 
 
 \begin{table}[tbp]
 \centering
-\caption{Summary: quality versus efficiency, averaged over the 13 datasets. AMI ($\times 100$, $\uparrow$); median per-sentence latency (ms), energy (Wh) and carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); and parameter count. $^\dagger$\,OWNER in progress (means over completed datasets); it trains one model per dataset, hence the high energy. OPENER additionally reuses the GLiNER-L detector.}
+\caption{Summary: quality versus efficiency, averaged over the 13 datasets. AMI ($\times 100$, $\uparrow$); median per-sentence latency (ms), energy (Wh) and carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); and parameter count. $^\ddagger$\,OWNER end-to-end AMI is a lower bound: 7 of 13 detectors were trained for a single epoch (cf.\ \autoref{tab:main}); it trains one model per dataset, hence the high energy. End-to-end OPENER pairs the GLiNER-L detector (330M) with the 137M embedder, hence 467M; on gold mentions the detector is not used (137M).}
 \label{tab:efficiency}
 \small
 \begin{tabular}{lrrrrr}
@@ -162,8 +163,8 @@ GLiNER-S  & 50M  & 36.5 & 21 & 0.31 & 0.02 \\
 GLiNER-M  & 200M & 37.1 & 40 & 0.58 & 0.03 \\
 GLiNER-L  & 330M & 38.9 & 143 & 1.18 & 0.07 \\
 GNER      & 220M & 37.9 & 4226 & 36.51 & 2.05 \\
-OWNER$^\dagger$ & 110M & 45.6$^\dagger$ & -- & 122.87 & 6.39 \\
-OPENER    & 137M & 36.6 & 160 & 3.39 & 0.19 \\
+OWNER$^\ddagger$ & 110M & 35.4$^\ddagger$ & -- & 173.65 & 9.03 \\
+OPENER    & 467M & 36.6 & 160 & 3.39 & 0.19 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -213,7 +214,7 @@ Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscr
 
 \begin{table}[tbp]
 \centering
-\caption{Entity typing on gold mentions: OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the per-dataset winner. $^\dagger$\,OWNER run in progress; on the completed datasets OWNER currently leads (9 of 11).}
+\caption{Entity typing on gold mentions: OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the per-dataset winner. OWNER leads on $10$ of $13$ sets. $^\ddagger$\,GUM (and the OWNER average) include one dataset trained for a single epoch; typing converges fast, so the effect is small here.}
 \label{tab:et-gold}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -221,8 +222,8 @@ Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscr
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
 \midrule
-OWNER$^\dagger$ & \textbf{60.8} & \textbf{59.7} & \textbf{66.9} & 65.6 & \textbf{68.4} & \textbf{42.6} & \textbf{62.8} & \textbf{64.0} & \textbf{57.9} & -- & 50.5 & -- & \textbf{49.9} & 59.0$^\dagger$ \\
-OPENER & 55.6 & 53.5 & 64.2 & \textbf{66.6} & 66.1 & 41.8 & 51.2 & 54.2 & 36.5 & \textbf{60.2} & \textbf{70.7} & \textbf{37.7} & 44.2 & 54.0 \\
+OWNER$^\ddagger$ & \textbf{60.8} & \textbf{59.7} & \textbf{65.2} & 65.5 & \textbf{68.1} & \textbf{42.1} & \textbf{62.8} & \textbf{64.0} & \textbf{57.9} & 52.3 & 50.5 & \textbf{47.2}$^\ddagger$ & \textbf{49.9} & \textbf{57.4} \\
+OPENER & 55.6 & 53.5 & 64.2 & \textbf{66.6} & 66.1 & 41.8 & 51.2 & 54.2 & 36.5 & \textbf{60.2} & \textbf{70.7} & 37.7 & 44.2 & 54.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
