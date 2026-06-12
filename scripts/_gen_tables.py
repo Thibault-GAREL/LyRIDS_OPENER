@@ -75,7 +75,7 @@ print(gen(e2e, 'kwh', 1000, f2, mn))
 
 # ---- summary ----
 params = {'GLiNER-S':'50M','GLiNER-M':'200M','GLiNER-L':'330M','GNER-T5-base':'220M',
-          'OWNER-e2e':'110M','Opener-V2-e2e':'467M'}  # 467M = GLiNER-L 330M (MD) + Nomic 137M
+          'OWNER-e2e':'294M','Opener-V2-e2e':'467M'}  # OWNER e2e = deberta-v3-base ~184M + bert-base 110M; OPENER = GLiNER-L 330M + Nomic 137M
 print('\n% ===== TABLE 5 summary (Params | AMI x100 | p50 ms | Energy Wh | CO2 g) =====')
 for m in e2e:
     ami = avg(m,'ami'); p = avg(m,'p50_ms'); wh = avg(m,'kwh'); co = avg(m,'gco2eq')

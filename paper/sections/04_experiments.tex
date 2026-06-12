@@ -152,7 +152,7 @@ OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 
 
 \begin{table}[tbp]
 \centering
-\caption{Summary: quality versus efficiency, averaged over the 13 datasets. AMI ($\times 100$, $\uparrow$); median per-sentence latency (ms), energy (Wh) and carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); and parameter count. $^\ddagger$\,OWNER end-to-end AMI is a lower bound: 7 of 13 detectors were trained for a single epoch (cf.\ \autoref{tab:main}); it trains one model per dataset, hence the high energy. End-to-end OPENER pairs the GLiNER-L detector (330M) with the 137M embedder, hence 467M; on gold mentions the detector is not used (137M).}
+\caption{Summary: quality versus efficiency, averaged over the 13 datasets. AMI ($\times 100$, $\uparrow$); median per-sentence latency (ms), energy (Wh) and carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); and parameter count. $^\ddagger$\,OWNER end-to-end AMI is a lower bound: 7 of 13 detectors were trained for a single epoch (cf.\ \autoref{tab:main}); it trains one model per dataset, hence the high energy. End-to-end OPENER pairs the GLiNER-L detector (330M) with the 137M embedder, hence 467M; on gold mentions the detector is not used (137M). End-to-end OWNER likewise sums a DeBERTa-v3-base detector ($\approx$184M) and a BERT-base typing encoder (110M), hence $\approx$294M; GLiNER-S/M/L sizes are from the project notes and unverified.}
 \label{tab:efficiency}
 \small
 \begin{tabular}{lrrrrr}
@@ -163,7 +163,7 @@ GLiNER-S  & 50M  & 36.5 & 21 & 0.31 & 0.02 \\
 GLiNER-M  & 200M & 37.1 & 40 & 0.58 & 0.03 \\
 GLiNER-L  & 330M & 38.9 & 143 & 1.18 & 0.07 \\
 GNER      & 220M & 37.9 & 4226 & 36.51 & 2.05 \\
-OWNER$^\ddagger$ & 110M & 35.4$^\ddagger$ & -- & 173.65 & 9.03 \\
+OWNER$^\ddagger$ & 294M & 35.4$^\ddagger$ & -- & 173.65 & 9.03 \\
 OPENER    & 467M & 36.6 & 160 & 3.39 & 0.19 \\
 \bottomrule
 \end{tabular}

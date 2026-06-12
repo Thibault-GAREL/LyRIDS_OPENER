@@ -64,18 +64,22 @@ def _iter_runs(mlruns):
                 yield run_dir
 
 
-def _collect(mlruns, metric, prefer_model=None):
+def _collect(mlruns, metric, prefer_model=None, require_states=None):
     """{ds: (ami, key, run_id)} : meilleur run par dataset pour `metric`.
 
     Priorite : runs du mode `prefer_model` d'abord (ex. 'entity_typing' pour le
     typing-gold, sinon l'eval interne des runs 'ner' ecraserait les valeurs),
-    puis le plus recent.
+    puis le plus recent. `require_states` : ne garder que ces save_state (ex.
+    {'save_finetuned','load_finetuned'} pour ne collecter QUE le transfert).
     """
     best = {}
     for run_dir in _iter_runs(mlruns):
         ds = _read_param(run_dir, DATASET_PARAM)
         ami = _read_metric_last(run_dir, metric)
         if ds is None or ami is None:
+            continue
+        if require_states is not None and \
+                _read_param(run_dir, 'config.save_state') not in require_states:
             continue
         model = _read_param(run_dir, 'config.model')
         key = (1 if (prefer_model and model == prefer_model) else 0,
@@ -111,6 +115,9 @@ def main():
     parser.add_argument('--queue-log-ner', default='outputs/owner_run/OWNER_NER_QUEUE.log',
                         help='Temps wall-clock end-to-end (run_owner_ner.ps1).')
     parser.add_argument('--output-dir', default='outputs/results/baselines/owner')
+    parser.add_argument('--transfer', action='store_true',
+                        help='Collecte le protocole TRANSFERT (runs save/load_finetuned, '
+                             'log OWNER_TRANSFER_QUEUE.log) -> owner_transfer*.json.')
     args = parser.parse_args()
 
     mlruns = Path(args.mlruns)
@@ -123,12 +130,20 @@ def main():
     date_str = datetime.now().strftime('%Y-%m-%d_%H%M%S')
 
     # 2 protocoles : typing-sur-gold (et_test_ami) + end-to-end (ner_test_ami)
-    variants = [
-        ('owner', AMI_METRIC, Path(args.queue_log), 'typing-sur-gold', 'entity_typing'),
-        ('owner_e2e', 'ner_test_ami', Path(args.queue_log_ner), 'end-to-end', None),
-    ]
-    for prefix, metric, qlog, label, prefer in variants:
-        results = _build(_collect(mlruns, metric, prefer), _parse_queue_times(qlog))
+    if args.transfer:
+        qt = Path('outputs/owner_run/OWNER_TRANSFER_QUEUE.log')
+        states = {'save_finetuned', 'load_finetuned'}
+        variants = [
+            ('owner_transfer', AMI_METRIC, qt, 'transfert typing-gold', None, states),
+            ('owner_transfer_e2e', 'ner_test_ami', qt, 'transfert end-to-end', None, states),
+        ]
+    else:
+        variants = [
+            ('owner', AMI_METRIC, Path(args.queue_log), 'typing-sur-gold', 'entity_typing', None),
+            ('owner_e2e', 'ner_test_ami', Path(args.queue_log_ner), 'end-to-end', None, None),
+        ]
+    for prefix, metric, qlog, label, prefer, states in variants:
+        results = _build(_collect(mlruns, metric, prefer, states), _parse_queue_times(qlog))
         if not results:
             print(f"[{prefix}] aucun run avec '{metric}' pour l'instant.")
             continue

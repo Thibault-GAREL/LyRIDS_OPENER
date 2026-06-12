@@ -14,3 +14,21 @@
 [2026-06-12 11:13:57] wnut17 : start
 [2026-06-12 11:15:17] TRANSFER START (pid=35988)
 [2026-06-12 11:15:17] conll2003__train : start
+[2026-06-12 12:43:46] conll2003__train : done exit=0 5309s
+[2026-06-12 12:43:46] crossner_ai : start
+[2026-06-12 12:47:22] crossner_ai : done exit=0 215s
+[2026-06-12 12:47:22] crossner_literature : start
+[2026-06-12 12:52:18] crossner_literature : done exit=0 296s
+[2026-06-12 12:52:18] crossner_music : start
+[2026-06-12 12:59:14] crossner_music : done exit=0 416s
+[2026-06-12 12:59:14] crossner_politics : start
+[2026-06-12 13:09:13] crossner_politics : done exit=0 599s
+[2026-06-12 13:09:13] crossner_science : start
+[2026-06-12 13:16:04] crossner_science : done exit=0 411s
+[2026-06-12 13:16:04] wnut17 : start
+[2026-06-12 13:19:38] wnut17 : done exit=0 214s
+[2026-06-12 13:19:38] mit_restaurant : start
+[2026-06-12 13:24:19] mit_restaurant : done exit=0 281s
+[2026-06-12 13:24:19] mit_movie : start
+[2026-06-12 13:33:11] mit_movie : done exit=0 532s
+[2026-06-12 13:33:11] fabner : start
