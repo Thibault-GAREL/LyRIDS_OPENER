@@ -1,0 +1,202 @@
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Embedder       : outputs/models/embedder_contrastive_hard_big
+MD (GLiNER)    : urchade/gliner_large-v2.1  thresholds=[0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6]
+Loading GLiNER urchade/gliner_large-v2.1 on cuda...
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00, 1580.37it/s]
+<All keys matched successfully>
+Datasets : ['crossner_ai', 'crossner_literature', 'crossner_music', 'crossner_politics', 'crossner_science', 'wnut17', 'mit_restaurant', 'mit_movie', 'fabner', 'bionlp2004', 'conll2003', 'gum', 'gentle']
+
+=== crossner_ai ===
+  100 train / 430 test sentences, 14 labels
+  fit : 532 train spans, 14 classes
+  [t=0.05] recall=0.802  linear_svm_balanced: AMI=0.3581  F1=0.4034
+  [t=0.1] recall=0.790  linear_svm_balanced: AMI=0.3718  F1=0.4168
+  [t=0.15] recall=0.777  linear_svm_balanced: AMI=0.3837  F1=0.4258
+  [t=0.2] recall=0.770  linear_svm_balanced: AMI=0.3914  F1=0.4334
+  [t=0.25] recall=0.761  linear_svm_balanced: AMI=0.3977  F1=0.4394
+  [t=0.3] recall=0.750  linear_svm_balanced: AMI=0.4021  F1=0.4430
+  [t=0.35] recall=0.740  linear_svm_balanced: AMI=0.4089  F1=0.4482
+  [t=0.4] recall=0.726  linear_svm_balanced: AMI=0.4124  F1=0.4495
+  [t=0.5] recall=0.702  linear_svm_balanced: AMI=0.4180  F1=0.4531
+  [t=0.6] recall=0.670  linear_svm_balanced: AMI=0.4285  F1=0.4546
+
+=== crossner_literature ===
+  100 train / 416 test sentences, 12 labels
+  fit : 541 train spans, 12 classes
+  [t=0.05] recall=0.861  linear_svm_balanced: AMI=0.4519  F1=0.4269
+  [t=0.1] recall=0.848  linear_svm_balanced: AMI=0.4686  F1=0.4426
+  [t=0.15] recall=0.840  linear_svm_balanced: AMI=0.4797  F1=0.4537
+  [t=0.2] recall=0.830  linear_svm_balanced: AMI=0.4879  F1=0.4597
+  [t=0.25] recall=0.821  linear_svm_balanced: AMI=0.4923  F1=0.4657
+  [t=0.3] recall=0.809  linear_svm_balanced: AMI=0.4962  F1=0.4684
+  [t=0.35] recall=0.803  linear_svm_balanced: AMI=0.4993  F1=0.4727
+  [t=0.4] recall=0.792  linear_svm_balanced: AMI=0.4986  F1=0.4728
+  [t=0.5] recall=0.769  linear_svm_balanced: AMI=0.4979  F1=0.4736
+  [t=0.6] recall=0.741  linear_svm_balanced: AMI=0.4938  F1=0.4752
+
+=== crossner_music ===
+  100 train / 465 test sentences, 13 labels
+  fit : 648 train spans, 13 classes
+  [t=0.05] recall=0.877  linear_svm_balanced: AMI=0.5166  F1=0.4696
+  [t=0.1] recall=0.870  linear_svm_balanced: AMI=0.5311  F1=0.4825
+  [t=0.15] recall=0.865  linear_svm_balanced: AMI=0.5377  F1=0.4870
+  [t=0.2] recall=0.858  linear_svm_balanced: AMI=0.5452  F1=0.4932
+  [t=0.25] recall=0.855  linear_svm_balanced: AMI=0.5485  F1=0.4977
+  [t=0.3] recall=0.850  linear_svm_balanced: AMI=0.5527  F1=0.4992
+  [t=0.35] recall=0.845  linear_svm_balanced: AMI=0.5524  F1=0.5014
+  [t=0.4] recall=0.838  linear_svm_balanced: AMI=0.5531  F1=0.5047
+  [t=0.5] recall=0.827  linear_svm_balanced: AMI=0.5574  F1=0.5080
+  [t=0.6] recall=0.812  linear_svm_balanced: AMI=0.5568  F1=0.5102
+
+=== crossner_politics ===
+  200 train / 651 test sentences, 9 labels
+  fit : 1304 train spans, 9 classes
+  [t=0.05] recall=0.791  linear_svm_balanced: AMI=0.4757  F1=0.3884
+  [t=0.1] recall=0.785  linear_svm_balanced: AMI=0.4848  F1=0.4013
+  [t=0.15] recall=0.780  linear_svm_balanced: AMI=0.4918  F1=0.4100
+  [t=0.2] recall=0.778  linear_svm_balanced: AMI=0.4955  F1=0.4151
+  [t=0.25] recall=0.772  linear_svm_balanced: AMI=0.4993  F1=0.4195
+  [t=0.3] recall=0.767  linear_svm_balanced: AMI=0.5031  F1=0.4234
+  [t=0.35] recall=0.762  linear_svm_balanced: AMI=0.5054  F1=0.4256
+  [t=0.4] recall=0.757  linear_svm_balanced: AMI=0.5067  F1=0.4281
+  [t=0.5] recall=0.745  linear_svm_balanced: AMI=0.5081  F1=0.4324
+  [t=0.6] recall=0.727  linear_svm_balanced: AMI=0.5081  F1=0.4318
+
+=== crossner_science ===
+  200 train / 543 test sentences, 17 labels
+  fit : 1075 train spans, 17 classes
+  [t=0.05] recall=0.852  linear_svm_balanced: AMI=0.4687  F1=0.4713
+  [t=0.1] recall=0.842  linear_svm_balanced: AMI=0.4869  F1=0.4876
+  [t=0.15] recall=0.835  linear_svm_balanced: AMI=0.4945  F1=0.4955
+  [t=0.2] recall=0.828  linear_svm_balanced: AMI=0.5026  F1=0.5025
+  [t=0.25] recall=0.820  linear_svm_balanced: AMI=0.5106  F1=0.5088
+  [t=0.3] recall=0.815  linear_svm_balanced: AMI=0.5167  F1=0.5136
+  [t=0.35] recall=0.808  linear_svm_balanced: AMI=0.5207  F1=0.5163
+  [t=0.4] recall=0.800  linear_svm_balanced: AMI=0.5246  F1=0.5193
+  [t=0.5] recall=0.789  linear_svm_balanced: AMI=0.5317  F1=0.5282
+  [t=0.6] recall=0.767  linear_svm_balanced: AMI=0.5357  F1=0.5289
+
+=== wnut17 ===
+  1228 train / 689 test sentences, 6 labels
+  fit : 1975 train spans, 6 classes
+  [t=0.05] recall=0.745  linear_svm_balanced: AMI=0.2128  F1=0.2362
+  [t=0.1] recall=0.720  linear_svm_balanced: AMI=0.2224  F1=0.2453
+  [t=0.15] recall=0.699  linear_svm_balanced: AMI=0.2314  F1=0.2525
+  [t=0.2] recall=0.685  linear_svm_balanced: AMI=0.2376  F1=0.2577
+  [t=0.25] recall=0.672  linear_svm_balanced: AMI=0.2440  F1=0.2617
+  [t=0.3] recall=0.658  linear_svm_balanced: AMI=0.2494  F1=0.2650
+  [t=0.35] recall=0.644  linear_svm_balanced: AMI=0.2533  F1=0.2656
+  [t=0.4] recall=0.629  linear_svm_balanced: AMI=0.2578  F1=0.2666
+  [t=0.5] recall=0.597  linear_svm_balanced: AMI=0.2643  F1=0.2680
+  [t=0.6] recall=0.568  linear_svm_balanced: AMI=0.2745  F1=0.2688
+
+=== mit_restaurant ===
+  2000 train / 1000 test sentences, 8 labels
+  fit : 4525 train spans, 8 classes
+  [t=0.05] recall=0.508  linear_svm_balanced: AMI=0.3368  F1=0.2867
+  [t=0.1] recall=0.486  linear_svm_balanced: AMI=0.3381  F1=0.2836
+  [t=0.15] recall=0.471  linear_svm_balanced: AMI=0.3368  F1=0.2793
+  [t=0.2] recall=0.456  linear_svm_balanced: AMI=0.3381  F1=0.2793
+  [t=0.25] recall=0.441  linear_svm_balanced: AMI=0.3372  F1=0.2778
+  [t=0.3] recall=0.428  linear_svm_balanced: AMI=0.3363  F1=0.2758
+  [t=0.35] recall=0.416  linear_svm_balanced: AMI=0.3342  F1=0.2740
+  [t=0.4] recall=0.405  linear_svm_balanced: AMI=0.3314  F1=0.2728
+  [t=0.5] recall=0.381  linear_svm_balanced: AMI=0.3272  F1=0.2675
+  [t=0.6] recall=0.354  linear_svm_balanced: AMI=0.3185  F1=0.2599
+
+=== mit_movie ===
+  2000 train / 1000 test sentences, 12 labels
+  fit : 10419 train spans, 12 classes
+  [t=0.05] recall=0.179  linear_svm_balanced: AMI=0.3678  F1=0.1235
+  [t=0.1] recall=0.166  linear_svm_balanced: AMI=0.3723  F1=0.1201
+  [t=0.15] recall=0.158  linear_svm_balanced: AMI=0.3743  F1=0.1164
+  [t=0.2] recall=0.150  linear_svm_balanced: AMI=0.3768  F1=0.1133
+  [t=0.25] recall=0.145  linear_svm_balanced: AMI=0.3778  F1=0.1107
+  [t=0.3] recall=0.141  linear_svm_balanced: AMI=0.3780  F1=0.1095
+  [t=0.35] recall=0.137  linear_svm_balanced: AMI=0.3781  F1=0.1070
+  [t=0.4] recall=0.131  linear_svm_balanced: AMI=0.3773  F1=0.0994
+  [t=0.5] recall=0.125  linear_svm_balanced: AMI=0.3747  F1=0.0957
+  [t=0.6] recall=0.117  linear_svm_balanced: AMI=0.3707  F1=0.0872
+
+=== fabner ===
+  2000 train / 1000 test sentences, 12 labels
+  fit : 9670 train spans, 12 classes
+  [t=0.05] recall=0.157  linear_svm_balanced: AMI=0.3523  F1=0.0846
+  [t=0.1] recall=0.133  linear_svm_balanced: AMI=0.3568  F1=0.0830
+  [t=0.15] recall=0.116  linear_svm_balanced: AMI=0.3507  F1=0.0773
+  [t=0.2] recall=0.108  linear_svm_balanced: AMI=0.3379  F1=0.0761
+  [t=0.25] recall=0.100  linear_svm_balanced: AMI=0.3191  F1=0.0763
+  [t=0.3] recall=0.094  linear_svm_balanced: AMI=0.3025  F1=0.0745
+  [t=0.35] recall=0.088  linear_svm_balanced: AMI=0.2840  F1=0.0738
+  [t=0.4] recall=0.082  linear_svm_balanced: AMI=0.2663  F1=0.0724
+  [t=0.5] recall=0.070  linear_svm_balanced: AMI=0.2348  F1=0.0665
+  [t=0.6] recall=0.056  linear_svm_balanced: AMI=0.2018  F1=0.0591
+
+=== bionlp2004 ===
+  2000 train / 1000 test sentences, 5 labels
+  fit : 6275 train spans, 5 classes
+  [t=0.05] recall=0.776  linear_svm_balanced: AMI=0.3428  F1=0.3874
+  [t=0.1] recall=0.760  linear_svm_balanced: AMI=0.3504  F1=0.3968
+  [t=0.15] recall=0.751  linear_svm_balanced: AMI=0.3554  F1=0.4032
+  [t=0.2] recall=0.743  linear_svm_balanced: AMI=0.3604  F1=0.4097
+  [t=0.25] recall=0.736  linear_svm_balanced: AMI=0.3631  F1=0.4119
+  [t=0.3] recall=0.728  linear_svm_balanced: AMI=0.3648  F1=0.4126
+  [t=0.35] recall=0.719  linear_svm_balanced: AMI=0.3661  F1=0.4139
+  [t=0.4] recall=0.705  linear_svm_balanced: AMI=0.3672  F1=0.4133
+  [t=0.5] recall=0.686  linear_svm_balanced: AMI=0.3715  F1=0.4140
+  [t=0.6] recall=0.648  linear_svm_balanced: AMI=0.3724  F1=0.4099
+
+=== conll2003 ===
+  2000 train / 1000 test sentences, 4 labels
+  fit : 4495 train spans, 4 classes
+  [t=0.05] recall=0.605  linear_svm_balanced: AMI=0.4600  F1=0.2898
+  [t=0.1] recall=0.533  linear_svm_balanced: AMI=0.4649  F1=0.2754
+  [t=0.15] recall=0.483  linear_svm_balanced: AMI=0.4617  F1=0.2635
+  [t=0.2] recall=0.446  linear_svm_balanced: AMI=0.4551  F1=0.2530
+  [t=0.25] recall=0.416  linear_svm_balanced: AMI=0.4557  F1=0.2459
+  [t=0.3] recall=0.393  linear_svm_balanced: AMI=0.4477  F1=0.2407
+  [t=0.35] recall=0.369  linear_svm_balanced: AMI=0.4394  F1=0.2332
+  [t=0.4] recall=0.351  linear_svm_balanced: AMI=0.4237  F1=0.2263
+  [t=0.5] recall=0.318  linear_svm_balanced: AMI=0.3969  F1=0.2147
+  [t=0.6] recall=0.281  linear_svm_balanced: AMI=0.3628  F1=0.1979
+
+=== gum ===
+  2000 train / 1000 test sentences, 10 labels
+  fit : 7371 train spans, 10 classes
+  [t=0.05] recall=0.228  linear_svm_balanced: AMI=0.3336  F1=0.1037
+  [t=0.1] recall=0.223  linear_svm_balanced: AMI=0.3328  F1=0.1079
+  [t=0.15] recall=0.220  linear_svm_balanced: AMI=0.3327  F1=0.1101
+  [t=0.2] recall=0.215  linear_svm_balanced: AMI=0.3330  F1=0.1110
+  [t=0.25] recall=0.211  linear_svm_balanced: AMI=0.3340  F1=0.1126
+  [t=0.3] recall=0.203  linear_svm_balanced: AMI=0.3365  F1=0.1132
+  [t=0.35] recall=0.198  linear_svm_balanced: AMI=0.3368  F1=0.1132
+  [t=0.4] recall=0.191  linear_svm_balanced: AMI=0.3381  F1=0.1133
+  [t=0.5] recall=0.173  linear_svm_balanced: AMI=0.3432  F1=0.1108
+  [t=0.6] recall=0.154  linear_svm_balanced: AMI=0.3468  F1=0.1086
+
+=== gentle ===
+  2000 train / 1000 test sentences, 10 labels
+  fit : 7371 train spans, 10 classes
+  [t=0.05] recall=0.291  linear_svm_balanced: AMI=0.3284  F1=0.1193
+  [t=0.1] recall=0.284  linear_svm_balanced: AMI=0.3301  F1=0.1227
+  [t=0.15] recall=0.276  linear_svm_balanced: AMI=0.3323  F1=0.1253
+  [t=0.2] recall=0.263  linear_svm_balanced: AMI=0.3346  F1=0.1249
+  [t=0.25] recall=0.251  linear_svm_balanced: AMI=0.3384  F1=0.1235
+  [t=0.3] recall=0.240  linear_svm_balanced: AMI=0.3424  F1=0.1246
+  [t=0.35] recall=0.231  linear_svm_balanced: AMI=0.3469  F1=0.1240
+  [t=0.4] recall=0.220  linear_svm_balanced: AMI=0.3506  F1=0.1244
+  [t=0.5] recall=0.192  linear_svm_balanced: AMI=0.3623  F1=0.1226
+  [t=0.6] recall=0.166  linear_svm_balanced: AMI=0.3696  F1=0.1201
+
+Rapport : outputs\results\opener_e2e\SUMMARY_opener_e2e_big_thrsweep_2026-06-13_052142.md
+  t=0.05  AMI moyen (linear_svm_balanced) = 0.3850
+  t=0.1   AMI moyen (linear_svm_balanced) = 0.3932
+  t=0.15  AMI moyen (linear_svm_balanced) = 0.3971
+  t=0.2   AMI moyen (linear_svm_balanced) = 0.3997
+  t=0.25  AMI moyen (linear_svm_balanced) = 0.4014
+  t=0.3   AMI moyen (linear_svm_balanced) = 0.4022
+  t=0.35  AMI moyen (linear_svm_balanced) = 0.4020
+  t=0.4   AMI moyen (linear_svm_balanced) = 0.4006
+  t=0.5   AMI moyen (linear_svm_balanced) = 0.3991
+  t=0.6   AMI moyen (linear_svm_balanced) = 0.3954
