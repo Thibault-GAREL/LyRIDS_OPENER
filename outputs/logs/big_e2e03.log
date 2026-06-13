@@ -1,0 +1,76 @@
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Embedder       : outputs/models/embedder_contrastive_hard_big
+MD (GLiNER)    : urchade/gliner_large-v2.1  thresholds=[0.3]
+Loading GLiNER urchade/gliner_large-v2.1 on cuda...
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00, 477.18it/s]
+<All keys matched successfully>
+Datasets : ['crossner_ai', 'crossner_literature', 'crossner_music', 'crossner_politics', 'crossner_science', 'wnut17', 'mit_restaurant', 'mit_movie', 'fabner', 'bionlp2004', 'conll2003', 'gum', 'gentle']
+
+=== crossner_ai ===
+  100 train / 430 test sentences, 14 labels
+  fit : 532 train spans, 14 classes
+  [t=0.3] recall=0.750  linear_svm_balanced: AMI=0.4021  F1=0.4430
+
+=== crossner_literature ===
+  100 train / 416 test sentences, 12 labels
+  fit : 541 train spans, 12 classes
+  [t=0.3] recall=0.809  linear_svm_balanced: AMI=0.4962  F1=0.4684
+
+=== crossner_music ===
+  100 train / 465 test sentences, 13 labels
+  fit : 648 train spans, 13 classes
+  [t=0.3] recall=0.850  linear_svm_balanced: AMI=0.5527  F1=0.4992
+
+=== crossner_politics ===
+  200 train / 651 test sentences, 9 labels
+  fit : 1304 train spans, 9 classes
+  [t=0.3] recall=0.767  linear_svm_balanced: AMI=0.5033  F1=0.4235
+
+=== crossner_science ===
+  200 train / 543 test sentences, 17 labels
+  fit : 1075 train spans, 17 classes
+  [t=0.3] recall=0.815  linear_svm_balanced: AMI=0.5167  F1=0.5136
+
+=== wnut17 ===
+  1228 train / 689 test sentences, 6 labels
+  fit : 1975 train spans, 6 classes
+  [t=0.3] recall=0.658  linear_svm_balanced: AMI=0.2494  F1=0.2650
+
+=== mit_restaurant ===
+  2000 train / 1000 test sentences, 8 labels
+  fit : 4525 train spans, 8 classes
+  [t=0.3] recall=0.428  linear_svm_balanced: AMI=0.3363  F1=0.2758
+
+=== mit_movie ===
+  2000 train / 1000 test sentences, 12 labels
+  fit : 10419 train spans, 12 classes
+  [t=0.3] recall=0.141  linear_svm_balanced: AMI=0.3780  F1=0.1095
+
+=== fabner ===
+  2000 train / 1000 test sentences, 12 labels
+  fit : 9670 train spans, 12 classes
+  [t=0.3] recall=0.094  linear_svm_balanced: AMI=0.3025  F1=0.0745
+
+=== bionlp2004 ===
+  2000 train / 1000 test sentences, 5 labels
+  fit : 6275 train spans, 5 classes
+  [t=0.3] recall=0.728  linear_svm_balanced: AMI=0.3648  F1=0.4126
+
+=== conll2003 ===
+  2000 train / 1000 test sentences, 4 labels
+  fit : 4495 train spans, 4 classes
+  [t=0.3] recall=0.393  linear_svm_balanced: AMI=0.4477  F1=0.2407
+
+=== gum ===
+  2000 train / 1000 test sentences, 10 labels
+  fit : 7371 train spans, 10 classes
+  [t=0.3] recall=0.203  linear_svm_balanced: AMI=0.3365  F1=0.1132
+
+=== gentle ===
+  2000 train / 1000 test sentences, 10 labels
+  fit : 7371 train spans, 10 classes
+  [t=0.3] recall=0.240  linear_svm_balanced: AMI=0.3424  F1=0.1246
+
+Rapport : outputs\results\opener_e2e\SUMMARY_opener_e2e_big_e2e03_2026-06-13_090239.md
+  t=0.3   AMI moyen (linear_svm_balanced) = 0.4022

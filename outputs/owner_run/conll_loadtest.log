@@ -1,0 +1,13 @@
+2026/06/13 15:39:45 INFO mlflow: Loading model: ner
+D:\conda_envs\owner\Lib\site-packages\huggingface_hub\file_download.py:1142: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+2026/06/13 15:39:53 INFO mlflow: Loading and preprocessing data
+Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+D:\conda_envs\owner\Lib\site-packages\transformers\convert_slow_tokenizer.py:473: UserWarning: The sentencepiece tokenizer that you are converting to a fast tokenizer uses the byte fallback option which is not implemented in the fast tokenizers. In practice this means that the fast version of the tokenizer can produce unknown tokens whereas the sentencepiece version would have converted these unknown tokens into a sequence of byte tokens matching the original piece of text.
+  warnings.warn(
+Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+  0%|          | 0/1000 [00:00<?, ?it/s] 21%|██        | 208/1000 [00:00<00:00, 2018.97it/s] 51%|█████▏    | 513/1000 [00:00<00:00, 2608.38it/s] 78%|███████▊  | 775/1000 [00:00<00:00, 2580.23it/s]100%|██████████| 1000/1000 [00:00<00:00, 2509.17it/s]
+  0%|          | 0/1000 [00:00<?, ?it/s] 23%|██▎       | 229/1000 [00:00<00:00, 2044.53it/s] 65%|██████▍   | 648/1000 [00:00<00:00, 3161.96it/s] 97%|█████████▋| 968/1000 [00:00<00:00, 2955.02it/s]100%|██████████| 1000/1000 [00:00<00:00, 2892.92it/s]
+2026/06/13 15:39:56 INFO mlflow: >>> Loading model from "D:\Loisir\Code_python\LyRIDS_Opener\external\OWNER\checkpoints\transfer_conll2003\100" <<<
+2026/06/13 15:39:58 INFO mlflow: >>> Evaluating model <<<
+2026/06/13 15:39:58 INFO mlflow: Evaluating Mention Detection

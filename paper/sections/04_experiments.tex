@@ -70,7 +70,7 @@ All experiments run on a single consumer-grade GPU with $6$\,GB of VRAM (CUDA~12
 We use the HuggingFace Transformers library \cite{wolf2020transformers} for the baselines, sentence-transformers \cite{reimers2019sbert} for the Matryoshka embedder \cite{nussbaum2024nomic, kusupati2022matryoshka}, and scikit-learn \cite{pedregosa2011scikit} for the linear classifier, whose solver is LIBLINEAR \cite{fan2008liblinear}.
 Latency is measured with two warmup passes followed by timed passes with GPU synchronisation, reporting p50, p95 and p99 per sentence.
 Energy is measured with CodeCarbon \cite{lacoste2019codecarbon} in offline mode using the French grid carbon intensity; when hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
-To keep the energy comparison fair, all systems are measured on the same machine within a single session, under comparable thermal conditions.
+All systems are measured on the same machine. Because the laptop-class GPU thermally throttles under sustained load, per-sentence latency and per-run energy carry roughly $\pm15\%$ run-to-run variance; we therefore read the per-system averages as indicative and do not over-interpret individual per-dataset cells. A controlled-temperature re-measurement of all systems in a single session is left to future work.
 
 \subsection{Main Results}
 \label{sec:exp:results}
@@ -126,7 +126,7 @@ GNER & 3431 & 5408 & 7461 & 6472 & 7110 & 2906 & 1610 & 3344 & 4310 & 5034 & 291
 OWNER$^\S$ & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 & 558 & -- & 759 & 626 & 607 \\
 % PRESERVED pre-hard-mining OPENER latency (contrastive, 2026-06-09):
 % OPENER & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 101 & 160 \\
-OPENER & 162 & 165 & 170 & 333 & 292 & 187 & 169 & 86 & 86 & 103 & 106 & 122 & 116 & 161 \\
+OPENER & 222 & 271 & 293 & 159 & 132 & 100 & 92 & 98 & 104 & 108 & 89 & 100 & 94 & 143 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -150,7 +150,7 @@ GNER & 17.13 & 24.28 & 39.75 & 50.88 & 44.76 & 20.60 & 17.02 & 37.17 & 49.11 & 6
 OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & -- & 23.2 & 19.1 & 13.6 \\
 % PRESERVED pre-hard-mining OPENER energy (had a CodeCarbon glitch on Mus=22.76; avg inflated to 3.39):
 % OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 1.70 & 1.93 & 1.82 & 3.39 \\
-OPENER & 1.69 & 1.38 & 1.72 & 2.89 & 1.80 & 1.37 & 1.86 & 1.65 & 1.58 & 2.01 & 1.96 & 2.31 & 2.24 & 1.88 \\
+OPENER & 1.10 & 1.26 & 0.87 & 1.76 & 1.41 & 1.31 & 1.75 & 1.87 & 1.96 & 1.97 & 1.73 & 1.91 & 1.78 & 1.59 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -175,7 +175,7 @@ GLiNER-L  & 330M & 38.9 & 143 & 1.18 & 0.07 \\
 GNER      & 220M & 37.9 & 4226 & 36.51 & 2.05 \\
 OWNER$^\S$ & 294M & 34.3 & 607 & 13.6 & 0.71 \\
 % PRESERVED pre-hard-mining: OPENER & 467M & 36.6 & 160 & 3.39 & 0.19 \\ (energy inflated by a CodeCarbon glitch on Mus)
-OPENER    & 467M & 40.2 & 161 & 1.88 & 0.10 \\
+OPENER    & 467M & 40.2 & 143 & 1.59 & 0.09 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -186,42 +186,43 @@ We justify each architectural choice with a one-factor-at-a-time search.
 Starting from the default pipeline, we vary a single component while holding the others fixed, and keep the setting with the highest mean AMI.
 Among embedder variants, an error-driven \emph{hard-negative mining} pass---fine-tuning the contrastive embedder on the entity pairs it most often confuses (e.g.\ \emph{writer}/\emph{person}, \emph{album}/\emph{band}, \emph{country}/\emph{location}), mixed with correctly-typed mentions for diversity---raises typing-on-gold AMI from $54.0$ to $60.1$; scaling the mined triplets ($3000\!\to\!8000$) and epochs ($2\!\to\!3$) lifts it further to $62.5$ ($+8.5$ over the contrastive embedder, better on $12$ of $13$ sets), our selected configuration.
 \autoref{tab:ablation} reports this search; the protocol comparison between typing-on-gold and end-to-end is discussed alongside the main results.
+The remaining axes confirm the rest of the pipeline: frozen Nomic embeddings are weakly discriminative for typing ($25.8$ AMI), so the contrastive step is what makes the space usable ($+28.2$); the detector trades quality for cost (GLiNER-S\,$\to$\,L: $37.7\!\to\!40.2$ AMI at $51\!\to\!143$\,ms end-to-end); and for typing a balanced linear SVM edges out a per-class GMM and logistic regression ($62.5$ vs $56.1$ vs $55.6$).
+A separate efficiency axis emerges in the \emph{training} cost (\autoref{tab:ablation}, Fit): per-sentence inference is governed by the detector alone---truncating the Matryoshka dimension or swapping the classifier leaves it unchanged---whereas fitting the typing head is $15\times$ cheaper at dimension $64$ than at $768$ and $7\times$ cheaper for balanced logistic regression than for the linear SVM, a speed/quality knob orthogonal to inference.
 To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
-\emph{[Some axes are still being re-measured under the current pipeline; see the notes in \autoref{tab:ablation}.]}
 
 \begin{table}[tbp]
 \centering
-\caption{OPENER architecture search. One component is varied at a time around the default pipeline (\textbf{bold}). AMI and macro-$F_1$ ($\times100$, $\uparrow$); per-run latency, energy and carbon ($\downarrow$). $^\ast$\,entity-embedder rows are typing-on-gold over all $13$ sets; \emph{hard-negative mining} fine-tunes the contrastive embedder a \emph{second} time on the mention pairs it most often confuses (hard negatives in the sense of \cite{schroff2015facenet}), mixed with correctly-typed mentions for diversity ($65\%$ hard negatives; the two rows use $3000$ triplets / $2$ epochs and, selected, $8000$ triplets / $3$ epochs); errors are mined on each training split by cross-validation, so no test label is seen. $^\ddagger$\,entity-typing sweep on a 10-dataset subset with the contrastive embedder; $^\S$\,dimension sweep on a 6-dataset pilot with the frozen embedder. Latency and energy are dominated by the embedder and detector, hence near-constant across classifiers; per-axis efficiency for the current pipeline is being re-measured.}
+\caption{OPENER architecture search. One component is varied at a time around the default pipeline (\textbf{bold}). AMI and macro-$F_1$ ($\times100$, $\uparrow$); per-run latency, energy and carbon ($\downarrow$). $^\ast$\,entity-embedder rows are typing-on-gold over all $13$ sets; \emph{hard-negative mining} fine-tunes the contrastive embedder a \emph{second} time on the mention pairs it most often confuses (hard negatives in the sense of \cite{schroff2015facenet}), mixed with correctly-typed mentions for diversity ($65\%$ hard negatives; the two rows use $3000$ triplets / $2$ epochs and, selected, $8000$ triplets / $3$ epochs); errors are mined on each training split by cross-validation, so no test label is seen. $^\ddagger$\,entity-typing sweep on all $13$ sets (typing-on-gold) with the selected hard-mining embedder, so its LinearSVC (balanced) row equals the selected entity-embedder row; $^\S$\,dimension sweep on a 6-dataset pilot with the frozen embedder. Efficiency (p50 latency, energy, CO\textsubscript{2}) is the deployed end-to-end per-sentence cost: it varies on the mention-detector axis but is constant ($143$\,ms\,/\,$1.59$\,Wh\,/\,$0.09$\,g) on the embedder, dimension and typing axes, where the GLiNER-L detector and the $137$M embedder are fixed---changing the embedder weights, the classifier, or truncating the Matryoshka dimension does not alter the forward-pass cost (truncation shrinks the stored embedding, not the embedder compute). Fit\,(ms) is the typing-head training time on a representative $\approx$3.2k-span target set (best of three; indicative, scales with set size): it is the cost that \emph{does} vary, with the Matryoshka dimension ($226\!\to\!3536$\,ms from $64$ to $768$) and the classifier ($505$\,ms for balanced logistic regression vs.\ $\approx$3.5\,s for the linear SVM), and is shown on those two axes. It is $0$ on the detector and embedder axes: the varied component adds no per-deployment training (detectors are frozen/off-the-shelf and the embedder is pre-trained), the constant typing-head fit ($\approx$3.5\,s with the default balanced SVM@768) being charged on the typing axis. The embedder's own offline fine-tuning (none for frozen Nomic; $\approx$4\,h for the selected hard-mining run) is a separate one-time cost.}
 \label{tab:ablation}
 \small
-\begin{tabular}{lccrrr}
+\begin{tabular}{lccrrrr}
 \toprule
-Configuration & AMI & F\textsubscript{1} & p50\,(ms) & En.\,(Wh) & CO\textsubscript{2}\,(g) \\
+Configuration & AMI & F\textsubscript{1} & Fit\,(ms) & p50\,(ms) & En.\,(Wh) & CO\textsubscript{2}\,(g) \\
 \midrule
-\multicolumn{6}{l}{\emph{Mention detector}} \\
-\quad GLiNER-S                       & -- & -- & -- & -- & -- \\
-\quad GLiNER-M                       & -- & -- & -- & -- & -- \\
-\quad \textbf{GLiNER-L}              & -- & -- & -- & -- & -- \\
+\multicolumn{7}{l}{\emph{Mention detector}} \\
+\quad GLiNER-S                       & 37.7 & 28.8 & 0 & 51 & 0.73 & 0.04 \\
+\quad GLiNER-M                       & 38.0 & 28.7 & 0 & 70 & 1.01 & 0.06 \\
+\quad \textbf{GLiNER-L}              & \textbf{40.2} & \textbf{30.5} & 0 & 143 & 1.59 & 0.09 \\
 \addlinespace
-\multicolumn{6}{l}{\emph{Entity embedder}$^{\ast}$} \\
-\quad frozen Nomic v1.5                       & -- & -- & -- & -- & -- \\
-\quad contrastive (Triplet, CoNLL, 3\,ep.)    & 54.0 & 63.3 & -- & -- & -- \\
-\quad + hard-negative mining (2\,ep., 3k\,tr.) & 60.1 & 68.8 & -- & -- & -- \\
-\quad \textbf{+ hard-negative mining (3\,ep., 8k\,tr.)} & \textbf{62.5} & \textbf{71.8} & -- & -- & -- \\
+\multicolumn{7}{l}{\emph{Entity embedder}$^{\ast}$} \\
+\quad frozen Nomic v1.5                       & 25.8 & 43.9 & 0 & 143 & 1.59 & 0.09 \\
+\quad contrastive (Triplet, CoNLL, 3\,ep.)    & 54.0 & 63.3 & 0 & 143 & 1.59 & 0.09 \\
+\quad + hard-negative mining (2\,ep., 3k\,tr.) & 60.1 & 68.8 & 0 & 143 & 1.59 & 0.09 \\
+\quad \textbf{+ hard-negative mining (3\,ep., 8k\,tr.)} & \textbf{62.5} & \textbf{71.8} & 0 & 143 & 1.59 & 0.09 \\
 \addlinespace
-\multicolumn{6}{l}{\emph{Matryoshka dimension}$^\S$} \\
-\quad 64                             & 15.1 & -- & -- & -- & -- \\
-\quad 128                            & 15.4 & -- & -- & -- & -- \\
-\quad 256                            & 17.7 & -- & -- & -- & -- \\
-\quad 512                            & 18.3 & -- & -- & -- & -- \\
-\quad \textbf{768}                   & \textbf{18.8} & -- & -- & -- & -- \\
+\multicolumn{7}{l}{\emph{Matryoshka dimension}$^\S$} \\
+\quad 64                             & 15.1 & -- & 226 & 143 & 1.59 & 0.09 \\
+\quad 128                            & 15.4 & -- & 711 & 143 & 1.59 & 0.09 \\
+\quad 256                            & 17.7 & -- & 1336 & 143 & 1.59 & 0.09 \\
+\quad 512                            & 18.3 & -- & 2325 & 143 & 1.59 & 0.09 \\
+\quad \textbf{768}                   & \textbf{18.8} & -- & 3536 & 143 & 1.59 & 0.09 \\
 \addlinespace
-\multicolumn{6}{l}{\emph{Entity typing}$^\ddagger$} \\
-\quad GMM (anchor warm-start)        & -- & -- & -- & -- & -- \\
-\quad LogReg                         & 39.2 & 30.6 & -- & -- & -- \\
-\quad LogReg (balanced)              & 49.4 & 55.2 & -- & -- & -- \\
-\quad LinearSVC                      & 52.4 & 50.2 & -- & -- & -- \\
-\quad \textbf{LinearSVC (balanced)}  & \textbf{56.6} & \textbf{64.5} & 100 & 3.32 & 0.18 \\
+\multicolumn{7}{l}{\emph{Entity typing}$^\ddagger$} \\
+\quad GMM (per-class)                & 56.1 & -- & 569 & 143 & 1.59 & 0.09 \\
+\quad LogReg                         & 55.6 & 53.5 & 884 & 143 & 1.59 & 0.09 \\
+\quad LogReg (balanced)              & 57.8 & 67.5 & 505 & 143 & 1.59 & 0.09 \\
+\quad LinearSVC                      & 61.7 & 66.5 & 3554 & 143 & 1.59 & 0.09 \\
+\quad \textbf{LinearSVC (balanced)}  & \textbf{62.5} & \textbf{71.8} & 3502 & 143 & 1.59 & 0.09 \\
 \bottomrule
 \end{tabular}
 \end{table}

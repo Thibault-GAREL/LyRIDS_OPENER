@@ -1,0 +1,123 @@
+<All keys matched successfully>
+Embedder : nomic-ai/nomic-embed-text-v1.5
+Datasets : ['crossner_ai', 'crossner_literature', 'crossner_music', 'crossner_politics', 'crossner_science', 'wnut17', 'mit_restaurant', 'mit_movie', 'fabner', 'bionlp2004', 'conll2003', 'gum', 'gentle']
+
+=== crossner_ai ===
+  embeddings : train (532, 768), test (1809, 768)
+    logreg                   AMI=0.2754  acc=0.3748  macro_f1=0.2925
+    logreg_balanced          AMI=0.3414  acc=0.4621  macro_f1=0.4233
+    linear_svm               AMI=0.3218  acc=0.4583  macro_f1=0.3890
+    linear_svm_balanced      AMI=0.3252  acc=0.4616  macro_f1=0.4121
+  energy  : {'kwh': 0.000403, 'gco2eq': 0.0226, 'seconds': 22.42, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=28.0ms  p95=104.1ms  throughput=24.8 batch/s
+
+=== crossner_literature ===
+  embeddings : train (541, 768), test (2266, 768)
+    logreg                   AMI=0.1025  acc=0.3473  macro_f1=0.1430
+    logreg_balanced          AMI=0.1704  acc=0.3411  macro_f1=0.3166
+    linear_svm               AMI=0.1341  acc=0.3742  macro_f1=0.2545
+    linear_svm_balanced      AMI=0.1718  acc=0.3672  macro_f1=0.3351
+  energy  : {'kwh': 0.000509, 'gco2eq': 0.0285, 'seconds': 28.17, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=44.4ms  p95=113.0ms  throughput=18.9 batch/s
+
+=== crossner_music ===
+  embeddings : train (648, 768), test (3336, 768)
+    logreg                   AMI=0.2824  acc=0.4766  macro_f1=0.2860
+    logreg_balanced          AMI=0.3352  acc=0.5270  macro_f1=0.4298
+    linear_svm               AMI=0.3284  acc=0.5414  macro_f1=0.3997
+    linear_svm_balanced      AMI=0.3331  acc=0.5393  macro_f1=0.4374
+  energy  : {'kwh': 0.000734, 'gco2eq': 0.0411, 'seconds': 40.11, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=59.0ms  p95=157.7ms  throughput=14.5 batch/s
+
+=== crossner_politics ===
+  embeddings : train (1304, 768), test (4209, 768)
+    logreg                   AMI=0.3413  acc=0.5191  macro_f1=0.3433
+    logreg_balanced          AMI=0.3306  acc=0.5282  macro_f1=0.4436
+    linear_svm               AMI=0.3373  acc=0.5339  macro_f1=0.3832
+    linear_svm_balanced      AMI=0.3388  acc=0.5317  macro_f1=0.4272
+  energy  : {'kwh': 0.001036, 'gco2eq': 0.0581, 'seconds': 57.9, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=54.5ms  p95=150.8ms  throughput=15.2 batch/s
+
+=== crossner_science ===
+  embeddings : train (1075, 768), test (3089, 768)
+    logreg                   AMI=0.4274  acc=0.5513  macro_f1=0.3518
+    logreg_balanced          AMI=0.4775  acc=0.5730  macro_f1=0.4864
+    linear_svm               AMI=0.4510  acc=0.5814  macro_f1=0.4257
+    linear_svm_balanced      AMI=0.4625  acc=0.5772  macro_f1=0.4714
+  energy  : {'kwh': 0.000817, 'gco2eq': 0.0458, 'seconds': 45.89, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=46.2ms  p95=141.7ms  throughput=17.0 batch/s
+
+=== wnut17 ===
+  embeddings : train (1975, 768), test (1079, 768)
+    logreg                   AMI=0.1729  acc=0.5338  macro_f1=0.3896
+    logreg_balanced          AMI=0.1775  acc=0.5097  macro_f1=0.4605
+    linear_svm               AMI=0.1598  acc=0.5292  macro_f1=0.4269
+    linear_svm_balanced      AMI=0.1522  acc=0.5060  macro_f1=0.4324
+  energy  : {'kwh': 0.00078, 'gco2eq': 0.0437, 'seconds': 43.75, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=19.0ms  p95=36.7ms  throughput=46.0 batch/s
+
+=== mit_restaurant ===
+  embeddings : train (4525, 768), test (2503, 768)
+    logreg                   AMI=0.1853  acc=0.4802  macro_f1=0.4188
+    logreg_balanced          AMI=0.1938  acc=0.4579  macro_f1=0.4504
+    linear_svm               AMI=0.2912  acc=0.5869  macro_f1=0.5425
+    linear_svm_balanced      AMI=0.2835  acc=0.5677  macro_f1=0.5505
+  energy  : {'kwh': 0.001232, 'gco2eq': 0.0691, 'seconds': 71.68, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=19.3ms  p95=32.2ms  throughput=46.7 batch/s
+
+=== mit_movie ===
+  embeddings : train (10419, 768), test (5224, 768)
+    logreg                   AMI=0.2208  acc=0.4883  macro_f1=0.3274
+    logreg_balanced          AMI=0.1985  acc=0.3993  macro_f1=0.3514
+    linear_svm               AMI=0.3118  acc=0.5712  macro_f1=0.3918
+    linear_svm_balanced      AMI=0.2921  acc=0.5195  macro_f1=0.4267
+  energy  : {'kwh': 0.002004, 'gco2eq': 0.1123, 'seconds': 130.49, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=28.6ms  p95=60.5ms  throughput=29.8 batch/s
+
+=== fabner ===
+  embeddings : train (9670, 768), test (4452, 768)
+    logreg                   AMI=0.0874  acc=0.3924  macro_f1=0.1695
+    logreg_balanced          AMI=0.1110  acc=0.3167  macro_f1=0.2451
+    linear_svm               AMI=0.0991  acc=0.4131  macro_f1=0.2015
+    linear_svm_balanced      AMI=0.1137  acc=0.3482  macro_f1=0.2691
+  energy  : {'kwh': 0.002246, 'gco2eq': 0.1258, 'seconds': 141.56, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=29.6ms  p95=79.1ms  throughput=26.0 batch/s
+
+=== bionlp2004 ===
+  embeddings : train (6275, 768), test (2430, 768)
+    logreg                   AMI=0.2072  acc=0.6700  macro_f1=0.4815
+    logreg_balanced          AMI=0.2369  acc=0.5942  macro_f1=0.5597
+    linear_svm               AMI=0.2512  acc=0.6963  macro_f1=0.5561
+    linear_svm_balanced      AMI=0.2917  acc=0.6992  macro_f1=0.6211
+  energy  : {'kwh': 0.001813, 'gco2eq': 0.1016, 'seconds': 103.63, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=23.6ms  p95=67.9ms  throughput=31.1 batch/s
+
+=== conll2003 ===
+  embeddings : train (4495, 768), test (2180, 768)
+    logreg                   AMI=0.2501  acc=0.6532  macro_f1=0.6157
+    logreg_balanced          AMI=0.2567  acc=0.6349  macro_f1=0.6080
+    linear_svm               AMI=0.2684  acc=0.6670  macro_f1=0.6295
+    linear_svm_balanced      AMI=0.2682  acc=0.6583  macro_f1=0.6300
+  energy  : {'kwh': 0.001372, 'gco2eq': 0.0769, 'seconds': 78.12, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=19.4ms  p95=46.4ms  throughput=41.4 batch/s
+
+=== gum ===
+  embeddings : train (7371, 768), test (3631, 768)
+    logreg                   AMI=0.1263  acc=0.4855  macro_f1=0.2529
+    logreg_balanced          AMI=0.1209  acc=0.3922  macro_f1=0.3138
+    linear_svm               AMI=0.1238  acc=0.4803  macro_f1=0.2967
+    linear_svm_balanced      AMI=0.1307  acc=0.4376  macro_f1=0.3398
+  energy  : {'kwh': 0.002055, 'gco2eq': 0.1151, 'seconds': 122.69, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=23.0ms  p95=85.8ms  throughput=27.7 batch/s
+
+=== gentle ===
+  embeddings : train (7371, 768), test (2711, 768)
+    logreg                   AMI=0.1600  acc=0.6234  macro_f1=0.2753
+    logreg_balanced          AMI=0.2025  acc=0.5267  macro_f1=0.3626
+    linear_svm               AMI=0.1793  acc=0.6271  macro_f1=0.3139
+    linear_svm_balanced      AMI=0.1859  acc=0.5751  macro_f1=0.3514
+  energy  : {'kwh': 0.001892, 'gco2eq': 0.106, 'seconds': 113.75, 'country': 'FRA', 'method': 'codecarbon'}
+  timing  : p50=20.7ms  p95=76.1ms  throughput=30.2 batch/s
+
+Rapport : outputs\results\opener_frozen\SUMMARY_balanced_classifiers_2026-06-13_100656.md
+Moyennes AMI : [('logreg', 0.2184), ('logreg_balanced', 0.2425), ('linear_svm', 0.2506), ('linear_svm_balanced', 0.2576)]
