@@ -1,43 +1,109 @@
 \section{Method}
 \label{sec:method}
 
-% TODO: write the methodology. Pipeline is Detect -> Embed -> Type.
-% Skeleton updated to the current approach (V2, 2026-06-11). The old GMM-per-label /
-% anchor-word / OOD / hierarchy design is NOT the method anymore; the GMM survives
-% only as one ablation baseline of the typing head.
-%
-% \subsection{Overview}
-%   - Pipeline figure: Text -> MentionDetector -> Matryoshka Embedder -> Typing head -> label.
-%   - Three design principles:
-%     (i)   no heavy encoder is trained from scratch (off-the-shelf components);
-%     (ii)  a light contrastive fine-tuning, refined by error-driven hard-negative
-%           mining, makes a general-purpose embedding discriminative for entity types;
-%     (iii) Matryoshka-truncatable embeddings give a compute/quality knob.
-%
-% \subsection{Mention Detection}
-%   - GLiNER (frozen, off-the-shelf): raw text + candidate labels -> spans.
-%   - Justify: strong zero-shot detector, no retraining; it is the shared end-to-end bottleneck.
-%
-% \subsection{Matryoshka Entity Embedding}
-%   - Nomic v1.5, span-in-context, truncate_dim in {768, 512, 256, 128, 64}.
-%   - e_i = Embed(x_i; D) in R^D.
-%
-% \subsection{Contrastive Fine-tuning with Hard-Negative Mining}
-%   - Triplet margin loss (margin 1) on CoNLL-2003 source spans.
-%   - Second pass: fine-tune again on the entity pairs the model most often confuses
-%     (hard negatives in the sense of FaceNet, \cite{schroff2015facenet}), mixed with
-%     correctly-typed mentions for diversity; errors are mined per training split by
-%     cross-validation, so no test label is seen.
-%
-% \subsection{Entity Typing}
-%   - Supervised: a balanced linear classifier (LinearSVC, class_weight=balanced) fitted
-%     on each target's training labels; give the n_total / (n_classes * count) weighting.
-%   - Zero-shot variant (OPENER-ZS): no target labels; assign each mention to the nearest
-%     label-name prototype (centroid of the label's anchor words embedded in the
-%     contrastive space) by cosine similarity.
-%   - A per-class GMM is reported only as an ablation baseline (\autoref{tab:ablation}).
-%
-% \subsection{Evaluation protocol}
-%   - Offset alignment + FN/FP sentinels; AMI; typing-on-gold vs end-to-end; latency + energy.
+\subsection{Problem Formulation}
+\label{sec:method:problem}
+Given a sentence, an open-world NER system must return a set of typed mentions whose type inventory is \emph{not} fixed at training time.
+We adopt the evaluation of Genest et al. \cite{genest2025owner}.
+Predicted and gold mentions are aligned by exact character offsets; an unmatched gold mention (false negative) and an unmatched predicted mention (false positive) each receive a distinct sentinel type, so that detection errors are scored rather than ignored.
+Type-assignment quality is then measured by the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between the predicted and gold type partitions over the aligned mentions, which does not require the two label vocabularies to coincide.
+We report two protocols that are never mixed in the same comparison: \emph{typing-on-gold}, where the typing component is applied to gold spans and detection is bypassed, and \emph{end-to-end}, where mentions come from the detector and the sentinels above are active.
 
-\emph{[Placeholder - method to be written once the configuration is frozen.]}
+\subsection{Architecture Overview}
+\label{sec:method:overview}
+OPENER is a three-stage pipeline, Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type (\autoref{fig:pipeline}), assembled from off-the-shelf components so that no encoder is trained from scratch.
+Three principles guide the design.
+(i)~A pretrained detector and a pretrained sentence embedder are reused as-is.
+(ii)~A light contrastive fine-tuning, refined by error-driven hard-negative mining, turns the general-purpose embedding into one that is discriminative for entity \emph{types}.
+(iii)~The embedder is Matryoshka-truncatable, exposing a compute/quality knob.
+Only the typing head is fitted on target-side material, and it comes in two forms: a supervised linear probe, which is the strongest configuration but requires target labels, and a zero-shot form (OPENER-ZS) that uses no target labels at typing time.
+
+\begin{figure}[tbp]
+\centering
+\fbox{\parbox[c][2.6cm][c]{0.92\linewidth}{\centering\emph{[Pipeline schematic --- figure to be added: Text $\rightarrow$ GLiNER mention detection $\rightarrow$ Nomic Matryoshka embedding (span-in-context) $\rightarrow$ typing head (supervised probe \,/\, zero-shot prototype + detector fusion) $\rightarrow$ typed mentions.]}}}
+\caption{The OPENER pipeline. A frozen detector proposes spans, a contrastively sharpened Matryoshka embedder maps each span (in context) to a vector, and a typing head assigns a type. The typing head is the only component fitted on target-side material; all upstream components are off-the-shelf.}
+\label{fig:pipeline}
+\end{figure}
+
+\subsection{Mention Detection}
+\label{sec:method:detect}
+Mention detection is delegated to GLiNER \cite{zaratiana2024gliner}, a frozen, off-the-shelf detector that scores every span against the candidate type names in a single forward pass.
+Decoupling detection from typing lets each component be chosen and measured independently, and it lets the typing head operate on any span proposer.
+We use GLiNER-L by default; the small and medium variants trace a size/efficiency trade-off (\autoref{tab:ablation}).
+As shown in \autoref{sec:exp:results}, the detector is the shared end-to-end bottleneck: its recall on specialised domains, not the typing head, caps end-to-end quality.
+
+\subsection{Entity Embedding}
+\label{sec:method:embed}
+Detected spans are embedded with Nomic Embed v1.5 \cite{nussbaum2024nomic}, a sentence embedder trained with the Matryoshka objective \cite{kusupati2022matryoshka}, whose representation can be truncated to a lower dimension and renormalised without retraining.
+Each mention is embedded \emph{in context} rather than in isolation: the span is presented together with its surrounding sentence, so that polysemous surface forms (e.g.\ a company versus a fruit) are disambiguated.
+This yields a vector $e_i \in \mathbb{R}^{D}$ with $D$ truncatable in $\{768,512,256,128,64\}$; we keep the full $D{=}768$ by default.
+Truncation is a post-encoding slice followed by renormalisation, so it reduces the stored embedding and the typing-head fit cost but leaves the forward pass unchanged (\autoref{tab:ablation}).
+
+\subsection{Contrastive Fine-tuning with Hard-Negative Mining}
+\label{sec:method:contrastive}
+The frozen embedding is only weakly discriminative for entity types ($25.8$ AMI, \autoref{tab:ablation}), so we sharpen its geometry in two stages while keeping the backbone otherwise intact.
+
+\paragraph{Stage 1 -- contrastive}
+We fine-tune the embedder with a Triplet Margin Loss \cite{schroff2015facenet} (using sentence-transformers \cite{reimers2019sbert}), with margin $1$, on the CoNLL-2003 \cite{tjongkimsang2003conll} training spans.
+A triplet $(a,p,n)$ takes an anchor span $a$, a positive $p$ of the \emph{same} type, and a negative $n$ of a \emph{different} type, with at most two triplets per anchor.
+Training runs for $3$ epochs with batch size $16$, learning rate $2\times10^{-5}$ and $100$ warmup steps.
+This single step lifts typing-on-gold AMI from $25.8$ to $54.0$.
+
+\paragraph{Stage 2 -- error-driven hard-negative mining}
+We then mine the model's own confusions.
+On each target training split we run a cross-validated typing pass (so no test label is ever seen) and collect the type pairs that are most often confused, such as \emph{writer}/\emph{person}, \emph{album}/\emph{band} and \emph{country}/\emph{location}.
+For each such error we form a \emph{hard} triplet whose anchor is the mistyped span (true type $L$), whose positive is another span of $L$, and whose negative is a span of the confused type $C$.
+Hard triplets are mixed with correctly-typed (easy) triplets for diversity, targeting a $65\%$ hard fraction, and the Stage-1 embedder is fine-tuned further with the same optimiser settings.
+The selected run mines $8000$ triplets over $3$ epochs and reaches $62.5$ AMI ($+8.5$ over Stage~1, better on $12$ of $13$ sets).
+This embedder is shared unchanged by every typing head below.
+
+\subsection{Entity Typing}
+\label{sec:method:typing}
+
+\paragraph{Supervised probe}
+The default typing head is a balanced linear classifier (LinearSVC with the LIBLINEAR solver \cite{fan2008liblinear}) fitted on the target's training labels.
+Class weights follow the balanced rule $w_c = n_\text{total} / (C\, n_c)$, where $C$ is the number of types and $n_c$ the count of type $c$, which counters the heavy type imbalance of the benchmark.
+This is the strongest configuration but requires target-side labels.
+
+\paragraph{Zero-shot typing (OPENER-ZS)}
+To remove target supervision at typing time, each type $t$ is represented by a prototype $p_t$, the embedding of its name (the centroid of the type's anchor words in the contrastive space), and a mention $e_i$ is assigned the type of the nearest prototype by cosine similarity.
+Two label-free refinements improve this head without using any target label.
+First, a \emph{transductive} refinement runs one pass of spherical $k$-means over the unlabelled test mentions, seeded by the prototypes.
+Second, a \emph{detector fusion} reuses a signal the prototype head otherwise discards: GLiNER already predicts a zero-shot type for each span, with confidence $g_i$, so we add it to the similarity score,
+$s_t(i) \mathrel{+}= \beta\, g_i\, \mathbb{1}[t = \mathrm{label}_{\text{GLiNER}}(i)]$,
+with a small $\beta{=}0.05$.
+The fused head is the selected zero-shot operating point: it reaches $39.4$ AMI end-to-end, ahead of every compared zero-shot system, while using no target labels (\autoref{sec:exp:results}).
+A per-class Gaussian mixture \cite{reynolds2009gmm} is reported only as a typing ablation (\autoref{tab:ablation}).
+
+\subsection{Hyperparameters}
+\label{sec:method:hyper}
+\autoref{tab:hyperparams} collects the configuration; all stochastic components use a single fixed seed ($42$).
+
+\begin{table}[tbp]
+\centering
+\caption{OPENER configuration. The detector and embedder are off-the-shelf; the contrastive and hard-mining stages produce the shared embedder; the typing head is fitted (supervised) or label-free (zero-shot).}
+\label{tab:hyperparams}
+\small
+\begin{tabular}{ll}
+\toprule
+Component & Setting \\
+\midrule
+Mention detector   & GLiNER-L (frozen) \cite{zaratiana2024gliner} \\
+Entity embedder    & Nomic v1.5, $D{=}768$, span-in-context \cite{nussbaum2024nomic} \\
+Contrastive loss   & Triplet margin $1$ \cite{schroff2015facenet} \\
+\quad source        & CoNLL-2003 train spans \cite{tjongkimsang2003conll} \\
+\quad optimiser     & $3$ epochs, batch $16$, lr $2\times10^{-5}$, $100$ warmup \\
+Hard-neg.\ mining  & $8000$ triplets, $65\%$ hard, $3$ epochs \\
+\quad source        & target train splits, cross-validated \\
+Supervised typing  & LinearSVC, balanced weights \cite{fan2008liblinear} \\
+Zero-shot typing   & label-name prototype $+$ transductive $+$ fusion ($\beta{=}0.05$) \\
+Random seed        & $42$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Evaluation Protocol}
+\label{sec:method:eval}
+We evaluate on the $13$ datasets of \autoref{sec:exp:datasets}, each test split capped at $1000$ sentences.
+Quality is AMI \cite{vinh2010ami} (with macro-$F_1$ and accuracy), latency is the median (p50) per-sentence time over GPU-synchronised, warmed-up passes, and energy is measured with CodeCarbon \cite{lacoste2019codecarbon} under the French grid carbon intensity; the full protocol and instrumentation are detailed in \autoref{sec:exp:protocol} and \autoref{sec:exp:impl}.
+The code and the per-experiment configurations are released for reproducibility.

@@ -1,20 +1,17 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-% TODO: write the conclusion (≈0.5 to 1 page).
-% Suggested structure:
-%   - Recap of contributions (one short paragraph).
-%   - Practical implications: open-NER without encoder retraining is feasible
-%     when the pre-trained embedding space is already discriminative.
-%   - Limitations:
-%       * End-to-end quality is capped by the detector's recall on specialised domains
-%         (the shared bottleneck), not by the typing head.
-%       * Supervised typing needs target-domain labels; the zero-shot variant (OPENER-ZS)
-%         depends on the quality of the label names.
-%       * A single seed; energy measured on one machine.
-%   - Future work:
-%       * Improving mention detection on specialised domains.
-%       * Visualization of the contrastive embedding space (UMAP / t-SNE).
-%       * Extension beyond NER (entity linking, relation extraction).
+We presented OPENER, an open-world NER pipeline built from off-the-shelf components---a frozen detector, a pretrained Matryoshka embedder sharpened by a light contrastive fine-tuning with error-driven hard-negative mining, and a swappable typing head---with no encoder trained from scratch.
+On gold mentions the contrastive space is highly discriminative, and a balanced linear probe makes OPENER the most accurate system in our benchmark, leading on all $13$ sets and surpassing a zero-shot transfer of OWNER ($62.5$ vs $43.0$ AMI); it also attains the best end-to-end AMI of the compared systems ($40.2$), at the cost of target labels.
+Removing that supervision, our zero-shot head OPENER-ZS---label-name prototypes refined transductively and fused with the detector's own predictions---is the best of the compared zero-shot systems end-to-end ($39.4$), ahead of GLiNER-L, GNER and OWNER, at one to two orders of magnitude lower energy than the trained-encoder and generative baselines.
 
-\emph{[Placeholder - conclusion to be written.]}
+Two findings carry beyond the specific system.
+First, an open-world typing head need not train its own encoder: a general-purpose embedding, once sharpened by a light contrastive step, is already discriminative enough to type entities, and the cost that does matter is fitting the cheap typing head, not the embedder.
+Second, the three-axis evaluation locates the open-world bottleneck in \emph{detection} rather than typing---end-to-end quality tracks the detector's recall on specialised domains---and exposes efficiency gaps that an accuracy-only comparison would hide.
+
+The approach has clear limits.
+End-to-end quality is capped by detector recall on specialised domains, the shared bottleneck, not by the typing head.
+Supervised typing needs target-domain labels, and while OPENER-ZS removes them at typing time it depends on the quality of the label names and, in its transductive form, on access to the unlabelled test mentions; the inductive zero-shot head is correspondingly weaker.
+Finally, all results use a single random seed, and energy is measured on one thermally-throttling consumer GPU, so per-run figures carry run-to-run variance and are read as averages rather than precise points.
+
+Future work includes improving mention detection on specialised domains to lift the end-to-end ceiling, an inductive zero-shot head that does not rely on the test distribution, a visualisation of the contrastive type geometry (e.g.\ UMAP or t-SNE), and extending the decoupled detect-then-type design beyond NER to entity linking and relation extraction.

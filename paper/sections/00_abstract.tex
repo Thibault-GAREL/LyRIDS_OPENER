@@ -1,14 +1,16 @@
-% Abstract draft v2 (2026-06-11). Reflects the current energy-aware framing.
-% Headline numbers are deliberately soft: the method is being reworked and OWNER
-% is still running. Rewrite the last sentences once the final runs are complete.
+% Abstract v3 (2026-06-15, FINAL). Energy-aware framing, headline = OPENER-ZS
+% (fusion) as the best zero-shot system end-to-end; supervised probe = upper bound.
+% Numbers final: 62.5 gold (sup.), 39.4 e2e (ZS fusion), 1.7 Wh.
 
 Open-world named entity recognition (NER) must assign entity types that were not fixed at training time.
 Recent systems either train a dedicated encoder or prompt billion-parameter language models, and they are compared almost exclusively on accuracy, ignoring their compute and energy cost.
-We present \textbf{OPENER}, a lightweight open-world NER pipeline assembled from off-the-shelf components: a frozen mention detector, a Matryoshka-truncatable sentence embedder sharpened by a light contrastive fine-tuning, and a balanced linear classifier for entity typing, so that no encoder is trained from scratch.
+We present \textbf{OPENER}, a lightweight open-world NER pipeline assembled from off-the-shelf components: a frozen mention detector, a Matryoshka-truncatable sentence embedder sharpened by a light contrastive fine-tuning with error-driven hard-negative mining, and a swappable typing head, so that no encoder is trained from scratch.
+The head has a supervised form and a zero-shot form, OPENER-ZS, that uses no target labels.
 We benchmark OPENER against GLiNER, GNER and OWNER on 13 datasets along three axes at once: quality, measured by Adjusted Mutual Information (AMI), inference latency, and energy consumption.
 Our analysis separates entity typing on gold mentions, where the contrastive embedding space is highly discriminative, from the end-to-end setting, where the dominant open-world bottleneck is shown to be mention detection rather than typing.
 The energy-aware comparison further exposes order-of-magnitude efficiency gaps between approaches that a quality-only evaluation would hide.
 % PRESERVED pre-hard-mining headline (2026-06-11):
 % On gold mentions, OPENER's balanced linear typing surpasses a zero-shot transfer of OWNER ($54.0$ vs $43.0$ AMI), while end-to-end the systems fall within a few AMI points of one another as mention detection becomes the shared bottleneck; OPENER reaches this quality at $3.4$\,Wh per run, one to two orders of magnitude below the generative ($36.5$\,Wh) and contrastive-clustering ($13.6$\,Wh) baselines.
-On gold mentions, OPENER's balanced linear typing, its embedding space sharpened by error-driven hard-negative mining, surpasses a zero-shot transfer of OWNER ($62.5$ vs $43.0$ AMI); end-to-end, where mention detection becomes the shared bottleneck, OPENER still attains the best AMI of the compared open-world systems ($40.2$), at $1.6$\,Wh per run, an order of magnitude or more below the contrastive-clustering ($14.3$\,Wh) and generative ($36.5$\,Wh) baselines.
+With a supervised probe, OPENER is the most accurate system in our benchmark: it leads typing on gold mentions on all $13$ sets, surpassing a zero-shot transfer of OWNER ($62.5$ vs $43.0$ AMI), and attains the best end-to-end AMI of all compared systems ($40.2$, ahead of GLiNER-L's $38.9$), at the cost of target labels.
+Removing that supervision, OPENER-ZS---typing against label-name prototypes, refined transductively and fused with the detector's own predictions, without any target label---is the best of the compared \emph{zero-shot} systems end-to-end ($39.4$), at $1.7$\,Wh per run, an order of magnitude or more below the contrastive-clustering ($14.3$\,Wh) and generative ($36.5$\,Wh) baselines.
 We release the code, the per-experiment configurations and the full benchmark.

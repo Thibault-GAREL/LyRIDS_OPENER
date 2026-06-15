@@ -1,28 +1,31 @@
 \section{Introduction}
 \label{sec:introduction}
 
-% TODO: write the introduction (≈1 to 1.5 pages).
-% Suggested structure:
-%   - Motivation: NER pipelines in production face an open-world setting - new
-%     entity types appear, and re-annotating + retraining is expensive.
-%   - Limitations of existing approaches:
-%       * Closed-set NER (BIO tagging) cannot generalize beyond training labels.
-%       * Triplet-loss + K-means (e.g. OWNER) requires training a dedicated encoder.
-%       * Prompting LLMs is costly and brittle at scale.
-%   - Our contribution: a lightweight open-world NER pipeline that reuses off-the-shelf
-%     components (a frozen detector and a Matryoshka embedder) with only a light
-%     contrastive fine-tuning plus hard-negative mining and a balanced linear typing
-%     head; no encoder is trained from scratch. The pipeline is modular: each component
-%     (detector, embedder, typing head) is independently swappable.
-%   - Contributions list:
-%       1. OPENER, an open-world NER pipeline assembled from off-the-shelf parts, with
-%          no encoder trained from scratch.
-%       2. Error-driven hard-negative mining that sharpens the embedding space for typing.
-%       3. A zero-shot typing variant (OPENER-ZS) based on label-name prototypes.
-%       4. An energy-aware benchmark of open-world NER on 13 datasets (AMI + latency +
-%          energy), separating typing-on-gold from end-to-end.
-%   - Paper roadmap (\S\ref{sec:related} discusses related work, \S\ref{sec:method}
-%     details the OPENER pipeline, \S\ref{sec:experiments} evaluates on
-%     [datasets], and \S\ref{sec:conclusion} concludes).
+Named entity recognition (NER) in production rarely operates over a fixed inventory of types.
+New entity categories appear as a system meets new domains, products or users, and a closed-set tagger trained on a frozen label set cannot name a type it has never seen.
+The standard remedy---re-annotating data for the new types and retraining the model---is slow and expensive, which is precisely what \emph{open-world} NER seeks to avoid: recognising and typing entities whose categories were not fixed at training time.
 
-\emph{[Placeholder - introduction to be written.]}
+Existing open-world approaches buy this flexibility at a cost.
+Span-based closed-set models reach high accuracy but remain bound to their training inventory \cite{nguyen2023span}.
+OWNER \cite{genest2025owner} removes that bound by training a dedicated entity encoder with a triplet objective and clustering the resulting mentions into dynamically named types, but it still trains an encoder from scratch and pays a heavy per-sentence inference cost.
+A complementary line prompts or instruction-tunes billion-parameter language models \cite{zhou2024universalner, sainz2024gollie}, which are accurate but slow, brittle, and often too large for commodity hardware.
+Across all of these, evaluation is reported almost exclusively on accuracy: the compute, latency and energy that separate a $137$\,M-parameter pipeline from a $7$\,B-parameter model are left out of the comparison, even though they decide what can actually be deployed.
+
+We present \textbf{OPENER}, a lightweight open-world NER pipeline assembled from off-the-shelf components, with no encoder trained from scratch.
+A frozen detector proposes spans, a pretrained Matryoshka sentence embedder---sharpened by a light contrastive fine-tuning and an error-driven hard-negative mining pass---maps each span to a vector, and a typing head assigns a type.
+The pipeline is modular: detector, embedder and typing head are independently swappable, and the embedder can be truncated to trade quality for compute.
+The typing head exposes two operating points.
+A supervised linear probe is the most accurate configuration in our benchmark---the best end-to-end AMI of all compared systems and the best typing on gold mentions---but needs target labels.
+A zero-shot variant, \textbf{OPENER-ZS}, uses no target labels at typing time: it types each mention against label-name prototypes, refined transductively and \emph{fused} with the detector's own zero-shot label predictions---a signal that prototype matching otherwise discards.
+This zero-shot head is the operating point we put forward: it reaches the best end-to-end AMI of all compared zero-shot systems while keeping an order-of-magnitude-lower energy footprint than the trained-encoder and generative baselines.
+
+Our contributions are as follows.
+\begin{itemize}
+\item \textbf{OPENER}, an open-world NER pipeline assembled entirely from off-the-shelf parts (a frozen detector and a pretrained Matryoshka embedder) with no encoder trained from scratch and a swappable typing head.
+\item An \emph{error-driven hard-negative mining} step that fine-tunes the embedding on the type pairs it most often confuses, lifting typing-on-gold AMI by $8.5$ points over plain contrastive fine-tuning.
+\item \textbf{OPENER-ZS}, a label-free typing head combining label-name prototypes, a transductive refinement, and a fusion with the detector's zero-shot predictions, which is the best zero-shot system end-to-end on our benchmark, ahead of GLiNER-L, GNER and OWNER.
+\item An \emph{energy-aware} benchmark of open-world NER on $13$ datasets that reports quality, latency and energy jointly, separates typing-on-gold from end-to-end, and shows that the dominant open-world bottleneck is mention detection rather than typing, while exposing efficiency gaps that an accuracy-only evaluation would hide.
+\end{itemize}
+
+The rest of the paper is organised as follows.
+\autoref{sec:related} reviews related work, \autoref{sec:method} details the OPENER pipeline, \autoref{sec:experiments} presents the benchmark and ablations, and \autoref{sec:conclusion} concludes.

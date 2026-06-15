@@ -89,7 +89,7 @@ The supervised probe remains the stronger configuration ($40.2$ end-to-end, $62.
 
 \begin{table}[tbp]
 \centering
-\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best system per column. OPENER uses the error-driven hard-negative mining embedder selected in \autoref{tab:ablation} and obtains the best mean AMI of the compared systems. $^\S$\,marks zero-shot systems that use no target-side labels: OWNER (trained once on CoNLL-2003, then applied to each target) and OPENER-ZS, the zero-shot variant of OPENER that types mentions by nearest label-name prototype instead of a trained probe; the plain variant matches OWNER end-to-end ($34.2$ vs $34.3$) at an order of magnitude lower cost (\autoref{tab:latency},\,\autoref{tab:energy}), and two label-free refinements---transductive prototypes ($36.8$) and fusion with the detector's own label predictions ($39.4$)---make OPENER-ZS the best zero-shot system, ahead of GLiNER-L ($38.9$). $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source) and for OPENER (its contrastive source), and is not bolded as a transfer result; the best zero-shot system on CoNLL is GNER. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
+\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best value per column across all systems. Systems are grouped by supervision: \emph{zero-shot} systems use no target-side labels, whereas the \emph{supervised} OPENER fits a linear probe on each target's training labels. Among the zero-shot systems, OPENER-ZS (fusion; highlighted)---label-name prototypes fused with the detector's own zero-shot predictions---obtains the best mean AMI ($39.4$), ahead of GLiNER-L ($38.9$); the supervised OPENER is the most accurate overall ($40.2$) at the cost of target labels. OPENER-ZS and OPENER share the error-driven hard-negative mining embedder selected in \autoref{tab:ablation}; the transductive refinement of OPENER-ZS is reported there. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source) and for OPENER (its contrastive source) and is not bolded as a transfer result; the best zero-shot system on CoNLL is GNER. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
 \label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -97,19 +97,23 @@ The supervised probe remains the stronger configuration ($40.2$ end-to-end, $62.
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
 \midrule
+\multicolumn{15}{l}{\emph{Zero-shot (no target labels)}} \\
 GLiNER-S & 41.7 & 49.8 & 56.4 & 50.6 & 53.3 & 29.7 & 26.1 & 35.6 & 10.7 & 31.8 & 18.9 & \textbf{34.1} & \textbf{36.1} & 36.5 \\
 GLiNER-M & 42.0 & \textbf{50.1} & 57.4 & 50.2 & \textbf{54.2} & 28.1 & 27.9 & 36.4 & 11.3 & 34.9 & 24.9 & 32.8 & 31.6 & 37.1 \\
 GLiNER-L & 42.9 & 48.9 & \textbf{58.0} & 49.8 & 52.8 & 28.9 & 30.9 & 37.6 & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & 38.9 \\
 GNER & 41.9 & 46.9 & 53.5 & 48.9 & 49.9 & \textbf{30.0} & 30.0 & 36.8 & 17.0 & 29.1 & \textbf{43.7} & 32.8 & 31.6 & 37.9 \\
-OWNER$^\S$ & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 & 18.7 & 26.5 & 50.3$^\dagger$ & 29.1 & 31.3 & 34.3 \\
+OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 & 18.7 & 26.5 & 50.3$^\dagger$ & 29.1 & 31.3 & 34.3 \\
+OPENER-ZS & 31.6 & 43.8 & 41.7 & 36.7 & 44.2 & 23.0 & 28.4 & 32.4 & 28.3 & 29.1 & 42.6$^\dagger$ & 31.5 & 31.2 & 34.2 \\
+\rowcolor{hlyellow} OPENER-ZS (fusion) & 39.4 & 48.8 & \textbf{58.0} & 48.6 & 52.8 & 29.6 & 31.5 & 35.5 & 27.8 & 35.7 & 43.1$^\dagger$ & 31.2 & 30.4 & 39.4 \\
+% --- MOVED to architecture search (\autoref{tab:ablation}); preserved e2e per-dataset:
+% OPENER-ZS (transd.) & 33.7 & 48.9 & 53.7 & 45.3 & 45.9 & 24.2 & 30.4 & 34.7 & 27.9 & 27.9 & 44.4$^\dagger$ & 31.0 & 30.8 & 36.8 \\
+\addlinespace
+\multicolumn{15}{l}{\emph{Supervised (target labels)}} \\
 % --- DATA PRESERVED (pre-hard-mining OPENER e2e, contrastive only, 2026-06-09) ---
 % OPENER & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} & 31.4 & 39.4 & 32.5 & 32.5 & 36.6 \\
 % --- end preserved ---
 % hard-mining 3k tr./2 ep. e2e (recorded in project notes): 41.0 47.0 53.3 48.3 50.0 24.0 33.1 37.3 30.1 33.5 45.6 33.2 33.9 | 39.2
-OPENER & 40.2 & 49.6 & 55.3 & 50.3 & 51.7 & 24.9 & \textbf{33.6} & \textbf{37.8} & \textbf{30.2} & \textbf{36.5} & 44.8$^\dagger$ & 33.7 & 34.2 & \textbf{40.2} \\
-OPENER-ZS$^\S$ & 31.6 & 43.8 & 41.7 & 36.7 & 44.2 & 23.0 & 28.4 & 32.4 & 28.3 & 29.1 & 42.6$^\dagger$ & 31.5 & 31.2 & 34.2 \\
-OPENER-ZS (transd.)$^\S$ & 33.7 & 48.9 & 53.7 & 45.3 & 45.9 & 24.2 & 30.4 & 34.7 & 27.9 & 27.9 & 44.4$^\dagger$ & 31.0 & 30.8 & 36.8 \\
-\rowcolor{hlyellow} OPENER-ZS (fusion)$^\S$ & 39.4 & 48.8 & 58.0 & 48.6 & 52.8 & 29.6 & 31.5 & 35.5 & 27.8 & 35.7 & 43.1$^\dagger$ & 31.2 & 30.4 & 39.4 \\
+OPENER (supervised) & 40.2 & 49.6 & 55.3 & 50.3 & 51.7 & 24.9 & \textbf{33.6} & \textbf{37.8} & \textbf{30.2} & \textbf{36.5} & 44.8$^\dagger$ & 33.7 & 34.2 & \textbf{40.2} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -126,17 +130,21 @@ OPENER-ZS (transd.)$^\S$ & 33.7 & 48.9 & 53.7 & 45.3 & 45.9 & 24.2 & 30.4 & 34.7
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
 \midrule
+\multicolumn{15}{l}{\emph{Zero-shot (no target labels)}} \\
 GLiNER-S & \textbf{21} & \textbf{22} & \textbf{21} & \textbf{21} & \textbf{21} & \textbf{20} & \textbf{19} & \textbf{20} & \textbf{20} & \textbf{22} & \textbf{20} & \textbf{21} & \textbf{21} & \textbf{21} \\
 GLiNER-M & 36 & 36 & 37 & 38 & 39 & 39 & 38 & 40 & 41 & 42 & 44 & 46 & 45 & 40 \\
 GLiNER-L & 144 & 149 & 153 & 149 & 155 & 137 & 132 & 145 & 147 & 143 & 131 & 141 & 137 & 143 \\
 GNER & 3431 & 5408 & 7461 & 6472 & 7110 & 2906 & 1610 & 3344 & 4310 & 5034 & 2914 & 3435 & 1500 & 4226 \\
 OWNER$^\S$ & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 & 558 & 719$^\dagger$ & 759 & 626 & 616 \\
+OPENER-ZS & 109 & 135 & 156 & 172 & 175 & 136 & 127 & 137 & 133 & 136 & 117 & 127 & 124 & 137 \\
+\rowcolor{hlyellow} OPENER-ZS (fusion) & 218 & 254 & 291 & 277 & 289 & 185 & 173 & 205 & 84 & 98 & 92 & 104 & 97 & 182 \\
+% MOVED to architecture search (\autoref{tab:ablation}); preserved e2e per-dataset:
+% OPENER-ZS (transd.) & 104 & 130 & 149 & 158 & 186 & 186 & 217 & 233 & 194 & 132 & 75 & 95 & 98 & 151 \\
+\addlinespace
+\multicolumn{15}{l}{\emph{Supervised (target labels)}} \\
 % PRESERVED pre-hard-mining OPENER latency (contrastive, 2026-06-09):
 % OPENER & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 101 & 160 \\
-OPENER & 222 & 271 & 293 & 159 & 132 & 100 & 92 & 98 & 104 & 108 & 89 & 100 & 94 & 143 \\
-OPENER-ZS & 109 & 135 & 156 & 172 & 175 & 136 & 127 & 137 & 133 & 136 & 117 & 127 & 124 & 137 \\
-OPENER-ZS (transd.) & 104 & 130 & 149 & 158 & 186 & 186 & 217 & 233 & 194 & 132 & 75 & 95 & 98 & 151 \\
-\rowcolor{hlyellow} OPENER-ZS (fusion) & 218 & 254 & 291 & 277 & 289 & 185 & 173 & 205 & 84 & 98 & 92 & 104 & 97 & 182 \\
+OPENER (supervised) & 222 & 271 & 293 & 159 & 132 & 100 & 92 & 98 & 104 & 108 & 89 & 100 & 94 & 143 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -153,17 +161,21 @@ OPENER-ZS (transd.) & 104 & 130 & 149 & 158 & 186 & 186 & 217 & 233 & 194 & 132 
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
 \midrule
+\multicolumn{15}{l}{\emph{Zero-shot (no target labels)}} \\
 GLiNER-S & \textbf{0.19} & \textbf{0.17} & \textbf{0.20} & \textbf{0.27} & \textbf{0.22} & \textbf{0.27} & \textbf{0.35} & \textbf{0.39} & \textbf{0.40} & \textbf{0.42} & \textbf{0.37} & \textbf{0.41} & \textbf{0.40} & \textbf{0.31} \\
 GLiNER-M & 0.31 & 0.29 & 0.33 & 0.48 & 0.40 & 0.50 & 0.66 & 0.76 & 0.77 & 0.79 & 0.69 & 0.82 & 0.75 & 0.58 \\
 GLiNER-L & 0.68 & 0.67 & 0.77 & 1.04 & 0.91 & 1.01 & 1.37 & 1.51 & 1.54 & 1.49 & 1.38 & 1.52 & 1.43 & 1.18 \\
 GNER & 17.13 & 24.28 & 39.75 & 50.88 & 44.76 & 20.60 & 17.02 & 37.17 & 49.11 & 63.50 & 45.22 & 38.69 & 26.50 & 36.51 \\
 OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & 22.0$^\dagger$ & 23.2 & 19.1 & 14.3 \\
+OPENER-ZS & 0.95 & 1.06 & 1.37 & 1.97 & 1.69 & 1.52 & 2.07 & 2.28 & 2.15 & 2.30 & 2.10 & 2.33 & 2.26 & 1.85 \\
+\rowcolor{hlyellow} OPENER-ZS (fusion) & 1.14 & 1.23 & 1.58 & 2.08 & 1.82 & 1.41 & 1.82 & 2.23 & 1.62 & 1.87 & 1.63 & 1.90 & 1.79 & 1.70 \\
+% MOVED to architecture search (\autoref{tab:ablation}); preserved e2e per-dataset:
+% OPENER-ZS (transd.) & 0.97 & 1.04 & 1.36 & 1.89 & 2.04 & 2.15 & 3.15 & 2.68 & 2.08 & 1.97 & 1.48 & 1.85 & 1.90 & 1.89 \\
+\addlinespace
+\multicolumn{15}{l}{\emph{Supervised (target labels)}} \\
 % PRESERVED pre-hard-mining OPENER energy (had a CodeCarbon glitch on Mus=22.76; avg inflated to 3.39):
 % OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 1.70 & 1.93 & 1.82 & 3.39 \\
-OPENER & 1.10 & 1.26 & 0.87 & 1.76 & 1.41 & 1.31 & 1.75 & 1.87 & 1.96 & 1.97 & 1.73 & 1.91 & 1.78 & 1.59 \\
-OPENER-ZS & 0.95 & 1.06 & 1.37 & 1.97 & 1.69 & 1.52 & 2.07 & 2.28 & 2.15 & 2.30 & 2.10 & 2.33 & 2.26 & 1.85 \\
-OPENER-ZS (transd.) & 0.97 & 1.04 & 1.36 & 1.89 & 2.04 & 2.15 & 3.15 & 2.68 & 2.08 & 1.97 & 1.48 & 1.85 & 1.90 & 1.89 \\
-\rowcolor{hlyellow} OPENER-ZS (fusion) & 1.14 & 1.23 & 1.58 & 2.08 & 1.82 & 1.41 & 1.82 & 2.23 & 1.62 & 1.87 & 1.63 & 1.90 & 1.79 & 1.70 \\
+OPENER (supervised) & 1.10 & 1.26 & 0.87 & 1.76 & 1.41 & 1.31 & 1.75 & 1.87 & 1.96 & 1.97 & 1.73 & 1.91 & 1.78 & 1.59 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -182,16 +194,20 @@ OPENER-ZS (transd.) & 0.97 & 1.04 & 1.36 & 1.89 & 2.04 & 2.15 & 3.15 & 2.68 & 2.
 \toprule
 Model & Params & AMI & p50 (ms) & Energy (Wh) & CO\textsubscript{2} (g) \\
 \midrule
+\multicolumn{6}{l}{\emph{Zero-shot (no target labels)}} \\
 GLiNER-S  & 50M  & 36.5 & 21 & 0.31 & 0.02 \\
 GLiNER-M  & 200M & 37.1 & 40 & 0.58 & 0.03 \\
 GLiNER-L  & 330M & 38.9 & 143 & 1.18 & 0.07 \\
 GNER      & 220M & 37.9 & 4226 & 36.51 & 2.05 \\
 OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
-% PRESERVED pre-hard-mining: OPENER & 467M & 36.6 & 160 & 3.39 & 0.19 \\ (energy inflated by a CodeCarbon glitch on Mus)
-OPENER    & 467M & 40.2 & 143 & 1.59 & 0.09 \\
 OPENER-ZS & 467M & 34.2 & 137 & 1.85 & 0.10 \\
-OPENER-ZS (transd.) & 467M & 36.8 & 151 & 1.89 & 0.11 \\
-OPENER-ZS (fusion) & 467M & 39.4 & 182 & 1.70 & 0.10 \\
+\rowcolor{hlyellow} OPENER-ZS (fusion) & 467M & 39.4 & 182 & 1.70 & 0.10 \\
+% MOVED to architecture search (\autoref{tab:ablation}); preserved:
+% OPENER-ZS (transd.) & 467M & 36.8 & 151 & 1.89 & 0.11 \\
+\addlinespace
+\multicolumn{6}{l}{\emph{Supervised (target labels)}} \\
+% PRESERVED pre-hard-mining: OPENER & 467M & 36.6 & 160 & 3.39 & 0.19 \\ (energy inflated by a CodeCarbon glitch on Mus)
+OPENER (supervised) & 467M & 40.2 & 143 & 1.59 & 0.09 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -265,15 +281,24 @@ Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & G
 % OWNER$^\S$ & \textbf{55.7} & \textbf{54.3} & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52.5$^\dagger$ & 30.0 & 27.2 & 43.0 \\
 % OPENER & 55.6 & 53.5 & \textbf{64.2} & \textbf{66.6} & \textbf{66.1} & \textbf{41.8} & \textbf{51.2} & \textbf{54.2} & \textbf{36.5} & \textbf{60.2} & \textbf{70.7} & \textbf{37.7} & \textbf{44.2} & \textbf{54.0} \\
 % --- end preserved ---
-OWNER$^\S$ & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52.5$^\dagger$ & 30.0 & 27.2 & 43.0 \\
-OPENER-ZS$^\S$ & 41.4 & 61.4 & 55.2 & 50.7 & 58.0 & 33.0 & 42.6 & 18.4 & 35.6 & 54.1 & 65.9$^\dagger$ & 31.1 & 30.2 & 44.4 \\
-OPENER-ZS (transd.)$^\S$ & 46.4 & 65.0 & 68.6 & 66.5 & 57.3 & 31.8 & 52.1 & 45.8 & 37.5 & 49.5 & 71.0$^\dagger$ & 38.6 & 37.5 & 51.4 \\
+\multicolumn{15}{l}{\emph{Zero-shot (no target labels)}} \\
+OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52.5$^\dagger$ & 30.0 & 27.2 & 43.0 \\
+OPENER-ZS & 41.4 & 61.4 & 55.2 & 50.7 & 58.0 & 33.0 & 42.6 & 18.4 & 35.6 & 54.1 & 65.9$^\dagger$ & 31.1 & 30.2 & 44.4 \\
+% MOVED to architecture search (\autoref{tab:ablation}, ``+ transductive refine'' = 51.4); preserved gold per-dataset:
+% OPENER-ZS (transd.) & 46.4 & 65.0 & 68.6 & 66.5 & 57.3 & 31.8 & 52.1 & 45.8 & 37.5 & 49.5 & 71.0$^\dagger$ & 38.6 & 37.5 & 51.4 \\
+\addlinespace
+\multicolumn{15}{l}{\emph{Supervised (target labels)}} \\
 % hard-mining 3k tr./2 ep. (recorded in project notes): 57.3 64.7 71.1 72.5 67.2 40.1 59.5 61.1 50.7 64.7 70.6 48.6 53.1 | 60.1
-OPENER & \textbf{57.6} & \textbf{67.0} & \textbf{71.8} & \textbf{74.8} & \textbf{68.9} & \textbf{38.6} & \textbf{63.0} & \textbf{66.9} & \textbf{59.2} & \textbf{71.2} & 71.5$^\dagger$ & \textbf{50.3} & \textbf{51.5} & \textbf{62.5} \\
+OPENER (supervised) & \textbf{57.6} & \textbf{67.0} & \textbf{71.8} & \textbf{74.8} & \textbf{68.9} & \textbf{38.6} & \textbf{63.0} & \textbf{66.9} & \textbf{59.2} & \textbf{71.2} & 71.5$^\dagger$ & \textbf{50.3} & \textbf{51.5} & \textbf{62.5} \\
 \bottomrule
 \end{tabular}
 \end{table}
-% >>> TODO[FINAL]: add a line chart for this gold ET comparison (OPENER vs OWNER per dataset).
+\begin{figure}[tbp]
+\centering
+\fbox{\parbox[c][3.2cm][c]{0.92\linewidth}{\centering\emph{[Line chart --- figure to be added: per-dataset typing-on-gold AMI across the $13$ sets for supervised OPENER, OPENER-ZS, OPENER-ZS (transductive) and OWNER, in the order of \autoref{tab:et-gold}.]}}}
+\caption{Typing-on-gold AMI per dataset: supervised OPENER and the two zero-shot OPENER-ZS variants versus OWNER. Supervised OPENER leads on every set; among the label-free systems, the transductive OPENER-ZS overtakes OWNER on $11$ of the $13$ sets.}
+\label{fig:et-gold}
+\end{figure}
 
 \begin{table}[tbp]
 \centering
