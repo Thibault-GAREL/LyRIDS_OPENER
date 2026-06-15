@@ -1,0 +1,426 @@
+{
+  "params": {
+    "datasets": [
+      "conll2003",
+      "crossner_ai"
+    ],
+    "base_model": "outputs/models/embedder_contrastive_hard_big",
+    "output_dir": "outputs/models/_smoke_la",
+    "max_per_dataset": 40,
+    "max_triplets": 80,
+    "exclude_labels": [
+      "MISC"
+    ],
+    "cache": "outputs/cache/_smoke_la.json",
+    "from_cache": false,
+    "epochs": 1,
+    "batch_size": 16,
+    "lr": 2e-05,
+    "margin": 1.0,
+    "max_seq_length": 128,
+    "warmup_steps": 100,
+    "seed": 42
+  },
+  "triplets": [
+    [
+      "classification: The inclusion of a C + + interpreter ( CINT until version 5.34 , [ENT] Cling [/ENT] from version 6 ) makes this package very versatile as it can be used in interactive , scripted and compiled modes in a manner similar to commercial products like MATLAB .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] field [/ENT]"
+    ],
+    [
+      "classification: The inclusion of a C + + interpreter ( [ENT] CINT [/ENT] until version 5.34 , Cling from version 6 ) makes this package very versatile as it can be used in interactive , scripted and compiled modes in a manner similar to commercial products like MATLAB .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] person [/ENT]"
+    ],
+    [
+      "classification: The technique used in creating eigenfaces and using them for recognition is also used outside of face recognition : handwriting recognition , lip reading , voice recognition , [ENT] sign language [/ENT] / hand gestures interpretation and medical imaging analysis .",
+      "classification: [ENT] task [/ENT]",
+      "classification: [ENT] programlang [/ENT]"
+    ],
+    [
+      "classification: Advocates of procedural representations were mainly centered at MIT , under the leadership of Marvin Minsky and [ENT] Seymour Papert [/ENT] .",
+      "classification: [ENT] researcher [/ENT]",
+      "classification: [ENT] conference [/ENT]"
+    ],
+    [
+      "classification: Speaking only hours after Chinese state media said the time was right to engage in political talks with Taiwan , Foreign Ministry spokesman Shen Guofang told Reuters : \" The necessary atmosphere for the opening of the talks has been disrupted by the [ENT] Taiwan [/ENT] authorities . \"",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] PER [/ENT]"
+    ],
+    [
+      "classification: A number of groups and companies are researching pose estimation , including groups at Brown University , Carnegie Mellon University , MPI Saarbruecken , Stanford University , the University of California , San Diego , the University of Toronto , the École Centrale Paris , ETH Zurich , [ENT] National University of Sciences and Technology [/ENT] ( NUST ) , and the University of California , Irvine .",
+      "classification: [ENT] university [/ENT]",
+      "classification: [ENT] field [/ENT]"
+    ],
+    [
+      "classification: Between 2009 and 2012 , the recurrent neural network s and deep feedforward neural network s developed in the research group of [ENT] Jürgen Schmidhuber [/ENT] at the Swiss AI Lab IDSIA have won eight international competitions in pattern recognition and machine learning .",
+      "classification: [ENT] researcher [/ENT]",
+      "classification: [ENT] organisation [/ENT]"
+    ],
+    [
+      "classification: Applications include object recognition , [ENT] robotic mapping [/ENT] and navigation , image stitching , 3D modeling , gesture recognition , video tracking , individual identification of wildlife and match moving .",
+      "classification: [ENT] task [/ENT]",
+      "classification: [ENT] field [/ENT]"
+    ],
+    [
+      "classification: The National Science Foundation was an umbrella for the National Aeronautics and Space Administration ( NASA ) , the US Department of Energy , the US Department of Commerce NIST , the US Department of Defense , Defense Advanced Research Projects Agency ( [ENT] DARPA [/ENT] ) , and the Office of Naval Research coordinated studies to inform strategic planners in their deliberations .",
+      "classification: [ENT] organisation [/ENT]",
+      "classification: [ENT] country [/ENT]"
+    ],
+    [
+      "classification: The technique used in creating eigenfaces and using them for recognition is also used outside of face recognition : handwriting recognition , lip reading , voice recognition , sign language / hand gestures interpretation and [ENT] medical imaging analysis [/ENT] .",
+      "classification: [ENT] field [/ENT]",
+      "classification: [ENT] university [/ENT]"
+    ],
+    [
+      "classification: Applications include object recognition , robotic mapping and navigation , image stitching , 3D modeling , gesture recognition , video tracking , [ENT] individual identification of wildlife [/ENT] and match moving .",
+      "classification: [ENT] task [/ENT]",
+      "classification: [ENT] researcher [/ENT]"
+    ],
+    [
+      "classification: Octave helps in solving linear and nonlinear problems numerically , and for performing other numerical experiments using a that is mostly compatible with [ENT] MATLAB [/ENT] .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] conference [/ENT]"
+    ],
+    [
+      "classification: With the emergence of conversational assistants such as Apple 's Siri , Amazon Alexa , Google Assistant , Microsoft Cortana , and Samsung 's Bixby , Voice Portals can now be accessed through mobile devices and [ENT] Far Field voice smart speakers [/ENT] such as the Amazon Echo and Google Home .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] university [/ENT]"
+    ],
+    [
+      "classification: Popular approaches of opinion-based recommender system utilize various techniques including text mining , information retrieval , sentiment analysis ( see also Multimodal sentiment analysis ) and [ENT] deep learning [/ENT] X.Y. Feng , H. Zhang , Y.J. Ren , P.H. Shang , Y. Zhu , Y.C. Liang , R.C. Guan , D. Xu , ( 2019 ) , , 21 ( 5 ) : e12957 .",
+      "classification: [ENT] field [/ENT]",
+      "classification: [ENT] metrics [/ENT]"
+    ],
+    [
+      "classification: A fast method for computing maximum likelihood estimates for the probit model was proposed by [ENT] Ronald Fisher [/ENT] as an appendix to Bliss ' work in 1935 .",
+      "classification: [ENT] researcher [/ENT]",
+      "classification: [ENT] task [/ENT]"
+    ],
+    [
+      "classification: Popular approaches of opinion-based recommender system utilize various techniques including text mining , information retrieval , sentiment analysis ( see also Multimodal sentiment analysis ) and deep learning X.Y. Feng , H. Zhang , Y.J. Ren , [ENT] P.H. Shang [/ENT] , Y. Zhu , Y.C. Liang , R.C. Guan , D. Xu , ( 2019 ) , , 21 ( 5 ) : e12957 .",
+      "classification: [ENT] researcher [/ENT]",
+      "classification: [ENT] product [/ENT]"
+    ],
+    [
+      "classification: Modern Windows desktop systems can use SAPI 4 and [ENT] SAPI 5 [/ENT] components to support speech synthesis and speech .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] field [/ENT]"
+    ],
+    [
+      "classification: Voice user interfaces that interpret and manage conversational state are challenging to design due to the inherent difficulty of integrating complex natural language processing tasks like coreference resolution , named-entity recognition , [ENT] information retrieval [/ENT] , and dialog management .",
+      "classification: [ENT] task [/ENT]",
+      "classification: [ENT] country [/ENT]"
+    ],
+    [
+      "classification: China , which has long opposed all [ENT] Taipei [/ENT] efforts to gain greater international recognition , was infuriated by a visit to Ukraine this week by Taiwanese Vice President Lien .",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] PER [/ENT]"
+    ],
+    [
+      "classification: China says time right for [ENT] Taiwan [/ENT] talks .",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] ORG [/ENT]"
+    ],
+    [
+      "classification: He discusses [ENT] Breadth-first search [/ENT] and Depth-first search techniques , but eventually concludes that the results represent expert system s that incarnate a lot of technical knowledge but don 't shine much light on the mental processes that humans use to solve such puzzles .",
+      "classification: [ENT] algorithm [/ENT]",
+      "classification: [ENT] location [/ENT]"
+    ],
+    [
+      "classification: China on Thursday accused Taipei of spoiling the atmosphere for a resumption of talks across the [ENT] Taiwan Strait [/ENT] with a visit to Ukraine by Taiwanese Vice President Lien Chan this week that infuriated Beijing .",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] PER [/ENT]"
+    ],
+    [
+      "classification: Popular approaches of opinion-based recommender system utilize various techniques including text mining , information retrieval , sentiment analysis ( see also Multimodal sentiment analysis ) and deep learning X.Y. Feng , H. Zhang , Y.J. Ren , P.H. Shang , Y. Zhu , Y.C. Liang , R.C. Guan , [ENT] D. Xu [/ENT] , ( 2019 ) , , 21 ( 5 ) : e12957 .",
+      "classification: [ENT] researcher [/ENT]",
+      "classification: [ENT] country [/ENT]"
+    ],
+    [
+      "classification: Several of these programs are available online , such as Google Translate and the SYSTRAN system that powers [ENT] AltaVista [/ENT] 's BabelFish ( now Yahoo 's Babelfish as of 9 May 2008 ) .",
+      "classification: [ENT] organisation [/ENT]",
+      "classification: [ENT] country [/ENT]"
+    ],
+    [
+      "classification: One can use the [ENT] OSD algorithm [/ENT] to derive math O ( \\ sqrt { T } ) / math regret bounds for the online version of Support vector machine for classification , which use the hinge loss math v _ t ( w ) = \\ max \\ { 0 , 1 - y _ t ( w \\ cdot x _ t ) \\ } / math",
+      "classification: [ENT] algorithm [/ENT]",
+      "classification: [ENT] field [/ENT]"
+    ],
+    [
+      "classification: The National Science Foundation was an umbrella for the National Aeronautics and Space Administration ( NASA ) , the US Department of Energy , the US Department of Commerce NIST , the US Department of Defense , [ENT] Defense Advanced Research Projects Agency [/ENT] ( DARPA ) , and the Office of Naval Research coordinated studies to inform strategic planners in their deliberations .",
+      "classification: [ENT] organisation [/ENT]",
+      "classification: [ENT] misc [/ENT]"
+    ],
+    [
+      "classification: The first palletizing robot was introduced in 1963 by the Fuji Yusoki Kogyo Company. by KUKA robotics in Germany , and the Programmable Universal Machine for Assembly was invented by [ENT] Victor Scheinman [/ENT] in 1976 , and the design was sold to Unimation .",
+      "classification: [ENT] researcher [/ENT]",
+      "classification: [ENT] conference [/ENT]"
+    ],
+    [
+      "classification: Germany 's representative to the European Union 's veterinary committee Werner Zwingmann said on Wednesday consumers should buy sheepmeat from countries other than [ENT] Britain [/ENT] until the scientific advice was clearer .",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] ORG [/ENT]"
+    ],
+    [
+      "classification: State media quoted [ENT] China [/ENT] 's top negotiator with Taipei , Tang Shubei , as telling a visiting group from Taiwan on Wednesday that it was time for the rivals to hold political talks .",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] ORG [/ENT]"
+    ],
+    [
+      "classification: With long-time collaborator Laurent Cohen , a neurologist at the Pitié-Salpêtrière Hospital in [ENT] Paris [/ENT] , Dehaene also identified patients with lesions in different regions of the parietal lobe with impaired multiplication , but preserved subtraction ( associated with lesions of the inferior parietal lobule ) and others with impaired subtraction , but preserved multiplication ( associated with lesions to the intraparietal sulcus ) .",
+      "classification: [ENT] location [/ENT]",
+      "classification: [ENT] algorithm [/ENT]"
+    ],
+    [
+      "classification: With the emergence of conversational assistants such as [ENT] Apple 's Siri [/ENT] , Amazon Alexa , Google Assistant , Microsoft Cortana , and Samsung 's Bixby , Voice Portals can now be accessed through mobile devices and Far Field voice smart speakers such as the Amazon Echo and Google Home .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] programlang [/ENT]"
+    ],
+    [
+      "classification: Only [ENT] France [/ENT] and Britain backed Fischler 's proposal .",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] ORG [/ENT]"
+    ],
+    [
+      "classification: Eurisko made many interesting discoveries and enjoyed significant acclaim , with his paper [ENT] Heuretics : Theoretical and Study of Heuristic Rules [/ENT] winning the Best Paper award at the 1982 Association for the Advancement of Artificial Intelligence .",
+      "classification: [ENT] misc [/ENT]",
+      "classification: [ENT] location [/ENT]"
+    ],
+    [
+      "classification: [ENT] China [/ENT] on Thursday accused Taipei of spoiling the atmosphere for a resumption of talks across the Taiwan Strait with a visit to Ukraine by Taiwanese Vice President Lien Chan this week that infuriated Beijing .",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] ORG [/ENT]"
+    ],
+    [
+      "classification: Examples of supervised learning are Naive Bayes classifier , Support vector machine , mixtures of Gaussians , and [ENT] network [/ENT] .",
+      "classification: [ENT] algorithm [/ENT]",
+      "classification: [ENT] product [/ENT]"
+    ],
+    [
+      "classification: RapidMiner provides learning schemes , models and algorithms and can be extended using [ENT] R [/ENT] and Python scripts . David Norris , Bloor Research , November 13 , 2013 .",
+      "classification: [ENT] programlang [/ENT]",
+      "classification: [ENT] person [/ENT]"
+    ],
+    [
+      "classification: \" What we have to be extremely careful of is how other countries are going to take Germany 's lead , \" Welsh National Farmers ' Union ( NFU ) chairman John Lloyd Jones said on [ENT] BBC radio [/ENT] .",
+      "classification: [ENT] ORG [/ENT]",
+      "classification: [ENT] PER [/ENT]"
+    ],
+    [
+      "classification: Popular approaches of [ENT] opinion-based recommender system [/ENT] utilize various techniques including text mining , information retrieval , sentiment analysis ( see also Multimodal sentiment analysis ) and deep learning X.Y. Feng , H. Zhang , Y.J. Ren , P.H. Shang , Y. Zhu , Y.C. Liang , R.C. Guan , D. Xu , ( 2019 ) , , 21 ( 5 ) : e12957 .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] country [/ENT]"
+    ],
+    [
+      "classification: Speaking only hours after Chinese state media said the time was right to engage in political talks with Taiwan , Foreign Ministry spokesman Shen Guofang told [ENT] Reuters [/ENT] : \" The necessary atmosphere for the opening of the talks has been disrupted by the Taiwan authorities . \"",
+      "classification: [ENT] ORG [/ENT]",
+      "classification: [ENT] LOC [/ENT]"
+    ],
+    [
+      "classification: A number of groups and companies are researching pose estimation , including groups at [ENT] Brown University [/ENT] , Carnegie Mellon University , MPI Saarbruecken , Stanford University , the University of California , San Diego , the University of Toronto , the École Centrale Paris , ETH Zurich , National University of Sciences and Technology ( NUST ) , and the University of California , Irvine .",
+      "classification: [ENT] university [/ENT]",
+      "classification: [ENT] programlang [/ENT]"
+    ],
+    [
+      "classification: The National Science Foundation was an umbrella for the National Aeronautics and Space Administration ( NASA ) , the US Department of Energy , the US Department of Commerce NIST , the [ENT] US Department of Defense [/ENT] , Defense Advanced Research Projects Agency ( DARPA ) , and the Office of Naval Research coordinated studies to inform strategic planners in their deliberations .",
+      "classification: [ENT] organisation [/ENT]",
+      "classification: [ENT] location [/ENT]"
+    ],
+    [
+      "classification: The technique used in creating eigenfaces and using them for recognition is also used outside of face recognition : handwriting recognition , lip reading , [ENT] voice recognition [/ENT] , sign language / hand gestures interpretation and medical imaging analysis .",
+      "classification: [ENT] task [/ENT]",
+      "classification: [ENT] conference [/ENT]"
+    ],
+    [
+      "classification: Two of the main methods used in [ENT] unsupervised learning [/ENT] are principal component analysis and cluster analysis .",
+      "classification: [ENT] field [/ENT]",
+      "classification: [ENT] university [/ENT]"
+    ],
+    [
+      "classification: In the middle of the 1990s , while serving as president of the AAAI , Hayes began a series of attacks on critics of AI , mostly phrased in an ironic light , and ( together with his colleague [ENT] Kenneth Ford [/ENT] ) invented an award named after Simon Newcomb to be given for the most ridiculous argument disproving the possibility of AI .",
+      "classification: [ENT] researcher [/ENT]",
+      "classification: [ENT] conference [/ENT]"
+    ],
+    [
+      "classification: In the middle of the 1990s , while serving as president of the AAAI , Hayes began a series of attacks on critics of AI , mostly phrased in an ironic light , and ( together with his colleague Kenneth Ford ) invented an award named after Simon Newcomb to be given for the most ridiculous argument disproving the possibility of [ENT] AI [/ENT] .",
+      "classification: [ENT] field [/ENT]",
+      "classification: [ENT] location [/ENT]"
+    ],
+    [
+      "classification: A number of groups and companies are researching pose estimation , including groups at Brown University , [ENT] Carnegie Mellon University [/ENT] , MPI Saarbruecken , Stanford University , the University of California , San Diego , the University of Toronto , the École Centrale Paris , ETH Zurich , National University of Sciences and Technology ( NUST ) , and the University of California , Irvine .",
+      "classification: [ENT] university [/ENT]",
+      "classification: [ENT] programlang [/ENT]"
+    ],
+    [
+      "classification: More recently , fictional representations of [ENT] artificially intelligent robots [/ENT] in films such as A.I. Artificial Intelligence and Ex Machina and the 2016 TV adaptation of Westworld have engaged audience sympathy for the robots themselves .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] algorithm [/ENT]"
+    ],
+    [
+      "classification: The Walt Disney Company also began more prominent use of 3D films in special venues to impress audiences with Magic Journeys ( 1982 ) and Captain EO ( Francis Ford Coppola , 1986 , starring [ENT] Michael Jackson [/ENT] ) being notable examples .",
+      "classification: [ENT] person [/ENT]",
+      "classification: [ENT] country [/ENT]"
+    ],
+    [
+      "classification: An optimal value for math \\ alpha / math can be found by using a line search algorithm , that is , the magnitude of math \\ alpha / math is determined by finding the value that minimizes S , usually using a [ENT] line search [/ENT] in the interval math0 \\ alpha 1 / math or a backtracking line search such as Armijo-line search .",
+      "classification: [ENT] algorithm [/ENT]",
+      "classification: [ENT] organisation [/ENT]"
+    ],
+    [
+      "classification: In the middle of the 1990s , while serving as president of the AAAI , [ENT] Hayes [/ENT] began a series of attacks on critics of AI , mostly phrased in an ironic light , and ( together with his colleague Kenneth Ford ) invented an award named after Simon Newcomb to be given for the most ridiculous argument disproving the possibility of AI .",
+      "classification: [ENT] researcher [/ENT]",
+      "classification: [ENT] person [/ENT]"
+    ],
+    [
+      "classification: Modern Windows desktop systems can use SAPI 4 and SAPI 5 components to support speech synthesis and [ENT] speech [/ENT] .",
+      "classification: [ENT] task [/ENT]",
+      "classification: [ENT] conference [/ENT]"
+    ],
+    [
+      "classification: With the emergence of conversational assistants such as Apple 's Siri , Amazon Alexa , Google Assistant , Microsoft Cortana , and [ENT] Samsung 's Bixby [/ENT] , Voice Portals can now be accessed through mobile devices and Far Field voice smart speakers such as the Amazon Echo and Google Home .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] organisation [/ENT]"
+    ],
+    [
+      "classification: [ENT] Voice user interfaces [/ENT] that interpret and manage conversational state are challenging to design due to the inherent difficulty of integrating complex natural language processing tasks like coreference resolution , named-entity recognition , information retrieval , and dialog management .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] researcher [/ENT]"
+    ],
+    [
+      "classification: Eurisko made many interesting discoveries and enjoyed significant acclaim , with his paper Heuretics : Theoretical and Study of Heuristic Rules winning the Best Paper award at the [ENT] 1982 Association for the Advancement of Artificial Intelligence [/ENT] .",
+      "classification: [ENT] conference [/ENT]",
+      "classification: [ENT] algorithm [/ENT]"
+    ],
+    [
+      "classification: A rare early handwritten draft of a song by [ENT] U.S. [/ENT] guitar legend Jimi Hendrix was sold for almost $ 17,000 on Thursday at an auction of some of the late musician 's favourite possessions .",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] PER [/ENT]"
+    ],
+    [
+      "classification: RapidMiner provides learning schemes , models and algorithms and can be extended using R and Python scripts . [ENT] David Norris [/ENT] , Bloor Research , November 13 , 2013 .",
+      "classification: [ENT] researcher [/ENT]",
+      "classification: [ENT] person [/ENT]"
+    ],
+    [
+      "classification: Examples of supervised learning are Naive Bayes classifier , [ENT] Support vector machine [/ENT] , mixtures of Gaussians , and network .",
+      "classification: [ENT] algorithm [/ENT]",
+      "classification: [ENT] researcher [/ENT]"
+    ],
+    [
+      "classification: [ENT] BEIJING [/ENT] 1996-08-22",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] ORG [/ENT]"
+    ],
+    [
+      "classification: Buyers also snapped up 16 other items that were put up for auction by Hendrix 's former girlfriend [ENT] Kathy Etchingham [/ENT] , who lived with him from 1966 to 1969 .",
+      "classification: [ENT] PER [/ENT]",
+      "classification: [ENT] LOC [/ENT]"
+    ],
+    [
+      "classification: The technique used in creating eigenfaces and using them for recognition is also used outside of [ENT] face recognition [/ENT] : handwriting recognition , lip reading , voice recognition , sign language / hand gestures interpretation and medical imaging analysis .",
+      "classification: [ENT] task [/ENT]",
+      "classification: [ENT] algorithm [/ENT]"
+    ],
+    [
+      "classification: Several of these programs are available online , such as [ENT] Google Translate [/ENT] and the SYSTRAN system that powers AltaVista 's BabelFish ( now Yahoo 's Babelfish as of 9 May 2008 ) .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] person [/ENT]"
+    ],
+    [
+      "classification: More recently , fictional representations of artificially intelligent robots in films such as [ENT] A.I. Artificial Intelligence [/ENT] and Ex Machina and the 2016 TV adaptation of Westworld have engaged audience sympathy for the robots themselves .",
+      "classification: [ENT] misc [/ENT]",
+      "classification: [ENT] organisation [/ENT]"
+    ],
+    [
+      "classification: He said a proposal last month by EU Farm Commissioner [ENT] Franz Fischler [/ENT] to ban sheep brains , spleens and spinal cords from the human and animal food chains was a highly specific and precautionary move to protect human health .",
+      "classification: [ENT] PER [/ENT]",
+      "classification: [ENT] LOC [/ENT]"
+    ],
+    [
+      "classification: But [ENT] Fischler [/ENT] agreed to review his proposal after the EU 's standing veterinary committee , mational animal health officials , questioned if such action was justified as there was only a slight risk to human health .",
+      "classification: [ENT] PER [/ENT]",
+      "classification: [ENT] ORG [/ENT]"
+    ],
+    [
+      "classification: Between 2009 and 2012 , the recurrent neural network s and deep feedforward neural network s developed in the research group of Jürgen Schmidhuber at the [ENT] Swiss AI Lab IDSIA [/ENT] have won eight international competitions in pattern recognition and machine learning .",
+      "classification: [ENT] organisation [/ENT]",
+      "classification: [ENT] field [/ENT]"
+    ],
+    [
+      "classification: Variants of the back-propagation algorithm as well as unsupervised methods by Geoff Hinton and colleagues at the [ENT] University of Toronto [/ENT] can be used to train deep , highly nonlinear neural architectures , { { cite journal",
+      "classification: [ENT] university [/ENT]",
+      "classification: [ENT] task [/ENT]"
+    ],
+    [
+      "classification: In 2002 Hutter , with Jürgen Schmidhuber and Shane Legg , developed and published a mathematical theory of [ENT] artificial general intelligence [/ENT] based on idealised intelligent agents and reward-motivated reinforcement learning .",
+      "classification: [ENT] field [/ENT]",
+      "classification: [ENT] programlang [/ENT]"
+    ],
+    [
+      "classification: Applications include object recognition , robotic mapping and navigation , image stitching , 3D modeling , [ENT] gesture recognition [/ENT] , video tracking , individual identification of wildlife and match moving .",
+      "classification: [ENT] task [/ENT]",
+      "classification: [ENT] researcher [/ENT]"
+    ],
+    [
+      "classification: Applications include [ENT] object recognition [/ENT] , robotic mapping and navigation , image stitching , 3D modeling , gesture recognition , video tracking , individual identification of wildlife and match moving .",
+      "classification: [ENT] task [/ENT]",
+      "classification: [ENT] misc [/ENT]"
+    ],
+    [
+      "classification: One can use the OSD algorithm to derive math O ( \\ sqrt { T } ) / math regret bounds for the online version of Support vector machine for classification , which use the [ENT] hinge loss [/ENT] math v _ t ( w ) = \\ max \\ { 0 , 1 - y _ t ( w \\ cdot x _ t ) \\ } / math",
+      "classification: [ENT] metrics [/ENT]",
+      "classification: [ENT] programlang [/ENT]"
+    ],
+    [
+      "classification: He received two honorary degree s , one S. V. della laurea ad honorem in Psychology from the [ENT] University of Padua [/ENT] in 1995 and one doctorate in Industrial Design and Engineering from Delft University of Technology .",
+      "classification: [ENT] university [/ENT]",
+      "classification: [ENT] metrics [/ENT]"
+    ],
+    [
+      "classification: Fischler proposed EU-wide measures after reports from Britain and [ENT] France [/ENT] that under laboratory conditions sheep could contract Bovine Spongiform Encephalopathy ( BSE ) -- mad cow disease .",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] ORG [/ENT]"
+    ],
+    [
+      "classification: [ENT] RapidMiner [/ENT] provides learning schemes , models and algorithms and can be extended using R and Python scripts . David Norris , Bloor Research , November 13 , 2013 .",
+      "classification: [ENT] product [/ENT]",
+      "classification: [ENT] country [/ENT]"
+    ],
+    [
+      "classification: Variants of the [ENT] back-propagation algorithm [/ENT] as well as unsupervised methods by Geoff Hinton and colleagues at the University of Toronto can be used to train deep , highly nonlinear neural architectures , { { cite journal",
+      "classification: [ENT] algorithm [/ENT]",
+      "classification: [ENT] field [/ENT]"
+    ],
+    [
+      "classification: Another technique particularly used for recurrent neural network s is the long short-term memory ( [ENT] LSTM [/ENT] ) network of 1997 by Sepp Hochreiter & Jürgen Schmidhuber .",
+      "classification: [ENT] algorithm [/ENT]",
+      "classification: [ENT] country [/ENT]"
+    ],
+    [
+      "classification: Consultations should be held to set the time and format of the talks , the official Xinhua news agency quoted Tang Shubei , executive vice chairman of the [ENT] Association for Relations Across the Taiwan Straits [/ENT] , as saying late on Wednesday .",
+      "classification: [ENT] ORG [/ENT]",
+      "classification: [ENT] LOC [/ENT]"
+    ],
+    [
+      "classification: China says [ENT] Taiwan [/ENT] spoils atmosphere for talks .",
+      "classification: [ENT] LOC [/ENT]",
+      "classification: [ENT] PER [/ENT]"
+    ],
+    [
+      "classification: Between 2009 and 2012 , the recurrent neural network s and [ENT] deep feedforward neural network [/ENT] s developed in the research group of Jürgen Schmidhuber at the Swiss AI Lab IDSIA have won eight international competitions in pattern recognition and machine learning .",
+      "classification: [ENT] algorithm [/ENT]",
+      "classification: [ENT] programlang [/ENT]"
+    ],
+    [
+      "classification: An optimal value for math \\ alpha / math can be found by using a [ENT] line search algorithm [/ENT] , that is , the magnitude of math \\ alpha / math is determined by finding the value that minimizes S , usually using a line search in the interval math0 \\ alpha 1 / math or a backtracking line search such as Armijo-line search .",
+      "classification: [ENT] algorithm [/ENT]",
+      "classification: [ENT] field [/ENT]"
+    ],
+    [
+      "classification: The foreign ministry 's Shen told [ENT] Reuters Television [/ENT] in an interview he had read reports of Tang 's comments but gave no details of why the negotiator had considered the time right for talks with Taiwan , which Beijing considers a renegade province .",
+      "classification: [ENT] ORG [/ENT]",
+      "classification: [ENT] LOC [/ENT]"
+    ]
+  ]
+}

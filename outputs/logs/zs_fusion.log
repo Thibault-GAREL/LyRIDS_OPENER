@@ -1,0 +1,37 @@
+[10:57:48] === Opener ZS e2e + FUSION GLiNER<->centroide ===
+[10:57:48] Embedder outputs/models/embedder_contrastive_hard_big | MD urchade/gliner_large-v2.1 thr=0.3 | proto=ensemble refine=3 | betas=[0.0, 0.05, 0.1, 0.2, 0.3, 0.5, 1.0, 2.0]
+[10:58:09] Chargement GLiNER urchade/gliner_large-v2.1 sur cuda...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<?, ?it/s]
+[10:58:25] --- crossner_ai ---
+[codecarbon INFO @ 10:58:27] offline tracker init
+[codecarbon WARNING @ 10:58:27] Multiple instances of codecarbon are allowed to run at the same time.
+<All keys matched successfully>
+[11:00:21]   gliner_pure=0.4288 | best transd β=0.1 AMI=0.4300 | centroid(β0)=0.3371
+[11:00:21] --- crossner_literature ---
+[11:02:20]   gliner_pure=0.4885 | best transd β=0 AMI=0.4886 | centroid(β0)=0.4886
+[11:02:20] --- crossner_music ---
+[11:04:55]   gliner_pure=0.5802 | best transd β=0.1 AMI=0.5831 | centroid(β0)=0.5367
+[11:04:55] --- crossner_politics ---
+[11:08:19]   gliner_pure=0.4981 | best transd β=0.2 AMI=0.4983 | centroid(β0)=0.4528
+[11:08:19] --- crossner_science ---
+[11:11:19]   gliner_pure=0.5284 | best transd β=0.2 AMI=0.5287 | centroid(β0)=0.4593
+[11:11:19] --- wnut17 ---
+[11:13:41]   gliner_pure=0.2895 | best transd β=0.05 AMI=0.2960 | centroid(β0)=0.2422
+[11:13:41] --- mit_restaurant ---
+[11:16:42]   gliner_pure=0.3089 | best transd β=0.05 AMI=0.3146 | centroid(β0)=0.3044
+[11:16:42] --- mit_movie ---
+[11:20:20]   gliner_pure=0.3765 | best transd β=0.3 AMI=0.3765 | centroid(β0)=0.3470
+[11:20:20] --- fabner ---
+[11:21:57]   gliner_pure=0.2811 | best transd β=0.3 AMI=0.2811 | centroid(β0)=0.2789
+[11:21:57] --- bionlp2004 ---
+[11:23:48]   gliner_pure=0.3456 | best transd β=0.05 AMI=0.3568 | centroid(β0)=0.2788
+[11:23:48] --- conll2003 ---
+[11:25:31]   gliner_pure=0.2968 | best transd β=0 AMI=0.4436 | centroid(β0)=0.4436
+[11:25:31] --- gum ---
+[11:27:26]   gliner_pure=0.3268 | best transd β=0.2 AMI=0.3270 | centroid(β0)=0.3103
+[11:27:26] --- gentle ---
+[11:29:18]   gliner_pure=0.3052 | best transd β=0 AMI=0.3084 | centroid(β0)=0.3084
+[11:29:18] Rapport : outputs\results\opener_zs_e2e_fusion\SUMMARY_zs_fusion_2026-06-15_112918.md
+[11:29:18] MEILLEUR : transductive β=0.05 AMI=0.3941 | gliner_pure=0.3888

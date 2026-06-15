@@ -101,8 +101,10 @@ def main(owner_mode='transfer'):
         'GLiNER-L':       (f'{B}/gliner_L/gliner_2*.json',  'end-to-end'),
         'GNER-T5-base':   (f'{B}/gner/gner_2*.json',         'end-to-end'),
         'Opener-V2-e2e':  (f'{O}/opener_e2e/SUMMARY*.json',  'end-to-end'),
+        'Opener-ZS-e2e':  (f'{O}/opener_zs_e2e/SUMMARY*.json', 'end-to-end'),
         'OWNER-e2e':      (owner_e2e,                         'end-to-end'),
         'OWNER':          (owner_gold,                        'typing-on-gold'),
+        'Opener-ZS-gold': (f'{O}/opener_zs/SUMMARY_opener_zs_dict_*.json', 'typing-on-gold'),
     }
 
     models = {}

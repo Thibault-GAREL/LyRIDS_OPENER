@@ -1,43 +1,43 @@
 \section{Method}
 \label{sec:method}
 
-% TODO: write the methodology (≈3 to 5 pages, the heart of the paper).
-% Suggested structure:
+% TODO: write the methodology. Pipeline is Detect -> Embed -> Type.
+% Skeleton updated to the current approach (V2, 2026-06-11). The old GMM-per-label /
+% anchor-word / OOD / hierarchy design is NOT the method anymore; the GMM survives
+% only as one ablation baseline of the typing head.
 %
 % \subsection{Overview}
-%   - High-level pipeline diagram (figure): Text → MentionDetector → Embedder →
-%     LabelClusterer → {label_id, log-likelihood} or "OOD".
-%   - State the three design principles:
-%     (i)  no encoder training,
-%     (ii) anchor-word semi-supervision,
-%     (iii) Matryoshka-truncatable embeddings for compute/quality trade-offs.
+%   - Pipeline figure: Text -> MentionDetector -> Matryoshka Embedder -> Typing head -> label.
+%   - Three design principles:
+%     (i)   no heavy encoder is trained from scratch (off-the-shelf components);
+%     (ii)  a light contrastive fine-tuning, refined by error-driven hard-negative
+%           mining, makes a general-purpose embedding discriminative for entity types;
+%     (iii) Matryoshka-truncatable embeddings give a compute/quality knob.
 %
 % \subsection{Mention Detection}
-%   - GLiNER as a frozen black-box component.
-%   - Inputs: raw text + candidate labels.
-%   - Outputs: spans (start, end, surface form).
-%   - Justify the choice: state-of-the-art on open-NER benchmarks, no retraining.
+%   - GLiNER (frozen, off-the-shelf): raw text + candidate labels -> spans.
+%   - Justify: strong zero-shot detector, no retraining; it is the shared end-to-end bottleneck.
 %
-% \subsection{Matryoshka Embedding of Entities}
-%   - Nomic v1.5 with truncate_dim ∈ {768, 512, 256, 128, 64}.
-%   - Embedding strategy: span-in-context vs. span-only (ablation).
-%   - Formal notation: e_i = Embed(x_i; D) ∈ R^D.
+% \subsection{Matryoshka Entity Embedding}
+%   - Nomic v1.5, span-in-context, truncate_dim in {768, 512, 256, 128, 64}.
+%   - e_i = Embed(x_i; D) in R^D.
 %
-% \subsection{Per-Label Gaussian Mixture Models}
-%   - For each label ℓ, fit a GMM with K_ℓ components, full covariance.
-%   - Anchor-word initialization: means_init[0] = mean of embeddings of anchor
-%     words (e.g., "person", "scientist", "researcher" for the PERSON label).
-%   - EM refinement on detected entity embeddings.
-%   - Formal: p_ℓ(e) = Σ_k π_k N(e; μ_k, Σ_k).
+% \subsection{Contrastive Fine-tuning with Hard-Negative Mining}
+%   - Triplet margin loss (margin 1) on CoNLL-2003 source spans.
+%   - Second pass: fine-tune again on the entity pairs the model most often confuses
+%     (hard negatives in the sense of FaceNet, \cite{schroff2015facenet}), mixed with
+%     correctly-typed mentions for diversity; errors are mined per training split by
+%     cross-validation, so no test label is seen.
 %
-% \subsection{Entity Typing and OOD Detection}
-%   - Assignment rule: ℓ* = argmax_ℓ log p_ℓ(e).
-%   - OOD if max_ℓ log p_ℓ(e) < τ (threshold).
-%   - Calibration of τ on held-out in-distribution entities.
+% \subsection{Entity Typing}
+%   - Supervised: a balanced linear classifier (LinearSVC, class_weight=balanced) fitted
+%     on each target's training labels; give the n_total / (n_classes * count) weighting.
+%   - Zero-shot variant (OPENER-ZS): no target labels; assign each mention to the nearest
+%     label-name prototype (centroid of the label's anchor words embedded in the
+%     contrastive space) by cosine similarity.
+%   - A per-class GMM is reported only as an ablation baseline (\autoref{tab:ablation}).
 %
-% \subsection{Post-hoc Hierarchy Inference}
-%   - Mahalanobis containment: bubble B is "contained" in bubble A if a
-%     fraction γ ≥ γ_min of B's mass lies within k-σ of A.
-%   - Output: a DAG of label relations.
+% \subsection{Evaluation protocol}
+%   - Offset alignment + FN/FP sentinels; AMI; typing-on-gold vs end-to-end; latency + energy.
 
-\emph{[Placeholder — method to be written.]}
+\emph{[Placeholder - method to be written once the configuration is frozen.]}

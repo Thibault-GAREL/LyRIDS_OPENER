@@ -1,0 +1,47 @@
+[12:12:06] === EMBEDDER frozen Nomic v1.5 (nomic-ai/nomic-embed-text-v1.5) ===
+<All keys matched successfully>
+[12:31:51]   -> {'ami': 0.2575, 'f1': 0.4387, 'acc': 0.5221, 'fit_ms': 4193.4, 'p50_ms': 34.0, 'wh': 0.538, 'co2': 0.0301}
+[12:31:51] === EMBEDDER contrastive (outputs/models/embedder_contrastive) ===
+<All keys matched successfully>
+[12:57:48]   -> {'ami': 0.5404, 'f1': 0.6326, 'acc': 0.715, 'fit_ms': 2919.2, 'p50_ms': 43.4, 'wh': 0.617, 'co2': 0.0346}
+[12:57:48] === EMBEDDER + hard 3k/2ep (outputs/models/embedder_contrastive_hard) ===
+<All keys matched successfully>
+[13:28:23]   -> {'ami': 0.6009, 'f1': 0.688, 'acc': 0.7696, 'fit_ms': 2600.4, 'p50_ms': 70.6, 'wh': 0.671, 'co2': 0.0376}
+[13:28:23] === EMBEDDER + hard 8k/3ep (outputs/models/embedder_contrastive_hard_big) ===
+<All keys matched successfully>
+[13:49:48]   -> {'ami': 0.625, 'f1': 0.7179, 'acc': 0.7919, 'fit_ms': 2915.8, 'p50_ms': 42.5, 'wh': 0.627, 'co2': 0.0351}
+[13:49:48] === DIM 64 ===
+[13:50:00]   -> AMI 0.5793  Fit 299ms
+[13:50:00] === DIM 128 ===
+[13:50:22]   -> AMI 0.5994  Fit 562ms
+[13:50:22] === DIM 256 ===
+[13:50:58]   -> AMI 0.6123  Fit 926ms
+[13:50:58] === DIM 512 ===
+[13:51:59]   -> AMI 0.6196  Fit 1556ms
+[13:51:59] === DIM 768 ===
+[13:53:25]   -> AMI 0.6250  Fit 2176ms
+[13:53:25] === TYPING GMM (per-class) ===
+[13:53:48]   -> AMI 0.5611  F1 0.6533  Fit 527ms
+[13:53:48] === TYPING LogReg ===
+[13:54:09]   -> AMI 0.5560  F1 0.5348  Fit 546ms
+[13:54:09] === TYPING LogReg (balanced) ===
+[13:54:28]   -> AMI 0.5776  F1 0.6747  Fit 485ms
+[13:54:28] === TYPING LinearSVC ===
+[13:55:48]   -> AMI 0.6170  F1 0.6650  Fit 2041ms
+[13:55:48] === TYPING LinearSVC (balanced) ===
+[13:57:15]   -> AMI 0.6250  F1 0.7179  Fit 2217ms
+[13:57:15] === RESUME ===
+[13:57:15]   embedder  frozen Nomic v1.5      AMI=0.2575 F1=0.4387 Fit=4193ms p50=34.0ms En=0.538Wh
+[13:57:15]   embedder  contrastive            AMI=0.5404 F1=0.6326 Fit=2919ms p50=43.4ms En=0.617Wh
+[13:57:15]   embedder  + hard 3k/2ep          AMI=0.6009 F1=0.6880 Fit=2600ms p50=70.6ms En=0.671Wh
+[13:57:15]   embedder  + hard 8k/3ep          AMI=0.6250 F1=0.7179 Fit=2916ms p50=42.5ms En=0.627Wh
+[13:57:15]   dim       64                     AMI=0.5793 F1=0.6768 Fit=299ms p50=42.5ms En=0.627Wh
+[13:57:15]   dim       128                    AMI=0.5994 F1=0.6973 Fit=562ms p50=42.5ms En=0.627Wh
+[13:57:15]   dim       256                    AMI=0.6123 F1=0.7060 Fit=926ms p50=42.5ms En=0.627Wh
+[13:57:15]   dim       512                    AMI=0.6196 F1=0.7125 Fit=1556ms p50=42.5ms En=0.627Wh
+[13:57:15]   dim       768                    AMI=0.6250 F1=0.7179 Fit=2176ms p50=42.5ms En=0.627Wh
+[13:57:15]   typing    GMM (per-class)        AMI=0.5611 F1=0.6533 Fit=527ms p50=42.5ms En=0.627Wh
+[13:57:15]   typing    LogReg                 AMI=0.5560 F1=0.5348 Fit=546ms p50=42.5ms En=0.627Wh
+[13:57:15]   typing    LogReg (balanced)      AMI=0.5776 F1=0.6747 Fit=485ms p50=42.5ms En=0.627Wh
+[13:57:15]   typing    LinearSVC              AMI=0.6170 F1=0.6650 Fit=2041ms p50=42.5ms En=0.627Wh
+[13:57:15]   typing    LinearSVC (balanced)   AMI=0.6250 F1=0.7179 Fit=2217ms p50=42.5ms En=0.627Wh

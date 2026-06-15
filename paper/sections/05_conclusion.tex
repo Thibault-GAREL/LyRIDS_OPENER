@@ -7,12 +7,14 @@
 %   - Practical implications: open-NER without encoder retraining is feasible
 %     when the pre-trained embedding space is already discriminative.
 %   - Limitations:
-%       * Reliance on the quality of the mention detector (GLiNER).
-%       * GMM with full covariance scales as O(D^2) — favors lower Matryoshka dims.
-%       * Anchor words may be hard to choose for abstract or domain-specific labels.
+%       * End-to-end quality is capped by the detector's recall on specialised domains
+%         (the shared bottleneck), not by the typing head.
+%       * Supervised typing needs target-domain labels; the zero-shot variant (OPENER-ZS)
+%         depends on the quality of the label names.
+%       * A single seed; energy measured on one machine.
 %   - Future work:
-%       * Active learning loop: use OOD regions to propose new labels to the user.
-%       * Visualization of GMM bubbles (UMAP / t-SNE) for interpretability.
+%       * Improving mention detection on specialised domains.
+%       * Visualization of the contrastive embedding space (UMAP / t-SNE).
 %       * Extension beyond NER (entity linking, relation extraction).
 
-\emph{[Placeholder — conclusion to be written.]}
+\emph{[Placeholder - conclusion to be written.]}

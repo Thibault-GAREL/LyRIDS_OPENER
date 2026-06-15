@@ -3,24 +3,26 @@
 
 % TODO: write the introduction (≈1 to 1.5 pages).
 % Suggested structure:
-%   - Motivation: NER pipelines in production face an open-world setting — new
+%   - Motivation: NER pipelines in production face an open-world setting - new
 %     entity types appear, and re-annotating + retraining is expensive.
 %   - Limitations of existing approaches:
 %       * Closed-set NER (BIO tagging) cannot generalize beyond training labels.
 %       * Triplet-loss + K-means (e.g. OWNER) requires training a dedicated encoder.
 %       * Prompting LLMs is costly and brittle at scale.
-%   - Our contribution: a *no-encoder-training* approach that leverages a
-%     pre-trained Matryoshka embedding (Nomic v1.5) and per-label GMMs initialized
-%     on anchor words. The pipeline is modular: each component (detector, embedder,
-%     clusterer) is independently swappable.
+%   - Our contribution: a lightweight open-world NER pipeline that reuses off-the-shelf
+%     components (a frozen detector and a Matryoshka embedder) with only a light
+%     contrastive fine-tuning plus hard-negative mining and a balanced linear typing
+%     head; no encoder is trained from scratch. The pipeline is modular: each component
+%     (detector, embedder, typing head) is independently swappable.
 %   - Contributions list:
-%       1. A semi-supervised open-NER pipeline that requires no fine-tuning.
-%       2. Anchor-word initialization of per-label GMMs, providing interpretable
-%          decision regions.
-%       3. Native OOD detection via log-likelihood thresholding.
-%       4. Post-hoc hierarchy inference via spatial containment of GMM components.
+%       1. OPENER, an open-world NER pipeline assembled from off-the-shelf parts, with
+%          no encoder trained from scratch.
+%       2. Error-driven hard-negative mining that sharpens the embedding space for typing.
+%       3. A zero-shot typing variant (OPENER-ZS) based on label-name prototypes.
+%       4. An energy-aware benchmark of open-world NER on 13 datasets (AMI + latency +
+%          energy), separating typing-on-gold from end-to-end.
 %   - Paper roadmap (\S\ref{sec:related} discusses related work, \S\ref{sec:method}
 %     details the OPENER pipeline, \S\ref{sec:experiments} evaluates on
 %     [datasets], and \S\ref{sec:conclusion} concludes).
 
-\emph{[Placeholder — introduction to be written.]}
+\emph{[Placeholder - introduction to be written.]}

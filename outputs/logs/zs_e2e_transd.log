@@ -1,0 +1,39 @@
+[17:15:27] === Opener ZS end-to-end (GLiNER MD + contrastif + nearest centroid) ===
+[17:15:27] Embedder : outputs/models/embedder_contrastive_hard_big  | MD : urchade/gliner_large-v2.1  thr=0.3
+[17:15:31] Dictionnaire anchors : configs/anchor_dictionaries.yaml (6 blocs)
+[17:15:40] Chargement GLiNER urchade/gliner_large-v2.1 sur cuda...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<?, ?it/s]
+[17:15:52] Datasets : ['crossner_ai', 'crossner_literature', 'crossner_music', 'crossner_politics', 'crossner_science', 'wnut17', 'mit_restaurant', 'mit_movie', 'fabner', 'bionlp2004', 'conll2003', 'gum', 'gentle']
+[17:15:52] --- crossner_ai ---
+[codecarbon INFO @ 17:15:53] offline tracker init
+[codecarbon WARNING @ 17:15:53] Multiple instances of codecarbon are allowed to run at the same time.
+<All keys matched successfully>
+[17:16:51]   labels=14  recall=0.750  AMI=0.3371  F1=0.2702  p50=104.2ms  En=0.97Wh
+[17:16:51] --- crossner_literature ---
+[17:17:50]   labels=12  recall=0.809  AMI=0.4886  F1=0.3666  p50=130.3ms  En=1.04Wh
+[17:17:50] --- crossner_music ---
+[17:19:07]   labels=13  recall=0.850  AMI=0.5367  F1=0.4376  p50=148.7ms  En=1.36Wh
+[17:19:07] --- crossner_politics ---
+[17:20:58]   labels=9  recall=0.767  AMI=0.4528  F1=0.3161  p50=158.3ms  En=1.89Wh
+[17:20:58] --- crossner_science ---
+[17:23:14]   labels=17  recall=0.815  AMI=0.4593  F1=0.3383  p50=186.1ms  En=2.04Wh
+[17:23:14] --- wnut17 ---
+[17:26:01]   labels=6  recall=0.658  AMI=0.2422  F1=0.1956  p50=186.5ms  En=2.15Wh
+[17:26:01] --- mit_restaurant ---
+[17:30:38]   labels=8  recall=0.428  AMI=0.3044  F1=0.1935  p50=216.6ms  En=3.15Wh
+[17:30:38] --- mit_movie ---
+[17:35:09]   labels=12  recall=0.141  AMI=0.3470  F1=0.0176  p50=233.1ms  En=2.68Wh
+[17:35:09] --- fabner ---
+[17:38:35]   labels=12  recall=0.094  AMI=0.2789  F1=0.0371  p50=193.6ms  En=2.08Wh
+[17:38:35] --- bionlp2004 ---
+[17:41:14]   labels=5  recall=0.728  AMI=0.2788  F1=0.3393  p50=132.4ms  En=1.97Wh
+[17:41:14] --- conll2003 ---
+[17:42:39]   labels=4  recall=0.393  AMI=0.4436  F1=0.2407  p50=75.2ms  En=1.48Wh
+[17:42:39] --- gum ---
+[17:44:23]   labels=10  recall=0.203  AMI=0.3103  F1=0.0695  p50=94.9ms  En=1.85Wh
+[17:44:23] --- gentle ---
+[17:46:09]   labels=10  recall=0.240  AMI=0.3084  F1=0.0838  p50=98.2ms  En=1.90Wh
+[17:46:09] Rapport : outputs\results\opener_zs_e2e_transd\SUMMARY_opener_zs_e2e_2026-06-14_174609.md
+[17:46:09] MOYENNES  AMI=0.3683  F1=0.2235  p50=150.6ms  (13 datasets)

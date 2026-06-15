@@ -1,6 +1,6 @@
 % =====================================================================
 % OPENER: Open Partitioning Embedding for Named Entity Recognition
-% LyRIDS Symposium 2026 — anonymous submission (double-blind review)
+% LyRIDS Symposium 2026 - anonymous submission (double-blind review)
 %
 % Format: IEEE conference, 10pt, single-column (per conference instructions).
 % Compilation: pdflatex main && bibtex main && pdflatex main && pdflatex main
@@ -17,6 +17,8 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage{colortbl}      % \rowcolor for table highlighting
+\definecolor{hlyellow}{rgb}{1,0.93,0.5}  % highlighter yellow (selected variant)
 
 % --- Additional packages we will likely need ---
 \usepackage[utf8]{inputenc}
@@ -55,7 +57,7 @@ LyRIDS Symposium 2026}
 \end{abstract}
 
 \begin{IEEEkeywords}
-named entity recognition, open NER, Matryoshka embeddings, Gaussian mixture models, semi-supervised clustering, out-of-distribution detection
+open-world named entity recognition, entity typing, contrastive representation learning, Matryoshka embeddings, frugal artificial intelligence, energy-efficient machine learning, adjusted mutual information
 \end{IEEEkeywords}
 
 % --- Body sections (one file per section for ease of editing) ---

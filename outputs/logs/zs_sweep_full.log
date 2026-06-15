@@ -1,0 +1,33 @@
+[16:35:23] === Opener ZS SWEEP === embedder=outputs/models/embedder_contrastive_hard_big  anchors=dict
+[16:35:27] Datasets : ['bionlp2004', 'conll2003', 'crossner', 'crossner_ai', 'crossner_literature', 'crossner_music', 'crossner_politics', 'crossner_science', 'fabner', 'gentle', 'gum', 'mit_movie', 'mit_restaurant', 'wnut17']
+[16:35:27] --- bionlp2004 ---
+<All keys matched successfully>
+[16:36:41]   spans=2430 labels=5 | raw=0.541  context=0.464  context+calib=0.402  context+refine=0.496  context+refine+calib=0.409  ensemble=0.453  ensemble+refine=0.495  multi-proto=0.464
+[16:36:41] --- conll2003 ---
+[16:37:32]   spans=2180 labels=4 | raw=0.659  context=0.630  context+calib=0.623  context+refine=0.708  context+refine+calib=0.711  ensemble=0.661  ensemble+refine=0.711  multi-proto=0.451
+[16:37:32] --- crossner ---
+[16:38:57]   spans=3105 labels=39 | raw=0.492  context=0.561  context+calib=0.523  context+refine=0.572  context+refine+calib=0.556  ensemble=0.565  ensemble+refine=0.568  multi-proto=0.522
+[16:38:57] --- crossner_ai ---
+[16:39:38]   spans=1809 labels=14 | raw=0.414  context=0.389  context+calib=0.364  context+refine=0.445  context+refine+calib=0.381  ensemble=0.398  ensemble+refine=0.464  multi-proto=0.396
+[16:39:38] --- crossner_literature ---
+[16:40:30]   spans=2266 labels=12 | raw=0.614  context=0.616  context+calib=0.514  context+refine=0.646  context+refine+calib=0.630  ensemble=0.611  ensemble+refine=0.650  multi-proto=0.564
+[16:40:30] --- crossner_music ---
+[16:41:46]   spans=3336 labels=13 | raw=0.552  context=0.557  context+calib=0.505  context+refine=0.673  context+refine+calib=0.610  ensemble=0.565  ensemble+refine=0.686  multi-proto=0.531
+[16:41:46] --- crossner_politics ---
+[16:43:25]   spans=4209 labels=9 | raw=0.507  context=0.540  context+calib=0.548  context+refine=0.664  context+refine+calib=0.637  ensemble=0.579  ensemble+refine=0.665  multi-proto=0.607
+[16:43:25] --- crossner_science ---
+[16:44:46]   spans=3089 labels=17 | raw=0.580  context=0.548  context+calib=0.503  context+refine=0.582  context+refine+calib=0.550  ensemble=0.567  ensemble+refine=0.573  multi-proto=0.512
+[16:44:46] --- fabner ---
+[16:46:20]   spans=4452 labels=12 | raw=0.356  context=0.350  context+calib=0.342  context+refine=0.376  context+refine+calib=0.364  ensemble=0.349  ensemble+refine=0.375  multi-proto=0.326
+[16:46:20] --- gentle ---
+[16:47:19]   spans=2711 labels=10 | raw=0.302  context=0.321  context+calib=0.251  context+refine=0.378  context+refine+calib=0.276  ensemble=0.316  ensemble+refine=0.375  multi-proto=0.321
+[16:47:19] --- gum ---
+[16:48:42]   spans=3631 labels=10 | raw=0.311  context=0.364  context+calib=0.287  context+refine=0.409  context+refine+calib=0.364  ensemble=0.359  ensemble+refine=0.386  multi-proto=0.364
+[16:48:42] --- mit_movie ---
+[16:50:15]   spans=5224 labels=12 | raw=0.184  context=0.262  context+calib=0.256  context+refine=0.451  context+refine+calib=0.435  ensemble=0.313  ensemble+refine=0.458  multi-proto=0.120
+[16:50:15] --- mit_restaurant ---
+[16:51:06]   spans=2503 labels=8 | raw=0.426  context=0.434  context+calib=0.430  context+refine=0.496  context+refine+calib=0.480  ensemble=0.443  ensemble+refine=0.521  multi-proto=0.404
+[16:51:06] --- wnut17 ---
+[16:51:44]   spans=1079 labels=6 | raw=0.330  context=0.332  context+calib=0.314  context+refine=0.333  context+refine+calib=0.305  ensemble=0.335  ensemble+refine=0.318  multi-proto=0.303
+[16:51:44] Rapport : outputs\results\opener_zs_sweep\SUMMARY_zs_sweep_2026-06-14_165144.md
+[16:51:44] MOYENNES AMI : raw=0.4477, context=0.4550, context+calib=0.4188, context+refine=0.5164, context+refine+calib=0.4791, ensemble=0.4653, ensemble+refine=0.5176, multi-proto=0.4203

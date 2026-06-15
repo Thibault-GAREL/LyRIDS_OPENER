@@ -1,0 +1,50 @@
+[16:27:09] === Opener ZS (nearest label-name centroid, zero-shot typing) ===
+[16:27:09] Embedder    : outputs/models/embedder_contrastive_hard_big
+[16:27:09] Anchor mode : dict
+[16:27:13] Dictionnaire anchors : configs/anchor_dictionaries.yaml (6 blocs)
+[16:27:13] Datasets : ['bionlp2004', 'conll2003', 'crossner', 'crossner_ai', 'crossner_literature', 'crossner_music', 'crossner_politics', 'crossner_science', 'fabner', 'gentle', 'gum', 'mit_movie', 'mit_restaurant', 'wnut17']
+[16:27:13] --- bionlp2004 ---
+<All keys matched successfully>
+[16:27:55]   labels=5  spans=2430  AMI=0.5406  acc=0.7700  macroF1=0.7016  fit=112ms
+[16:27:55]   energy={'kwh': 0.000523, 'gco2eq': 0.0293, 'seconds': 28.54, 'country': 'FRA', 'method': 'codecarbon'}  p50=22.2ms
+[16:27:55] --- conll2003 ---
+[16:28:24]   labels=4  spans=2180  AMI=0.6593  acc=0.8702  macroF1=0.8301  fit=96ms
+[16:28:24]   energy={'kwh': 0.000471, 'gco2eq': 0.0264, 'seconds': 26.94, 'country': 'FRA', 'method': 'codecarbon'}  p50=22.1ms
+[16:28:24] --- crossner ---
+[16:29:02]   labels=39  spans=3105  AMI=0.4916  acc=0.3008  macroF1=0.2708  fit=904ms
+[16:29:02]   energy={'kwh': 0.000624, 'gco2eq': 0.035, 'seconds': 34.77, 'country': 'FRA', 'method': 'codecarbon'}  p50=23.5ms
+[16:29:02] --- crossner_ai ---
+[16:29:20]   labels=14  spans=1809  AMI=0.4141  acc=0.2742  macroF1=0.3305  fit=330ms
+[16:29:20]   energy={'kwh': 0.000322, 'gco2eq': 0.0181, 'seconds': 17.77, 'country': 'FRA', 'method': 'codecarbon'}  p50=27.8ms
+[16:29:20] --- crossner_literature ---
+[16:29:43]   labels=12  spans=2266  AMI=0.6138  acc=0.5741  macroF1=0.5601  fit=295ms
+[16:29:43]   energy={'kwh': 0.000419, 'gco2eq': 0.0235, 'seconds': 23.04, 'country': 'FRA', 'method': 'codecarbon'}  p50=45.4ms
+[16:29:43] --- crossner_music ---
+[16:30:17]   labels=13  spans=3336  AMI=0.5517  acc=0.5432  macroF1=0.4956  fit=306ms
+[16:30:17]   energy={'kwh': 0.000603, 'gco2eq': 0.0338, 'seconds': 33.38, 'country': 'FRA', 'method': 'codecarbon'}  p50=60.9ms
+[16:30:17] --- crossner_politics ---
+[16:31:01]   labels=9  spans=4209  AMI=0.5073  acc=0.5139  macroF1=0.4832  fit=214ms
+[16:31:01]   energy={'kwh': 0.000789, 'gco2eq': 0.0442, 'seconds': 43.77, 'country': 'FRA', 'method': 'codecarbon'}  p50=55.6ms
+[16:31:01] --- crossner_science ---
+[16:31:35]   labels=17  spans=3089  AMI=0.5801  acc=0.6012  macroF1=0.5668  fit=518ms
+[16:31:35]   energy={'kwh': 0.000604, 'gco2eq': 0.0338, 'seconds': 33.65, 'country': 'FRA', 'method': 'codecarbon'}  p50=48.0ms
+[16:31:35] --- fabner ---
+[16:32:18]   labels=12  spans=4452  AMI=0.3561  acc=0.5139  macroF1=0.3093  fit=365ms
+[16:32:18]   energy={'kwh': 0.000717, 'gco2eq': 0.0402, 'seconds': 40.51, 'country': 'FRA', 'method': 'codecarbon'}  p50=30.6ms
+[16:32:18] --- gentle ---
+[16:33:00]   labels=10  spans=2711  AMI=0.3017  acc=0.5725  macroF1=0.3715  fit=268ms
+[16:33:00]   energy={'kwh': 0.000669, 'gco2eq': 0.0375, 'seconds': 41.68, 'country': 'FRA', 'method': 'codecarbon'}  p50=29.4ms
+[16:33:00] --- gum ---
+[16:33:43]   labels=10  spans=3631  AMI=0.3112  acc=0.5497  macroF1=0.3992  fit=325ms
+[16:33:43]   energy={'kwh': 0.000725, 'gco2eq': 0.0406, 'seconds': 42.43, 'country': 'FRA', 'method': 'codecarbon'}  p50=31.1ms
+[16:33:43] --- mit_movie ---
+[16:34:26]   labels=12  spans=5224  AMI=0.1839  acc=0.1072  macroF1=0.0635  fit=429ms
+[16:34:26]   energy={'kwh': 0.000681, 'gco2eq': 0.0382, 'seconds': 40.12, 'country': 'FRA', 'method': 'codecarbon'}  p50=32.5ms
+[16:34:26] --- mit_restaurant ---
+[16:35:01]   labels=8  spans=2503  AMI=0.4264  acc=0.4499  macroF1=0.4407  fit=238ms
+[16:35:01]   energy={'kwh': 0.000497, 'gco2eq': 0.0279, 'seconds': 32.06, 'country': 'FRA', 'method': 'codecarbon'}  p50=29.6ms
+[16:35:01] --- wnut17 ---
+[16:35:27]   labels=6  spans=1079  AMI=0.3299  acc=0.6339  macroF1=0.5254  fit=319ms
+[16:35:27]   energy={'kwh': 0.000354, 'gco2eq': 0.0199, 'seconds': 22.52, 'country': 'FRA', 'method': 'codecarbon'}  p50=29.3ms
+[16:35:27] Rapport : outputs\results\opener_zs\SUMMARY_opener_zs_dict_2026-06-13_163527.md
+[16:35:27] MOYENNES  AMI=0.4477  acc=0.5196  macroF1=0.4535  (sur 14 datasets)
