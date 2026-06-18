@@ -31,6 +31,7 @@ A complementary line distils or instruction-tunes large language models for open
 UniversalNER \cite{zhou2024universalner} distils a chat model into a smaller LLaMA-based student \cite{touvron2023llama} over tens of thousands of entity types, while GoLLIE \cite{sainz2024gollie} conditions a code language model on annotation guidelines to follow unseen schemas.
 Few-shot methods reduce supervision further through prompt optimization \cite{tang2024fsponer}, knowledge-graph-guided contrastive learning \cite{zhang2024kcl}, or token-level contrastive objectives such as CONTaiNER \cite{das2022container}.
 These methods are accurate but rest on models with billions of parameters, whose inference cost, latency and energy use are substantial, and which may not even fit on commodity hardware.
+At the small end of this family, however, a quantized instruction-tuned model does fit a commodity GPU: as a concrete, runnable reference point we include Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, prompted to return entities as JSON, and report where it lands relative to the dedicated open-world systems (\autoref{sec:exp:results}).
 This cost is precisely what motivates the lightweight design and the energy-aware evaluation of OPENER.
 
 \subsection{Entity Representations and Contrastive Learning}

@@ -48,6 +48,7 @@ GLiNER \cite{zaratiana2024gliner} is evaluated in its small, medium and large va
 GNER \cite{ding2024gner} is a generative tagger built on T5 \cite{raffel2020t5}; we run the T5-base checkpoint.
 We further compare against OWNER \cite{genest2025owner}, executed in its original environment.
 Instruction-tuned and few-shot large-language-model NER systems, namely UniversalNER \cite{zhou2024universalner}, GoLLIE \cite{sainz2024gollie} and ChatIE \cite{wei2024chatie}, rely on 7B-parameter backbones \cite{touvron2023llama} that do not fit our hardware budget even under 4-bit NF4 quantization \cite{dettmers2023qlora}; for these we report the figures published by their authors rather than re-measuring them.
+As a generative model that \emph{does} run on our hardware, we additionally evaluate Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit NF4, prompted for JSON-formatted entities and scored under the same end-to-end protocol as the other systems.
 
 \subsection{Metrics}
 \label{sec:exp:metrics}
@@ -71,13 +72,14 @@ We use the HuggingFace Transformers library \cite{wolf2020transformers} for the 
 Latency is measured with two warmup passes followed by timed passes with GPU synchronisation, reporting p50, p95 and p99 per sentence.
 Energy is measured with CodeCarbon \cite{lacoste2019codecarbon} in offline mode using the French grid carbon intensity; when hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
 All systems are measured on the same machine. Because the laptop-class GPU thermally throttles under sustained load, per-sentence latency and per-run energy carry roughly $\pm15\%$ run-to-run variance; we therefore read the per-system averages as indicative and do not over-interpret individual per-dataset cells. A controlled-temperature re-measurement of all systems in a single session is left to future work.
+The quality metrics, in contrast, are fully deterministic: with the fixed seed and the released model, no stage of the OPENER pipeline is stochastic at inference, so its AMI and $F_1$ reproduce exactly across re-runs (we verified identical CrossNER scores on an independent re-run), and only latency and energy fluctuate.
 
 \subsection{Main Results}
 \label{sec:exp:results}
 % Numbers filled from outputs/results/aggregate/results_all.json (2026-06-12).
 % OWNER now in its native zero-shot transfer protocol (train once on CoNLL-2003,
 % infer on every target). $\S$ = zero-shot transfer; $\dagger$ = in-domain (CoNLL source).
-The tables below report the benchmark on all $13$ sets.
+The tables below report the benchmark on all $13$ sets, and \autoref{fig:main} plots the per-dataset end-to-end AMI of every system.
 OWNER is run in its native protocol \cite{genest2025owner}: a single model is trained once on the CoNLL-2003 source (a one-time cost of $88$ minutes on our 6\,GB GPU) and then applied \emph{zero-shot} to every target set (cells marked $^\S$).
 CoNLL-2003 is therefore in-domain for OWNER (marked $^\dagger$) and is excluded when reading OWNER as a transfer system.
 One protocol asymmetry must be kept in mind when reading the typing scores: OPENER fits a lightweight linear classifier on each target's training split (a supervised probe), whereas OWNER, GLiNER and GNER use no target-side labels.
@@ -89,7 +91,7 @@ The supervised probe remains the stronger configuration ($40.2$ end-to-end, $62.
 
 \begin{table}[tbp]
 \centering
-\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best value per column across all systems. Systems are grouped by supervision: \emph{zero-shot} systems use no target-side labels, whereas the \emph{supervised} OPENER fits a linear probe on each target's training labels. Among the zero-shot systems, OPENER-ZS (fusion; highlighted)---label-name prototypes fused with the detector's own zero-shot predictions---obtains the best mean AMI ($39.4$), ahead of GLiNER-L ($38.9$); the supervised OPENER is the most accurate overall ($40.2$) at the cost of target labels. OPENER-ZS and OPENER share the error-driven hard-negative mining embedder selected in \autoref{tab:ablation}; the transductive refinement of OPENER-ZS is reported there. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source) and for OPENER (its contrastive source) and is not bolded as a transfer result; the best zero-shot system on CoNLL is GNER. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
+\caption{Open-world NER, end-to-end protocol. Adjusted Mutual Information (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best value per column across all systems. Systems are grouped by supervision: \emph{zero-shot} systems use no target-side labels, whereas the \emph{supervised} OPENER fits a linear probe on each target's training labels. Among the zero-shot systems, OPENER-ZS (fusion; highlighted)---label-name prototypes fused with the detector's own zero-shot predictions---obtains the best mean AMI ($39.4$), ahead of GLiNER-L ($38.9$); the supervised OPENER is the most accurate overall ($40.2$) at the cost of target labels. OPENER-ZS and OPENER share the error-driven hard-negative mining embedder selected in \autoref{tab:ablation}; the transductive refinement of OPENER-ZS is reported there. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source) and for OPENER (its contrastive source) and is not bolded as a transfer result; the best zero-shot system on CoNLL is GNER. $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is a generative LLM run on our hardware; owing to its generation cost it is evaluated on a $150$-sentence subsample per set, so its row is indicative and is not bolded. The typing-on-gold comparison is reported in \autoref{tab:et-gold}.}
 \label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -102,6 +104,7 @@ GLiNER-S & 41.7 & 49.8 & 56.4 & 50.6 & 53.3 & 29.7 & 26.1 & 35.6 & 10.7 & 31.8 &
 GLiNER-M & 42.0 & \textbf{50.1} & 57.4 & 50.2 & \textbf{54.2} & 28.1 & 27.9 & 36.4 & 11.3 & 34.9 & 24.9 & 32.8 & 31.6 & 37.1 \\
 GLiNER-L & 42.9 & 48.9 & \textbf{58.0} & 49.8 & 52.8 & 28.9 & 30.9 & 37.6 & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & 38.9 \\
 GNER & 41.9 & 46.9 & 53.5 & 48.9 & 49.9 & \textbf{30.0} & 30.0 & 36.8 & 17.0 & 29.1 & \textbf{43.7} & 32.8 & 31.6 & 37.9 \\
+Qwen2.5-1.5B$^\ddagger$ & 25.4 & 30.5 & 30.5 & 28.3 & 34.1 & 27.8 & 5.0 & 27.4 & 12.9 & 29.9 & 15.5 & 37.2 & 34.6 & 26.1 \\
 OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 & 18.7 & 26.5 & 50.3$^\dagger$ & 29.1 & 31.3 & 34.3 \\
 OPENER-ZS & 31.6 & 43.8 & 41.7 & 36.7 & 44.2 & 23.0 & 28.4 & 32.4 & 28.3 & 29.1 & 42.6$^\dagger$ & 31.5 & 31.2 & 34.2 \\
 \rowcolor{hlyellow} OPENER-ZS (fusion) & 39.4 & 48.8 & \textbf{58.0} & 48.6 & 52.8 & 29.6 & 31.5 & 35.5 & 27.8 & 35.7 & 43.1$^\dagger$ & 31.2 & 30.4 & 39.4 \\
@@ -117,8 +120,46 @@ OPENER (supervised) & 40.2 & 49.6 & 55.3 & 50.3 & 51.7 & 24.9 & \textbf{33.6} & 
 \bottomrule
 \end{tabular}
 \end{table}
-% >>> TODO[FINAL]: add a line chart (x = models ordered by mean AMI, one line per
-% >>> dataset) to visualise who leads whom and the ranking stability across datasets.
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=\linewidth, height=7.0cm,
+  ymin=5, ymax=62,
+  ylabel={End-to-end AMI ($\times100$)}, ylabel style={font=\small},
+  symbolic x coords={AI,Lit,Mus,Pol,Sci,WNUT,Rest,Movie,Fab,Bio,CoNLL,GUM,GEN},
+  xtick=data, xticklabel style={rotate=40, anchor=east, font=\scriptsize},
+  ytick={10,20,30,40,50,60}, yticklabel style={font=\scriptsize},
+  grid=both, major grid style={black!12},
+  enlarge x limits=0.04,
+  legend style={at={(0.5,1.02)}, anchor=south, legend columns=4, font=\scriptsize, draw=none,
+                /tikz/every even column/.append style={column sep=6pt}},
+]
+% in-domain CoNLL band (drawn first -> behind the curves)
+\draw[figgold!22, line width=7pt] (axis cs:CoNLL,6) -- (axis cs:CoNLL,61);
+\node[font=\tiny, black!55, rotate=90, anchor=south] at (axis cs:CoNLL,15) {CoNLL: in-domain$^\dagger$};
+% --- zero-shot systems (solid) ---
+\addplot[figsky, semithick, mark=o, mark size=1.2pt] coordinates
+  {(AI,41.7)(Lit,49.8)(Mus,56.4)(Pol,50.6)(Sci,53.3)(WNUT,29.7)(Rest,26.1)(Movie,35.6)(Fab,10.7)(Bio,31.8)(CoNLL,18.9)(GUM,34.1)(GEN,36.1)};
+\addplot[figcyan!85!black, semithick, mark=square, mark size=1.2pt] coordinates
+  {(AI,42.0)(Lit,50.1)(Mus,57.4)(Pol,50.2)(Sci,54.2)(WNUT,28.1)(Rest,27.9)(Movie,36.4)(Fab,11.3)(Bio,34.9)(CoNLL,24.9)(GUM,32.8)(GEN,31.6)};
+\addplot[blue!60!black, semithick, mark=diamond, mark size=1.4pt] coordinates
+  {(AI,42.9)(Lit,48.9)(Mus,58.0)(Pol,49.8)(Sci,52.8)(WNUT,28.9)(Rest,30.9)(Movie,37.6)(Fab,28.1)(Bio,34.6)(CoNLL,29.7)(GUM,32.7)(GEN,30.5)};
+\addplot[figgreen!65!black, semithick, mark=triangle, mark size=1.5pt] coordinates
+  {(AI,41.9)(Lit,46.9)(Mus,53.5)(Pol,48.9)(Sci,49.9)(WNUT,30.0)(Rest,30.0)(Movie,36.8)(Fab,17.0)(Bio,29.1)(CoNLL,43.7)(GUM,32.8)(GEN,31.6)};
+\addplot[orange!85!black, semithick, mark=pentagon, mark size=1.5pt] coordinates
+  {(AI,43.9)(Lit,44.0)(Mus,46.6)(Pol,50.9)(Sci,50.3)(WNUT,22.3)(Rest,7.6)(Movie,24.0)(Fab,18.7)(Bio,26.5)(CoNLL,50.3)(GUM,29.1)(GEN,31.3)};
+\addplot[figgold!90!black, very thick, mark=square*, mark size=1.6pt] coordinates
+  {(AI,31.6)(Lit,43.8)(Mus,41.7)(Pol,36.7)(Sci,44.2)(WNUT,23.0)(Rest,28.4)(Movie,32.4)(Fab,28.3)(Bio,29.1)(CoNLL,42.6)(GUM,31.5)(GEN,31.2)};
+% --- supervised (dashed) ---
+\addplot[figviolet, very thick, densely dashed, mark=*, mark size=1.6pt] coordinates
+  {(AI,40.2)(Lit,49.6)(Mus,55.3)(Pol,50.3)(Sci,51.7)(WNUT,24.9)(Rest,33.6)(Movie,37.8)(Fab,30.2)(Bio,36.5)(CoNLL,44.8)(GUM,33.7)(GEN,34.2)};
+\legend{GLiNER-S, GLiNER-M, GLiNER-L, GNER, OWNER, OPENER-ZS, OPENER (sup.)}
+\end{axis}
+\end{tikzpicture}
+\caption{End-to-end AMI per dataset (\autoref{tab:main}). \emph{Zero-shot} systems are drawn solid; the \emph{supervised} OPENER (the upper bound, which uses target labels) is dashed. Among the zero-shot systems OPENER-ZS (thick gold) and GLiNER-L track the front of the pack, while OWNER collapses on the spoken-query corpora (MIT-Restaurant). $^\dagger$\,CoNLL-2003 (shaded) is in-domain for OWNER and OPENER.}
+\label{fig:main}
+\end{figure}
 
 \begin{table}[tbp]
 \centering
@@ -220,7 +261,7 @@ Among embedder variants, an error-driven \emph{hard-negative mining} pass, fine-
 \autoref{tab:ablation} reports this search; the protocol comparison between typing-on-gold and end-to-end is discussed alongside the main results.
 The remaining axes confirm the rest of the pipeline: frozen Nomic embeddings are weakly discriminative for typing ($25.8$ AMI), so the contrastive step is what makes the space usable ($+28.2$); the detector trades quality for cost (GLiNER-S\,$\to$\,L: $37.7\!\to\!40.2$ AMI at $51\!\to\!143$\,ms end-to-end); and for typing a balanced linear SVM edges out a per-class GMM and logistic regression ($62.5$ vs $56.1$ vs $55.6$).
 Replacing the supervised typing head with a label-name nearest-centroid removes target supervision entirely, at a cost of $18.1$ AMI ($62.5\!\to\!44.4$); this zero-shot variant (OPENER-ZS) still surpasses the zero-shot OWNER baseline ($43.0$, \autoref{tab:et-gold}) while fitting in $293$\,ms instead of $3.5$\,s, making it the frugal choice when no target labels are available.
-A label-free \emph{transductive} refinement of the prototypes---spherical k-means seeded by the label names and run once on the unlabelled test mentions---recovers $7.0$ AMI on gold mentions ($44.4\!\to\!51.4$, \autoref{tab:ablation}) and $2.6$ end-to-end ($34.2\!\to\!36.8$, \autoref{tab:main}, above OWNER's $34.3$), widening OPENER-ZS's margin over OWNER while still using no target labels; this is a transductive rather than inductive setting, as it exploits the unlabelled test distribution.
+A label-free \emph{transductive} refinement of the prototypes---spherical k-means seeded by the label names and run once on the unlabelled test mentions---recovers $7.0$ AMI on gold mentions ($44.4\!\to\!51.4$, \autoref{tab:ablation}) and $2.6$ end-to-end ($34.2\!\to\!36.8$, above OWNER's $34.3$), widening OPENER-ZS's margin over OWNER while still using no target labels; this is a transductive rather than inductive setting, as it exploits the unlabelled test distribution.
 We further probed whether the zero-shot head could be improved by aligning entity mentions and label \emph{names} in a shared space, trained on the large label vocabulary of Pile-NER \cite{zhou2024universalner} ($\approx$4.6k types) with an entity$\leftrightarrow$label-name contrastive objective (\autoref{tab:zs-embedder}).
 This produces a \emph{strictly} domain-agnostic embedder (unlike the selected hard-mining embedder, it never sees any target-side data), yet it does not improve mean AMI ($42.2$ vs $44.4$): the Pile-NER vocabulary lifts macro-$F_1$ ($+3.8$) and helps encyclopedic domains (CrossNER-Politics $+14.2$, -Science $+8.6$) but hurts specialised schemas (MIT-Restaurant $-15.9$, FabNER $-11.8$, BioNLP $-11.8$).
 A second label-name hard-mining pass degrades it further ($39.7$ AMI): Pile-NER's GPT-generated types include many near-synonyms (e.g.\ \emph{person}/\emph{per}, \emph{location}/\emph{loc}), so mining ``confusions'' between them manufactures negatives that pull apart labels that should stay close.
@@ -269,7 +310,7 @@ Configuration & AMI & F\textsubscript{1} & Fit\,(ms) & p50\,(ms) & En.\,(Wh) & C
 
 \begin{table}[tbp]
 \centering
-\caption{Entity typing on gold mentions: OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the per-dataset winner. Three supervision regimes are compared. Supervised OPENER fits a linear probe on each target's training labels. OPENER-ZS$^\S$ is the same pipeline made \emph{zero-shot}: it drops the probe and types each mention by cosine similarity to a label-name prototype (the centroid of the label's anchor words embedded in the contrastive space), using no target labels. OWNER$^\S$ is zero-shot as well (clustering after transfer from CoNLL-2003). Both share the error-driven hard-negative mining embedder selected in \autoref{tab:ablation}. Supervised OPENER leads on all $13$ sets; among the two zero-shot systems, OPENER-ZS edges out OWNER on average ($44.4$ vs $43.0$) at a fraction of its inference cost (\autoref{tab:latency},\,\autoref{tab:energy}). OPENER-ZS (transd.) adds a label-free \emph{transductive} refinement of the prototypes (spherical k-means seeded by the label names, run once on the unlabelled test mentions), reaching $51.4$ AMI and beating OWNER on $11$ of $13$ sets; it uses no target labels but, unlike the inductive OPENER-ZS, exploits the unlabelled test distribution. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source) and for OPENER (its contrastive source); it is not a transfer result and is not bolded.}
+\caption{Entity typing on gold mentions: OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Detection is bypassed, isolating the typing component. Abbreviations follow \autoref{tab:datasets}; bold marks the best value per column. Systems are grouped by supervision. Among the \emph{zero-shot} systems (no target labels), OPENER-ZS---which drops the probe and types each mention by cosine similarity to a label-name prototype (the centroid of the type's anchor words in the contrastive space)---edges out OWNER on average ($44.4$ vs $43.0$) at a fraction of its inference cost (\autoref{tab:latency},\,\autoref{tab:energy}); OWNER is zero-shot as well (clustering after transfer from CoNLL-2003). The \emph{supervised} OPENER fits a linear probe on each target's training labels and leads on all $13$ sets ($62.5$), the upper bound of the pipeline. Both share the error-driven hard-negative mining embedder selected in \autoref{tab:ablation}, where a label-free \emph{transductive} refinement of OPENER-ZS (spherical k-means seeded by the label names, run once on the unlabelled test mentions) is also reported, reaching $51.4$ AMI and beating OWNER on $11$ of $13$ sets. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (its training source) and for OPENER (its contrastive source); it is not a transfer result and is not bolded.}
 \label{tab:et-gold}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -293,12 +334,7 @@ OPENER (supervised) & \textbf{57.6} & \textbf{67.0} & \textbf{71.8} & \textbf{74
 \bottomrule
 \end{tabular}
 \end{table}
-\begin{figure}[tbp]
-\centering
-\fbox{\parbox[c][3.2cm][c]{0.92\linewidth}{\centering\emph{[Line chart --- figure to be added: per-dataset typing-on-gold AMI across the $13$ sets for supervised OPENER, OPENER-ZS, OPENER-ZS (transductive) and OWNER, in the order of \autoref{tab:et-gold}.]}}}
-\caption{Typing-on-gold AMI per dataset: supervised OPENER and the two zero-shot OPENER-ZS variants versus OWNER. Supervised OPENER leads on every set; among the label-free systems, the transductive OPENER-ZS overtakes OWNER on $11$ of the $13$ sets.}
-\label{fig:et-gold}
-\end{figure}
+% (per-dataset end-to-end line chart is placed next to tab:main as fig:main)
 
 \begin{table}[tbp]
 \centering

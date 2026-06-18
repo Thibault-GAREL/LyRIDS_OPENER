@@ -1,0 +1,21 @@
+[11:49:29] === Opener ZS e2e + FUSION GLiNER<->centroide ===
+[11:49:29] Embedder outputs/models/embedder_contrastive_hard_big | MD urchade/gliner_large-v2.1 thr=0.3 | proto=ensemble refine=3 | betas=[0.0, 0.05, 0.1, 0.2, 0.3, 0.5, 1.0, 2.0]
+[11:50:20] Chargement GLiNER urchade/gliner_large-v2.1 sur cuda...
+C:\0-Code_py_temp\pytorch_cuda_env\lib\site-packages\huggingface_hub\utils\_validators.py:189: UserWarning: The `resume_download` argument is deprecated and ignored in `snapshot_download`. Downloads always resume whenever possible.
+  warnings.warn(
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<?, ?it/s]
+[11:50:34] --- crossner_ai ---
+[codecarbon INFO @ 11:50:37] offline tracker init
+[codecarbon WARNING @ 11:50:37] Multiple instances of codecarbon are allowed to run at the same time.
+<All keys matched successfully>
+[11:52:32]   gliner_pure=0.4288 | best transd β=0.1 AMI=0.4300 | centroid(β0)=0.3371
+[11:52:32] --- crossner_literature ---
+[11:54:31]   gliner_pure=0.4885 | best transd β=0 AMI=0.4886 | centroid(β0)=0.4886
+[11:54:31] --- crossner_music ---
+[11:57:15]   gliner_pure=0.5802 | best transd β=0.1 AMI=0.5831 | centroid(β0)=0.5367
+[11:57:15] --- crossner_politics ---
+[12:00:26]   gliner_pure=0.4981 | best transd β=0.2 AMI=0.4983 | centroid(β0)=0.4528
+[12:00:26] --- crossner_science ---
+[12:01:49]   gliner_pure=0.5284 | best transd β=0.2 AMI=0.5287 | centroid(β0)=0.4593
+[12:01:49] Rapport : outputs\results\repro_zs_crossner\SUMMARY_zs_fusion_2026-06-18_120149.md
+[12:01:49] MEILLEUR : transductive β=0.2 AMI=0.5050 | gliner_pure=0.5048

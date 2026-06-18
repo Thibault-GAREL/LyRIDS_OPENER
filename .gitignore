@@ -56,3 +56,5 @@ Thumbs.db
 
 # HuggingFace cache local
 .hf_cache/
+
+*.zip

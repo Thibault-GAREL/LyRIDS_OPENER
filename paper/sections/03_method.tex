@@ -20,8 +20,63 @@ Only the typing head is fitted on target-side material, and it comes in two form
 
 \begin{figure}[tbp]
 \centering
-\fbox{\parbox[c][2.6cm][c]{0.92\linewidth}{\centering\emph{[Pipeline schematic --- figure to be added: Text $\rightarrow$ GLiNER mention detection $\rightarrow$ Nomic Matryoshka embedding (span-in-context) $\rightarrow$ typing head (supervised probe \,/\, zero-shot prototype + detector fusion) $\rightarrow$ typed mentions.]}}}
-\caption{The OPENER pipeline. A frozen detector proposes spans, a contrastively sharpened Matryoshka embedder maps each span (in context) to a vector, and a typing head assigns a type. The typing head is the only component fitted on target-side material; all upstream components are off-the-shelf.}
+% Prefers the exported SVG diagram (opener-architecture-v2.pdf) if present in
+% paper/assets or repo-root assets; otherwise falls back to the native TikZ schematic.
+\IfFileExists{assets/opener-architecture-v2.pdf}{%
+  \includegraphics[width=0.82\linewidth]{assets/opener-architecture-v2.pdf}%
+}{\IfFileExists{../assets/opener-architecture-v2.pdf}{%
+  \includegraphics[width=0.82\linewidth]{../assets/opener-architecture-v2.pdf}%
+}{%
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  font=\small,
+  >={Stealth[length=2.2mm]},
+  base/.style={rounded corners=3pt, draw, semithick, align=center, inner sep=4pt},
+  io/.style={base, text width=2.0cm, minimum height=1.25cm},
+  stage/.style={base, text width=2.5cm, minimum height=1.4cm},
+  flow/.style={->, semithick, black!55},
+  side/.style={->, semithick, dashed, black!45},
+]
+% --- main flow ---
+\node[io, fill=figamber!18, draw=figamber] (text) {\textbf{Text}\\[1pt]\scriptsize ``Marie Curie\\ discovered radium''};
+\node[stage, fill=figcyan!12, draw=figcyan!75!black, right=7mm of text] (det)
+  {\textbf{Mention detection}\\[1pt]\scriptsize GLiNER-L\\\scriptsize frozen $\cdot$ + candidate label};
+\node[stage, fill=figsky!14, draw=figsky!85!black, right=7mm of det] (emb)
+  {\textbf{Embedding}\\[1pt]\scriptsize Nomic v1.5 Matryoshka\\\scriptsize span-in-context\\\scriptsize contrastive + hard-neg.\ mining};
+% --- typing branches ---
+\node[stage, fill=figviolet!12, draw=figviolet!75!black, text width=3.0cm,
+      right=14mm of emb, yshift=11mm] (sup)
+  {\textbf{Supervised probe}\\[1pt]\scriptsize LinearSVC (balanced)\\\scriptsize \emph{upper bound}\,---\,needs labels};
+\node[stage, fill=hlyellow, draw=figgold!85!black, very thick, text width=3.0cm,
+      below=5mm of sup] (zs)
+  {\textbf{OPENER-ZS}~$\bigstar$\\[1pt]\scriptsize label-name prototypes\\\scriptsize {+}\,transductive {+}\,detector fusion\\\scriptsize \emph{zero-shot}\,---\,no target labels};
+\node[io, fill=figgreen!14, draw=figgreen!60!black, text width=1.9cm,
+      right=12mm of $(sup.east)!0.5!(zs.east)$] (out)
+  {\textbf{Typed entities}\\[1pt]\scriptsize (span, type)};
+% dashed container for the typing head
+\begin{scope}[on background layer]
+  \node[draw=figviolet!55!black, dashed, rounded corners=5pt, inner sep=5mm,
+        fit=(sup)(zs), label={[font=\scriptsize\itshape, figviolet!60!black]above:Entity typing}] (tbox) {};
+\end{scope}
+% --- arrows ---
+\draw[flow] (text) -- (det);
+\draw[flow] (det) -- (emb);
+\draw[flow] (emb.east) -- ([yshift=1mm]tbox.west|-sup.west);
+\draw[flow] (emb.east) -- ([yshift=-1mm]tbox.west|-zs.west);
+\draw[flow] (sup.east) -- (out);
+\draw[flow] (zs.east) -- (out);
+% --- offline training feeding the embedder ---
+\node[base, fill=figamber!10, draw=figamber!80!black, font=\scriptsize, align=center,
+      text width=3.4cm, below=9mm of emb] (train)
+  {\textbf{Offline embedder training}\\ \textcircled{\scriptsize1} triplet contrastive (CoNLL)\\ \textcircled{\scriptsize2} hard-neg.\ mining (target train, CV)};
+\draw[side, figamber!80!black] (train) -- (emb);
+% --- detector label reused by the zero-shot fusion ---
+\draw[side, figcyan!75!black] (det.south) |- ([yshift=-4mm]zs.south) -- (zs.south)
+  node[pos=0.25, below, font=\scriptsize, black!55] {label + score (fusion)};
+\end{tikzpicture}%
+}%
+}}
+\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type). A frozen GLiNER detector proposes spans and a candidate label; a Matryoshka embedder, sharpened by contrastive fine-tuning and error-driven hard-negative mining, maps each span in context to a vector; and a typing head assigns a type. The typing head is the only component fitted on target-side material and has two operating points: a \emph{supervised} linear probe (the most accurate, but requires target labels) and the \emph{zero-shot} OPENER-ZS ($\bigstar$, the selected operating point), which types against label-name prototypes, refines them transductively, and fuses in the detector's own zero-shot label. All upstream components are off-the-shelf.}
 \label{fig:pipeline}
 \end{figure}
 

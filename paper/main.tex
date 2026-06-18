@@ -15,10 +15,22 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
+\graphicspath{{assets/}{../assets/}}  % look for figures in paper/assets and repo-root assets
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{colortbl}      % \rowcolor for table highlighting
 \definecolor{hlyellow}{rgb}{1,0.93,0.5}  % highlighter yellow (selected variant)
+\usepackage{tikz}          % Fig. 1 architecture diagram
+\usetikzlibrary{arrows.meta, positioning, calc, fit, backgrounds}
+\usepackage{pgfplots}      % Fig. 2 per-dataset line chart
+\pgfplotsset{compat=1.18}
+% --- figure palette (matches the repository architecture diagram) ---
+\definecolor{figamber}{HTML}{F59E0B}
+\definecolor{figcyan}{HTML}{06B6D4}
+\definecolor{figsky}{HTML}{0EA5E9}
+\definecolor{figviolet}{HTML}{8B5CF6}
+\definecolor{figgold}{HTML}{EAB308}
+\definecolor{figgreen}{HTML}{10B981}
 
 % --- Additional packages we will likely need ---
 \usepackage[utf8]{inputenc}

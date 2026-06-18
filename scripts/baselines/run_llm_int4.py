@@ -76,6 +76,23 @@ def _gen_causal(model, tokenizer, prompt, max_new_tokens, max_input_length=2048)
     return tokenizer.decode(new_ids, skip_special_tokens=True)
 
 
+def _gen_chat(model, tokenizer, system, user, max_new_tokens, max_input_length=2048):
+    """Génération via le chat template (modèles instruct type Qwen)."""
+    import torch
+    messages = [{'role': 'system', 'content': system},
+                {'role': 'user', 'content': user}]
+    prompt = tokenizer.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=True)
+    inputs = tokenizer(prompt, return_tensors='pt', truncation=True,
+                       max_length=max_input_length).to(model.device)
+    with torch.no_grad():
+        out = model.generate(
+            **inputs, max_new_tokens=max_new_tokens, do_sample=False, num_beams=1,
+            pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id)
+    new_ids = out[0][inputs['input_ids'].shape[1]:]
+    return tokenizer.decode(new_ids, skip_special_tokens=True)
+
+
 # ---------- Utilitaires de mapping mention -> offsets ----------
 
 def _find_span(text, mention, used):
@@ -107,6 +124,37 @@ def _parse_json_string_list(out):
     except Exception:
         items = re.findall(r'"([^"]*)"', blob)
     return [a.strip() for a in items if a and a.strip()]
+
+
+def _parse_json_entities(out, text, type_map):
+    """Parse une sortie '[{"text":..,"type":..}, ...]' -> spans (s, e, label).
+
+    `type_map` mappe une forme de type (originale, lisible, minuscule) vers le
+    label gold canonique. Les types hors vocabulaire sont ignorés."""
+    spans, used = [], []
+    m = re.search(r'\[.*\]', out, re.S)
+    if not m:
+        return spans
+    try:
+        arr = json.loads(m.group(0))
+    except Exception:
+        return spans
+    if not isinstance(arr, list):
+        return spans
+    for obj in arr:
+        if not isinstance(obj, dict):
+            continue
+        mention, typ = obj.get('text'), obj.get('type')
+        if not mention or not isinstance(typ, str):
+            continue
+        lab = type_map.get(typ) or type_map.get(typ.strip().lower())
+        if lab is None:
+            continue
+        sp = _find_span(text, str(mention), used)
+        if sp:
+            used.append(sp)
+            spans.append((sp[0], sp[1], lab))
+    return spans
 
 
 # ======================= ADAPTATEURS =======================
@@ -199,8 +247,40 @@ class GollieAdapter:
         return spans
 
 
+class QwenInstructAdapter:
+    """Petit LLM instruct généraliste (Qwen2.5-1.5B-Instruct) qui TIENT sur une
+    config commodity (6 Go VRAM / 16 Go RAM) : ~3 Go de poids, ~1 Go en 4-bit.
+
+    NER zero-shot par prompt : on donne les noms de types cibles, le modèle rend
+    un JSON [{"text","type"}], re-mappé sur des offsets caractères (même
+    protocole d'éval que les autres baselines). Une SEULE génération par phrase
+    (vs UniNER qui interroge par type) -> faisable sur GTX 1660 Ti."""
+    key = 'qwen1_5b'
+    checkpoint = 'Qwen/Qwen2.5-1.5B-Instruct'
+    model_kind = 'causal'
+
+    def predict(self, model, tokenizer, text, labels, max_new_tokens):
+        # accepte type original, lisible (sans '_') et minuscule -> label gold
+        type_map = {}
+        for l in labels:
+            for k in (l, l.replace('_', ' '), l.lower(), l.replace('_', ' ').lower()):
+                type_map.setdefault(k, l)
+        types = ', '.join(dict.fromkeys(l.replace('_', ' ') for l in labels))
+        system = ("You are an expert information-extraction system. You find named "
+                  "entities in text and label each with one of the allowed types.")
+        user = (f"Allowed entity types: {types}.\n"
+                "Extract every named entity from the text below. Respond with ONLY "
+                'a JSON array of objects {"text": <exact span copied verbatim from '
+                'the text>, "type": <one of the allowed types>}. No comments. '
+                "If there is no entity, respond [].\n"
+                f'Text: "{text}"')
+        out = _gen_chat(model, tokenizer, system, user, min(max_new_tokens, 512))
+        return _parse_json_entities(out, text, type_map)
+
+
 ADAPTERS = {a.key: a for a in [
-    GnerLlamaAdapter(), UniNERAdapter(), UniNERDefAdapter(), GollieAdapter()]}
+    GnerLlamaAdapter(), UniNERAdapter(), UniNERDefAdapter(), GollieAdapter(),
+    QwenInstructAdapter()]}
 
 
 # ======================= RUNNER =======================
