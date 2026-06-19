@@ -6,11 +6,12 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 
 ---
 
-## `00_inspiration/` — inspiration méthodologique (11)
+## `00_inspiration/` — inspiration méthodologique (12)
 
 | Fichier | Clé bib | Note |
 |---|---|---|
 | 5-OWNER | `genest2025owner` | **Référence principale** (papier le plus proche). Aussi baseline. Citer en 3ᵉ pers. (double-blind). |
+| CONTAINER | `das2022container` | Few-shot NER par contrastive learning. ACL 2022. |
 | PromptORE | *(hors bib)* | Même labo qu'OWNER (Genest et al.), CIKM'22. 3ᵉ pers. si utilisé. |
 | Linked-DocRED | *(hors bib)* | Même labo qu'OWNER, SIGIR'23. 3ᵉ pers. |
 | 2-Joint Embedding of Words and Labels | `wang2018joint` | Idée label-word embedding. |
@@ -39,13 +40,23 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 | PyTorch | `paszke2019pytorch` | Framework. |
 | DeBERTaV3 | `he2023debertav3` | Backbone de GLiNER. |
 
-## `02_baselines/` — modèles comparés / backbones (6)
+**Candidats « entity embedder » comparés dans `tab:ablation` (frozen, NON retenus — Nomic gagne avec 25.8) :**
+
+| Fichier | Clé bib | Note |
+|---|---|---|
+| Text Embeddings by Weakly-Supervised Contrastive Pre-training | `wang2022e5` | **E5** (e5-base-v2). arXiv 2212.03533, 2022. AMI 25.3. |
+| C-Pack - Packed Resources For General Chinese Embeddings | `xiao2023cpack` | **BGE** (bge-base-en-v1.5). SIGIR 2024. AMI 23.6. |
+| MPNet - Masked and Permuted Pre-training for Language Understanding | `song2020mpnet` | **all-mpnet-base-v2**. NeurIPS 2020. AMI 24.1. |
+| AnglE-optimized Text Embeddings | `li2024aoe` | Objectif AnglE/**AoE** derrière **mxbai-embed-large-v1**. ACL 2024. AMI 24.4. |
+
+## `02_baselines/` — modèles comparés / backbones (8)
 
 | Fichier | Clé bib | Rôle |
 |---|---|---|
 | UniversalNER | `zhou2024universalner` | Baseline LLM-NER (ICLR 2024). |
 | GoLLIE | `sainz2024gollie` | Baseline LLM-NER (ICLR 2024). |
 | ChatIE | `wei2024chatie` | Baseline LLM-NER (arXiv 2023). |
+| Qwen2.5 Technical Report | `qwen2025` | **Baseline LLM qui tourne sur le PC** (Qwen2.5-1.5B-Instruct 4-bit). arXiv 2412.15115, 2025. |
 | GNER | `ding2024gner` | Baseline generative NER (Findings ACL 2024). |
 | T5 | `raffel2020t5` | Backbone de GNER. |
 | LLaMA | `touvron2023llama` | Backbone des 7B (GNER-LLaMA, UniNER, GoLLIE). |

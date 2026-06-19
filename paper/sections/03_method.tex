@@ -16,7 +16,7 @@ Three principles guide the design.
 (i)~A pretrained detector and a pretrained sentence embedder are reused as-is.
 (ii)~A light contrastive fine-tuning, refined by error-driven hard-negative mining, turns the general-purpose embedding into one that is discriminative for entity \emph{types}.
 (iii)~The embedder is Matryoshka-truncatable, exposing a compute/quality knob.
-Only the typing head is fitted on target-side material, and it comes in two forms: a supervised linear probe, which is the strongest configuration but requires target labels, and a zero-shot form (OPENER-ZS) that uses no target labels at typing time.
+Only the typing head is fitted on target-side material, and it comes in two forms: \textbf{OPENER-Sup}, a supervised linear probe that is the strongest configuration but requires target labels, and a zero-shot form, \textbf{OPENER-ZS}, that uses no target labels at typing time.
 
 \begin{figure}[tbp]
 \centering
@@ -37,19 +37,19 @@ Only the typing head is fitted on target-side material, and it comes in two form
   flow/.style={->, semithick, black!55},
   side/.style={->, semithick, dashed, black!45},
 ]
-% --- main flow ---
+%  ---  main flow  ---
 \node[io, fill=figamber!18, draw=figamber] (text) {\textbf{Text}\\[1pt]\scriptsize ``Marie Curie\\ discovered radium''};
 \node[stage, fill=figcyan!12, draw=figcyan!75!black, right=7mm of text] (det)
   {\textbf{Mention detection}\\[1pt]\scriptsize GLiNER-L\\\scriptsize frozen $\cdot$ + candidate label};
 \node[stage, fill=figsky!14, draw=figsky!85!black, right=7mm of det] (emb)
   {\textbf{Embedding}\\[1pt]\scriptsize Nomic v1.5 Matryoshka\\\scriptsize span-in-context\\\scriptsize contrastive + hard-neg.\ mining};
-% --- typing branches ---
+%  ---  typing branches  ---
 \node[stage, fill=figviolet!12, draw=figviolet!75!black, text width=3.0cm,
       right=14mm of emb, yshift=11mm] (sup)
-  {\textbf{Supervised probe}\\[1pt]\scriptsize LinearSVC (balanced)\\\scriptsize \emph{upper bound}\,---\,needs labels};
+  {\textbf{OPENER-Sup}\\[1pt]\scriptsize LinearSVC (balanced)\\\scriptsize \emph{supervised} upper bound};
 \node[stage, fill=hlyellow, draw=figgold!85!black, very thick, text width=3.0cm,
       below=5mm of sup] (zs)
-  {\textbf{OPENER-ZS}~$\bigstar$\\[1pt]\scriptsize label-name prototypes\\\scriptsize {+}\,transductive {+}\,detector fusion\\\scriptsize \emph{zero-shot}\,---\,no target labels};
+  {\textbf{OPENER-ZS}~$\bigstar$\\[1pt]\scriptsize label-name prototypes\\\scriptsize {+}\,transductive {+}\,detector fusion\\\scriptsize \emph{zero-shot}\, --- \,no target labels};
 \node[io, fill=figgreen!14, draw=figgreen!60!black, text width=1.9cm,
       right=12mm of $(sup.east)!0.5!(zs.east)$] (out)
   {\textbf{Typed entities}\\[1pt]\scriptsize (span, type)};
@@ -58,25 +58,25 @@ Only the typing head is fitted on target-side material, and it comes in two form
   \node[draw=figviolet!55!black, dashed, rounded corners=5pt, inner sep=5mm,
         fit=(sup)(zs), label={[font=\scriptsize\itshape, figviolet!60!black]above:Entity typing}] (tbox) {};
 \end{scope}
-% --- arrows ---
+%  ---  arrows  ---
 \draw[flow] (text) -- (det);
 \draw[flow] (det) -- (emb);
 \draw[flow] (emb.east) -- ([yshift=1mm]tbox.west|-sup.west);
 \draw[flow] (emb.east) -- ([yshift=-1mm]tbox.west|-zs.west);
 \draw[flow] (sup.east) -- (out);
 \draw[flow] (zs.east) -- (out);
-% --- offline training feeding the embedder ---
+%  ---  offline training feeding the embedder  ---
 \node[base, fill=figamber!10, draw=figamber!80!black, font=\scriptsize, align=center,
       text width=3.4cm, below=9mm of emb] (train)
   {\textbf{Offline embedder training}\\ \textcircled{\scriptsize1} triplet contrastive (CoNLL)\\ \textcircled{\scriptsize2} hard-neg.\ mining (target train, CV)};
 \draw[side, figamber!80!black] (train) -- (emb);
-% --- detector label reused by the zero-shot fusion ---
+%  ---  detector label reused by the zero-shot fusion  ---
 \draw[side, figcyan!75!black] (det.south) |- ([yshift=-4mm]zs.south) -- (zs.south)
   node[pos=0.25, below, font=\scriptsize, black!55] {label + score (fusion)};
 \end{tikzpicture}%
 }%
 }}
-\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type). A frozen GLiNER detector proposes spans and a candidate label; a Matryoshka embedder, sharpened by contrastive fine-tuning and error-driven hard-negative mining, maps each span in context to a vector; and a typing head assigns a type. The typing head is the only component fitted on target-side material and has two operating points: a \emph{supervised} linear probe (the most accurate, but requires target labels) and the \emph{zero-shot} OPENER-ZS ($\bigstar$, the selected operating point), which types against label-name prototypes, refines them transductively, and fuses in the detector's own zero-shot label. All upstream components are off-the-shelf.}
+\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type). A frozen GLiNER detector proposes spans and a candidate label; a Matryoshka embedder, sharpened by contrastive fine-tuning and error-driven hard-negative mining, maps each span in context to a vector; and a typing head assigns a type. The typing head is the only component fitted on target-side material and has two operating points: \textbf{OPENER-Sup}, a \emph{supervised} linear probe (the most accurate, but requires target labels), and the \emph{zero-shot} \textbf{OPENER-ZS} ($\bigstar$, the selected operating point), which types against label-name prototypes, refines them transductively, and fuses in the detector's own zero-shot label. All upstream components are off-the-shelf.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -115,7 +115,7 @@ This embedder is shared unchanged by every typing head below.
 \subsection{Entity Typing}
 \label{sec:method:typing}
 
-\paragraph{Supervised probe}
+\paragraph{Supervised probe (OPENER-Sup)}
 The default typing head is a balanced linear classifier (LinearSVC with the LIBLINEAR solver \cite{fan2008liblinear}) fitted on the target's training labels.
 Class weights follow the balanced rule $w_c = n_\text{total} / (C\, n_c)$, where $C$ is the number of types and $n_c$ the count of type $c$, which counters the heavy type imbalance of the benchmark.
 This is the strongest configuration but requires target-side labels.

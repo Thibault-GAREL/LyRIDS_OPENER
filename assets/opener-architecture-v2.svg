@@ -105,17 +105,17 @@
 
     <!-- (a) Supervised probe -->
     <g>
-      <rect x="266" y="496" width="196" height="196" rx="10" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.5" filter="url(#shadow-sm)"/>
-      <text x="364" y="520" font-size="12" font-weight="600" fill="#5B21B6" text-anchor="middle">Supervised probe</text>
-      <rect x="296" y="530" width="136" height="19" rx="9.5" fill="#FFFFFF" stroke="#8B5CF6" stroke-width="1"/>
-      <text x="364" y="543" font-size="9.5" font-weight="600" fill="#7C3AED" text-anchor="middle">upper bound · needs labels</text>
-      <text x="364" y="572" font-size="10.5" font-weight="500" fill="#6D28D9" text-anchor="middle">LinearSVC</text>
-      <text x="364" y="589" font-size="10.5" font-weight="500" fill="#6D28D9" text-anchor="middle">class_weight = balanced</text>
-      <text x="364" y="612" font-size="10" font-weight="400" fill="#7C3AED" text-anchor="middle">fit on each target's</text>
-      <text x="364" y="628" font-size="10" font-weight="400" fill="#7C3AED" text-anchor="middle">training labels</text>
-      <line x1="296" y1="644" x2="432" y2="644" stroke="#DDD6FE" stroke-width="1"/>
-      <text x="364" y="664" font-size="11" font-weight="700" fill="#5B21B6" text-anchor="middle">62.5 gold · 40.2 e2e</text>
-      <text x="364" y="681" font-size="9.5" font-weight="400" fill="#7C3AED" text-anchor="middle">most accurate AMI</text>
+      <rect x="266" y="496" width="196" height="196" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5" filter="url(#shadow-sm)"/>
+      <text x="364" y="520" font-size="12" font-weight="700" fill="#991B1B" text-anchor="middle">OPENER-Sup</text>
+      <rect x="296" y="530" width="136" height="19" rx="9.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="1"/>
+      <text x="364" y="543" font-size="9.5" font-weight="600" fill="#B91C1C" text-anchor="middle">supervised · needs labels</text>
+      <text x="364" y="572" font-size="10.5" font-weight="500" fill="#B91C1C" text-anchor="middle">LinearSVC</text>
+      <text x="364" y="589" font-size="10.5" font-weight="500" fill="#B91C1C" text-anchor="middle">class_weight = balanced</text>
+      <text x="364" y="612" font-size="10" font-weight="400" fill="#B91C1C" text-anchor="middle">fit on each target's</text>
+      <text x="364" y="628" font-size="10" font-weight="400" fill="#B91C1C" text-anchor="middle">training labels</text>
+      <line x1="296" y1="644" x2="432" y2="644" stroke="#FECACA" stroke-width="1"/>
+      <text x="364" y="664" font-size="11" font-weight="700" fill="#991B1B" text-anchor="middle">62.5 gold · 40.2 e2e</text>
+      <text x="364" y="681" font-size="9.5" font-weight="400" fill="#B91C1C" text-anchor="middle">most accurate AMI</text>
     </g>
 
     <!-- (b) OPENER-ZS — selected (highlighted) -->
@@ -182,8 +182,8 @@
     <rect x="16" y="84" width="14" height="14" rx="3" fill="#F0F9FF" stroke="#0EA5E9"/>
     <text x="38" y="95" font-size="10" fill="#1E293B">Embedding (contrastively fine-tuned)</text>
 
-    <rect x="300" y="36" width="14" height="14" rx="3" fill="#F5F3FF" stroke="#8B5CF6"/>
-    <text x="322" y="47" font-size="10" fill="#1E293B">Supervised typing (upper bound, needs labels)</text>
+    <rect x="300" y="36" width="14" height="14" rx="3" fill="#FEE2E2" stroke="#DC2626"/>
+    <text x="322" y="47" font-size="10" fill="#1E293B">OPENER-Sup (supervised typing, needs labels)</text>
 
     <rect x="300" y="60" width="14" height="14" rx="3" fill="#FEF9C3" stroke="#EAB308" stroke-width="2"/>
     <text x="322" y="71" font-size="10" fill="#1E293B">OPENER-ZS — selected zero-shot head</text>
