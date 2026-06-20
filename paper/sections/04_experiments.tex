@@ -152,6 +152,7 @@ Its un-refined nearest-centroid baseline, OPENER-ZS (base), already matches the 
 Two label-free refinements then build the full OPENER-ZS: a transductive k-means on the prototypes, and \emph{fusing in the detector's own zero-shot label predictions}     ---     a signal the centroid otherwise discards     ---     which together reach $39.4$ end-to-end, the best of all compared zero-shot systems, ahead of GLiNER-L ($38.9$) and within $0.8$ AMI of OPENER-Sup, all without any target label.
 For reference, the only generative LLM that fits our $6$\,GB GPU     ---     Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, prompted for JSON-formatted entities     ---     trails every dedicated system ($26.1$ mean AMI on a $150$-sentence subsample, \autoref{tab:main}) while being the slowest and most energy-hungry per sentence ($5.1$\,s, $11.4$\,Wh; \autoref{tab:efficiency}): a small open LLM pays on both axes at once.
 OPENER-Sup remains the stronger configuration ($40.2$ end-to-end, $62.5$ on gold), so OPENER-ZS is best read as the frugal, annotation-free operating point of the same pipeline.
+A per-domain analysis of these results, the detection bottleneck and the learned embedding geometry follows in \autoref{sec:exp:analysis}.
 
 \begin{table}[tbp]
 \centering
@@ -257,12 +258,47 @@ OPENER-ZS (base) & 109 & 135 & 156 & 172 & 175 & 136 & 127 & 137 & 133 & 136 & 1
 \bottomrule
 \end{tabular}
 \end{table}
-% >>> TODO[FINAL]: add a line chart of per-sentence latency (one line per dataset)
-% >>> to make the speed ranking across models legible.
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=\linewidth, height=6.6cm,
+  ymode=log, ymin=15, ymax=13000, log origin=infty,
+  ylabel={Latency p50 (ms, log)}, ylabel style={font=\small},
+  symbolic x coords={AI,Lit,Mus,Pol,Sci,WNUT,Rest,Movie,Fab,Bio,CoNLL,GUM,GEN},
+  xtick=data, xticklabel style={rotate=40, anchor=east, font=\scriptsize},
+  yticklabel style={font=\scriptsize},
+  grid=both, major grid style={black!12},
+  enlarge x limits=0.04,
+  legend style={at={(0.5,1.02)}, anchor=south, legend columns=4, font=\scriptsize, draw=none,
+                /tikz/every even column/.append style={column sep=6pt}},
+]
+\addplot[figsky, semithick, mark=o, mark size=1.2pt] coordinates
+  {(AI,21)(Lit,22)(Mus,21)(Pol,21)(Sci,21)(WNUT,20)(Rest,19)(Movie,20)(Fab,20)(Bio,22)(CoNLL,20)(GUM,21)(GEN,21)};
+\addplot[figcyan!85!black, semithick, mark=square, mark size=1.2pt] coordinates
+  {(AI,36)(Lit,36)(Mus,37)(Pol,38)(Sci,39)(WNUT,39)(Rest,38)(Movie,40)(Fab,41)(Bio,42)(CoNLL,44)(GUM,46)(GEN,45)};
+\addplot[blue!60!black, semithick, mark=diamond, mark size=1.4pt] coordinates
+  {(AI,144)(Lit,149)(Mus,153)(Pol,149)(Sci,155)(WNUT,137)(Rest,132)(Movie,145)(Fab,147)(Bio,143)(CoNLL,131)(GUM,141)(GEN,137)};
+\addplot[figgreen!65!black, semithick, mark=triangle, mark size=1.5pt] coordinates
+  {(AI,3431)(Lit,5408)(Mus,7461)(Pol,6472)(Sci,7110)(WNUT,2906)(Rest,1610)(Movie,3344)(Fab,4310)(Bio,5034)(CoNLL,2914)(GUM,3435)(GEN,1500)};
+\addplot[figviolet, thick, mark=x, mark size=2pt] coordinates
+  {(AI,4857)(Lit,6757)(Mus,9396)(Pol,7700)(Sci,8261)(WNUT,3553)(Rest,2142)(Movie,5014)(Fab,2921)(Bio,4737)(CoNLL,2260)(GUM,4265)(GEN,3806)};
+\addplot[figpink, semithick, mark=pentagon, mark size=1.5pt] coordinates
+  {(AI,500)(Lit,712)(Mus,895)(Pol,920)(Sci,757)(WNUT,311)(Rest,281)(Movie,532)(Fab,438)(Bio,558)(CoNLL,719)(GUM,759)(GEN,626)};
+\addplot[figgold!90!black, very thick, mark=square*, mark size=1.6pt] coordinates
+  {(AI,218)(Lit,254)(Mus,291)(Pol,277)(Sci,289)(WNUT,185)(Rest,173)(Movie,205)(Fab,84)(Bio,98)(CoNLL,92)(GUM,104)(GEN,97)};
+\addplot[figred, very thick, densely dashed, mark=*, mark size=1.6pt] coordinates
+  {(AI,222)(Lit,271)(Mus,293)(Pol,159)(Sci,132)(WNUT,100)(Rest,92)(Movie,98)(Fab,104)(Bio,108)(CoNLL,89)(GUM,100)(GEN,94)};
+\legend{GLiNER-S, GLiNER-M, GLiNER-L, GNER, Qwen2.5-1.5B, OWNER, OPENER-ZS, OPENER-Sup}
+\end{axis}
+\end{tikzpicture}
+\caption{Per-sentence inference latency (p50, ms, \emph{log} scale) per dataset (\autoref{tab:latency}). Same systems and styling as \autoref{fig:main}; OPENER-Sup is the dashed red line. The OPENER variants track GLiNER-L, while GNER and the Qwen LLM are one to two orders of magnitude slower.}
+\label{fig:latency}
+\end{figure}
 
 \begin{table}[tbp]
 \centering
-\caption{Energy per run (Wh, $\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. $^\S$\,OWNER is measured at inference only (its one-time $88$-min CoNLL-2003 training is amortised, not charged per run); $^\dagger$\,CoNLL is its in-domain training source, measured by a separate inference-only run; $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.}
+\caption{Energy consumption per run (Wh, $\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. $^\S$\,OWNER is measured at inference only (its one-time $88$-min CoNLL-2003 training is amortised, not charged per run); $^\dagger$\,CoNLL is its in-domain training source, measured by a separate inference-only run; $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.}
 \label{tab:energy}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -289,8 +325,43 @@ OPENER-ZS (base) & 0.95 & 1.06 & 1.37 & 1.97 & 1.69 & 1.52 & 2.07 & 2.28 & 2.15 
 \bottomrule
 \end{tabular}
 \end{table}
-% >>> TODO[FINAL]: add a line chart of per-run energy (one line per dataset) for the
-% >>> frugality comparison.
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=\linewidth, height=6.6cm,
+  ymode=log, ymin=0.1, ymax=95, log origin=infty,
+  ylabel={Energy consumption (Wh, log)}, ylabel style={font=\small},
+  symbolic x coords={AI,Lit,Mus,Pol,Sci,WNUT,Rest,Movie,Fab,Bio,CoNLL,GUM,GEN},
+  xtick=data, xticklabel style={rotate=40, anchor=east, font=\scriptsize},
+  yticklabel style={font=\scriptsize},
+  grid=both, major grid style={black!12},
+  enlarge x limits=0.04,
+  legend style={at={(0.5,1.02)}, anchor=south, legend columns=4, font=\scriptsize, draw=none,
+                /tikz/every even column/.append style={column sep=6pt}},
+]
+\addplot[figsky, semithick, mark=o, mark size=1.2pt] coordinates
+  {(AI,0.19)(Lit,0.17)(Mus,0.20)(Pol,0.27)(Sci,0.22)(WNUT,0.27)(Rest,0.35)(Movie,0.39)(Fab,0.40)(Bio,0.42)(CoNLL,0.37)(GUM,0.41)(GEN,0.40)};
+\addplot[figcyan!85!black, semithick, mark=square, mark size=1.2pt] coordinates
+  {(AI,0.31)(Lit,0.29)(Mus,0.33)(Pol,0.48)(Sci,0.40)(WNUT,0.50)(Rest,0.66)(Movie,0.76)(Fab,0.77)(Bio,0.79)(CoNLL,0.69)(GUM,0.82)(GEN,0.75)};
+\addplot[blue!60!black, semithick, mark=diamond, mark size=1.4pt] coordinates
+  {(AI,0.68)(Lit,0.67)(Mus,0.77)(Pol,1.04)(Sci,0.91)(WNUT,1.01)(Rest,1.37)(Movie,1.51)(Fab,1.54)(Bio,1.49)(CoNLL,1.38)(GUM,1.52)(GEN,1.43)};
+\addplot[figgreen!65!black, semithick, mark=triangle, mark size=1.5pt] coordinates
+  {(AI,17.13)(Lit,24.28)(Mus,39.75)(Pol,50.88)(Sci,44.76)(WNUT,20.60)(Rest,17.02)(Movie,37.17)(Fab,49.11)(Bio,63.50)(CoNLL,45.22)(GUM,38.69)(GEN,26.50)};
+\addplot[figviolet, thick, mark=x, mark size=2pt] coordinates
+  {(AI,12.7)(Lit,15.1)(Mus,17.5)(Pol,18.4)(Sci,18.0)(WNUT,7.9)(Rest,4.6)(Movie,9.5)(Fab,7.0)(Bio,11.1)(CoNLL,7.3)(GUM,10.2)(GEN,9.5)};
+\addplot[figpink, semithick, mark=pentagon, mark size=1.5pt] coordinates
+  {(AI,6.6)(Lit,9.0)(Mus,12.7)(Pol,18.3)(Sci,12.6)(WNUT,6.5)(Rest,8.6)(Movie,16.3)(Fab,13.4)(Bio,17.1)(CoNLL,22.0)(GUM,23.2)(GEN,19.1)};
+\addplot[figgold!90!black, very thick, mark=square*, mark size=1.6pt] coordinates
+  {(AI,1.14)(Lit,1.23)(Mus,1.58)(Pol,2.08)(Sci,1.82)(WNUT,1.41)(Rest,1.82)(Movie,2.23)(Fab,1.62)(Bio,1.87)(CoNLL,1.63)(GUM,1.90)(GEN,1.79)};
+\addplot[figred, very thick, densely dashed, mark=*, mark size=1.6pt] coordinates
+  {(AI,1.10)(Lit,1.26)(Mus,0.87)(Pol,1.76)(Sci,1.41)(WNUT,1.31)(Rest,1.75)(Movie,1.87)(Fab,1.96)(Bio,1.97)(CoNLL,1.73)(GUM,1.91)(GEN,1.78)};
+\legend{GLiNER-S, GLiNER-M, GLiNER-L, GNER, Qwen2.5-1.5B, OWNER, OPENER-ZS, OPENER-Sup}
+\end{axis}
+\end{tikzpicture}
+\caption{Per-run energy consumption (Wh, \emph{log} scale) per dataset (\autoref{tab:energy}). Same systems and styling as \autoref{fig:main}. The OPENER variants sit an order of magnitude below OWNER and the generative GNER/Qwen baselines.}
+\label{fig:energy}
+\end{figure}
 % RESOLVED[2026-06-13]: the 22.76 Wh CodeCarbon glitch on crossner_music is gone in the
 % hard-mining e2e re-run (Mus = 1.72 Wh). OPENER energy row + averages now come from that
 % clean run; true mean energy is 1.88 Wh (was 3.39, inflated by the single glitched cell).
@@ -322,6 +393,119 @@ OPENER-ZS (base) & 467M & 34.2 & 137 & 1.85 & 0.10 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\pgfplotsset{
+  metricbar/.style={
+    width=0.45\linewidth, height=3.9cm,
+    ybar, bar width=4pt,
+    xmin=0.4, xmax=9.6,
+    xtick={1,2,3,4,5,6,7,8,9},
+    xticklabels={GL-S,GL-M,GL-L,GNER,Qwen,OWN,ZS$_0$,ZS,Sup},
+    xticklabel style={rotate=55, anchor=east, font=\tiny},
+    yticklabel style={font=\tiny},
+    title style={font=\scriptsize, yshift=-2pt},
+    ymajorgrids, major grid style={black!10},
+    enlarge x limits=0.04,
+  }
+}
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[metricbar, title={AMI ($\uparrow$)}, ymin=0, ymax=45, ytick={0,15,30,45}]
+\addplot[ybar,bar shift=0pt,fill=figsky,draw=figsky!65!black] coordinates {(1,36.5)};
+\addplot[ybar,bar shift=0pt,fill=figcyan!85!black,draw=figcyan!55!black] coordinates {(2,37.1)};
+\addplot[ybar,bar shift=0pt,fill=blue!60!black,draw=blue!40!black] coordinates {(3,38.9)};
+\addplot[ybar,bar shift=0pt,fill=figgreen!65!black,draw=figgreen!45!black] coordinates {(4,37.9)};
+\addplot[ybar,bar shift=0pt,fill=figviolet,draw=figviolet!65!black] coordinates {(5,26.1)};
+\addplot[ybar,bar shift=0pt,fill=figpink,draw=figpink!65!black] coordinates {(6,34.3)};
+\addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,34.2)};
+\addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,39.4)};
+\addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,40.2)};
+\draw[densely dotted, semithick, black!55] (axis cs:8.5,0) -- (axis cs:8.5,45);
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[metricbar, ymode=log, log origin=infty, title={Latency p50, ms ($\downarrow$)}, ymin=10, ymax=9000]
+\addplot[ybar,bar shift=0pt,fill=figsky,draw=figsky!65!black] coordinates {(1,21)};
+\addplot[ybar,bar shift=0pt,fill=figcyan!85!black,draw=figcyan!55!black] coordinates {(2,40)};
+\addplot[ybar,bar shift=0pt,fill=blue!60!black,draw=blue!40!black] coordinates {(3,143)};
+\addplot[ybar,bar shift=0pt,fill=figgreen!65!black,draw=figgreen!45!black] coordinates {(4,4226)};
+\addplot[ybar,bar shift=0pt,fill=figviolet,draw=figviolet!65!black] coordinates {(5,5051)};
+\addplot[ybar,bar shift=0pt,fill=figpink,draw=figpink!65!black] coordinates {(6,616)};
+\addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,137)};
+\addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,182)};
+\addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,143)};
+\draw[densely dotted, semithick, black!55] (axis cs:8.5,10) -- (axis cs:8.5,9000);
+\end{axis}
+\end{tikzpicture}
+
+\smallskip
+\begin{tikzpicture}
+\begin{axis}[metricbar, ymode=log, log origin=infty, title={Energy consumption, Wh ($\downarrow$)}, ymin=0.1, ymax=80]
+\addplot[ybar,bar shift=0pt,fill=figsky,draw=figsky!65!black] coordinates {(1,0.31)};
+\addplot[ybar,bar shift=0pt,fill=figcyan!85!black,draw=figcyan!55!black] coordinates {(2,0.58)};
+\addplot[ybar,bar shift=0pt,fill=blue!60!black,draw=blue!40!black] coordinates {(3,1.18)};
+\addplot[ybar,bar shift=0pt,fill=figgreen!65!black,draw=figgreen!45!black] coordinates {(4,36.51)};
+\addplot[ybar,bar shift=0pt,fill=figviolet,draw=figviolet!65!black] coordinates {(5,11.4)};
+\addplot[ybar,bar shift=0pt,fill=figpink,draw=figpink!65!black] coordinates {(6,14.3)};
+\addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,1.85)};
+\addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,1.70)};
+\addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,1.59)};
+\draw[densely dotted, semithick, black!55] (axis cs:8.5,0.1) -- (axis cs:8.5,80);
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[metricbar, ymode=log, log origin=infty, title={CO\textsubscript{2}, g ($\downarrow$)}, ymin=0.01, ymax=4]
+\addplot[ybar,bar shift=0pt,fill=figsky,draw=figsky!65!black] coordinates {(1,0.02)};
+\addplot[ybar,bar shift=0pt,fill=figcyan!85!black,draw=figcyan!55!black] coordinates {(2,0.03)};
+\addplot[ybar,bar shift=0pt,fill=blue!60!black,draw=blue!40!black] coordinates {(3,0.07)};
+\addplot[ybar,bar shift=0pt,fill=figgreen!65!black,draw=figgreen!45!black] coordinates {(4,2.05)};
+\addplot[ybar,bar shift=0pt,fill=figviolet,draw=figviolet!65!black] coordinates {(5,0.60)};
+\addplot[ybar,bar shift=0pt,fill=figpink,draw=figpink!65!black] coordinates {(6,0.74)};
+\addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,0.10)};
+\addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,0.10)};
+\addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,0.09)};
+\draw[densely dotted, semithick, black!55] (axis cs:8.5,0.01) -- (axis cs:8.5,4);
+\end{axis}
+\end{tikzpicture}
+\caption{Per-model means on the four axes ($13$-set averages, \autoref{tab:efficiency}); the light dotted line separates the \emph{zero-shot} systems (left) from the \emph{supervised} OPENER-Sup (right). Latency, energy and CO\textsubscript{2} use a log scale. Labels: GL-S/M/L $=$ GLiNER sizes, OWN $=$ OWNER, ZS$_0$ $=$ OPENER-ZS (base), ZS $=$ OPENER-ZS, Sup $=$ OPENER-Sup.}
+\label{fig:metrics-bars}
+\end{figure}
+
+\noindent\textcolor{red}{\textbf{[REMINDER (draft): consider adding Pareto diagrams (AMI vs.\ latency, AMI vs.\ energy consumption) to visualise the frugality frontier; decide before submission.]}}
+
+\subsection{Analysis}
+\label{sec:exp:analysis}
+
+\paragraph{Where OPENER wins, and why}
+Two domain patterns stand out across \autoref{tab:main} and \autoref{fig:main}.
+First, the detector-fusion gains of OPENER-ZS concentrate on the context-rich encyclopedic CrossNER domains ($+16.3$ AMI on Music, $+11.9$ on Politics, $+8.6$ on Science over the un-fused centroid), where the detector's own zero-shot label is most reliable and lifts OPENER-ZS to detector-level quality (e.g.\ Music $58.0$, matching GLiNER-L).
+Second, on specialised schemas with opaque, abbreviation-like labels (FabNER, BioNLP), OPENER's contrastive typing maps cryptic surface forms far better than OWNER's prompt-based naming: OPENER-Sup leads end-to-end ($30.2$ and $36.5$ AMI), and on gold mentions the gap widens sharply ($59.2$/$71.2$ versus OWNER's $31.9$/$29.2$, \autoref{tab:et-gold}).
+
+\paragraph{Detection is the bottleneck, worst on specialised domains}
+Contrasting typing on gold mentions with the end-to-end scores isolates the cost of detection.
+For OPENER-Sup, the mean drop from gold to end-to-end is $22.3$ AMI, but it is far from uniform: it averages $18.6$ on the encyclopedic CrossNER domains against $30.6$ on the specialised schemas (BioNLP, MIT-Restaurant, MIT-Movie, FabNER), peaking at $34.7$ on BioNLP.
+The typing head is strong everywhere (gold AMI $50$--$75$); what caps end-to-end quality is the open-world detector's recall on cryptic, domain-specific surface forms, which confirms detection, not typing, as the dominant bottleneck.
+
+\paragraph{What remains hard}
+The residual typing errors are dominated by confusions between fine-grained, lexically close types \emph{within} a domain rather than across domains.
+The most frequent type confusions are DNA vs.\ protein (BioNLP), the FabNER process labels CONPRI vs.\ MATE/PRO/MANP, and the Movie attributes TITLE vs.\ GENRE/RATING: precisely the opaque schemas of \autoref{tab:datasets} where even the surrounding context barely disambiguates the type.
+
+\paragraph{Contrastive learning in action}
+\autoref{fig:umap} visualises the effect of the two fine-tuning stages on a \emph{held-out} domain (WNUT-17), never seen during contrastive training.
+Frozen off-the-shelf, the Nomic embedding intermixes entity types; the contrastive step already pulls same-type mentions together, and the hard-negative mining pass sharpens the boundaries between the types it most often confuses, yielding compact, well-separated clusters.
+The type geometry learned on CoNLL thus transfers to an unseen domain, which is what makes the cheap label-name and linear typing heads effective.
+
+\begin{figure}[tbp]
+\centering
+\IfFileExists{assets/umap_contrastive.pdf}{%
+  \includegraphics[width=\linewidth]{assets/umap_contrastive.pdf}%
+}{\IfFileExists{../assets/umap_contrastive.pdf}{%
+  \includegraphics[width=\linewidth]{../assets/umap_contrastive.pdf}%
+}{\fbox{\parbox{0.92\linewidth}{\centering\small UMAP figure pending --- run \texttt{scripts/make\_umap.py} to generate \texttt{assets/umap\_contrastive.pdf}.}}}}
+\caption{UMAP of WNUT-17 (held-out) entity embeddings, coloured by gold type, across the three embedder stages: frozen Nomic v1.5, $+$ contrastive fine-tuning, $+$ hard-negative mining. The contrastive stages progressively separate the types into compact clusters on a domain unseen during training.}
+\label{fig:umap}
+\end{figure}
 
 \subsection{Ablations}
 \label{sec:exp:ablations}
