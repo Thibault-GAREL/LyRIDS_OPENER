@@ -1,33 +1,7 @@
 \section{Method}
 \label{sec:method}
 
-\subsection{Problem Formulation}
-\label{sec:method:problem}
-Given a sentence, an open-world NER system must return a set of typed mentions whose type inventory is \emph{not} fixed at training time.
-Formally, a sentence $s$ yields candidate mentions $\mathcal{M}(s)=\{m_i\}$; an embedder $f_\theta$ maps each mention \emph{in context} to a vector and a typing head assigns it a type,
-\begin{equation}
-e_i = f_\theta(s, m_i)\in\mathbb{R}^{D},\qquad \hat y_i\in\mathcal{T},
-\end{equation}
-where the inventory $\mathcal{T}$ is unknown at training time.
-We adopt the evaluation of Genest et al. \cite{genest2025owner}.
-Predicted and gold mentions are aligned by exact character offsets; an unmatched gold mention (false negative) and an unmatched predicted mention (false positive) each receive a distinct sentinel type, so that detection errors are scored rather than ignored.
-Type-assignment quality is then measured by the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between the gold type partition $U$ and the predicted partition $V$ over the aligned mentions,
-\begin{equation}
-\mathrm{AMI}(U,V)=\frac{\mathrm{MI}(U,V)-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]}{\max\{H(U),H(V)\}-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]},
-\end{equation}
-where $\mathrm{MI}$ is mutual information and $H$ entropy; AMI does not require the two label vocabularies to coincide.
-We report two protocols that are never mixed in the same comparison: \emph{typing-on-gold}, where the typing component is applied to gold spans and detection is bypassed, and \emph{end-to-end}, where mentions come from the detector and the sentinels above are active.
-
-\subsection{Architecture Overview}
-\label{sec:method:overview}
-OPENER is a three-stage pipeline, Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type (\autoref{fig:pipeline}), assembled from off-the-shelf components so that no encoder is trained from scratch.
-Three principles guide the design.
-(i)~A pretrained detector and a pretrained sentence embedder are reused as-is.
-(ii)~A light contrastive fine-tuning, refined by error-driven hard-negative mining, turns the general-purpose embedding into one that is discriminative for entity \emph{types}.
-(iii)~The embedder is Matryoshka-truncatable, exposing a compute/quality knob.
-Only the typing head is fitted on target-side material, and it comes in two forms: \textbf{OPENER-Sup}, a supervised linear probe that is the strongest configuration but requires target labels, and a zero-shot form, \textbf{OPENER-ZS}, that uses no target labels at typing time.
-
-\begin{figure}[tbp]
+\begin{figure}[H]
 \centering
 % Prefers the exported SVG diagram (opener-architecture-v2.pdf) if present in
 % paper/assets or repo-root assets; otherwise falls back to the native TikZ schematic.
@@ -88,6 +62,32 @@ Only the typing head is fitted on target-side material, and it comes in two form
 \caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head---the only target-fitted component---has two operating points: \textbf{OPENER-Sup} (\emph{supervised}, the upper bound) and the \emph{zero-shot} \textbf{OPENER-ZS} ($\bigstar$, selected). All upstream components are off-the-shelf.}
 \label{fig:pipeline}
 \end{figure}
+
+\subsection{Problem Formulation}
+\label{sec:method:problem}
+Given a sentence, an open-world NER system must return a set of typed mentions whose type inventory is \emph{not} fixed at training time.
+Formally, a sentence $s$ yields candidate mentions $\mathcal{M}(s)=\{m_i\}$; an embedder $f_\theta$ maps each mention \emph{in context} to a vector and a typing head assigns it a type,
+\begin{equation}
+e_i = f_\theta(s, m_i)\in\mathbb{R}^{D},\qquad \hat y_i\in\mathcal{T},
+\end{equation}
+where the inventory $\mathcal{T}$ is unknown at training time.
+We adopt the evaluation of Genest et al. \cite{genest2025owner}.
+Predicted and gold mentions are aligned by exact character offsets; an unmatched gold mention (false negative) and an unmatched predicted mention (false positive) each receive a distinct sentinel type, so that detection errors are scored rather than ignored.
+Type-assignment quality is then measured by the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between the gold type partition $U$ and the predicted partition $V$ over the aligned mentions,
+\begin{equation}
+\mathrm{AMI}(U,V)=\frac{\mathrm{MI}(U,V)-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]}{\max\{H(U),H(V)\}-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]},
+\end{equation}
+where $\mathrm{MI}$ is mutual information and $H$ entropy; AMI does not require the two label vocabularies to coincide.
+We report two protocols that are never mixed in the same comparison: \emph{typing-on-gold}, where the typing component is applied to gold spans and detection is bypassed, and \emph{end-to-end}, where mentions come from the detector and the sentinels above are active.
+
+\subsection{Architecture Overview}
+\label{sec:method:overview}
+OPENER is a three-stage pipeline, Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type (\autoref{fig:pipeline}), assembled from off-the-shelf components so that no encoder is trained from scratch.
+Three principles guide the design.
+(i)~A pretrained detector and a pretrained sentence embedder are reused as-is.
+(ii)~A light contrastive fine-tuning, refined by error-driven hard-negative mining, turns the general-purpose embedding into one that is discriminative for entity \emph{types}.
+(iii)~The embedder is Matryoshka-truncatable, exposing a compute/quality knob.
+Only the typing head is fitted on target-side material, and it comes in two forms: \textbf{OPENER-Sup}, a supervised linear probe that is the strongest configuration but requires target labels, and a zero-shot form, \textbf{OPENER-ZS}, that uses no target labels at typing time.
 
 \subsection{Mention Detection}
 \label{sec:method:detect}
@@ -157,33 +157,6 @@ s_t(i)=\cos(e_i,p_t)+\beta\,g_i\,\mathbb{1}\!\left[t=\ell_{\text{GLiNER}}(i)\rig
 with a small $\beta{=}0.05$.
 The fused head is the selected zero-shot operating point: it reaches $39.4$ AMI end-to-end, ahead of every compared zero-shot system, while using no target labels (\autoref{sec:exp:results}).
 A per-class Gaussian mixture \cite{reynolds2009gmm} is reported only as a typing ablation (\autoref{tab:ablation}).
-
-\subsection{Hyperparameters}
-\label{sec:method:hyper}
-\autoref{tab:hyperparams} collects the configuration; all stochastic components use a single fixed seed ($42$).
-
-\begin{table}[tbp]
-\centering
-\caption{OPENER configuration. The detector and embedder are off-the-shelf; the contrastive and hard-mining stages produce the shared embedder; the typing head is fitted (supervised) or label-free (zero-shot).}
-\label{tab:hyperparams}
-\small
-\begin{tabular}{ll}
-\toprule
-Component & Setting \\
-\midrule
-Mention detector   & GLiNER-L (frozen) \cite{zaratiana2024gliner} \\
-Entity embedder    & Nomic v1.5, $D{=}768$, span-in-context \cite{nussbaum2024nomic} \\
-Contrastive loss   & Triplet margin $1$ \cite{schroff2015facenet} \\
-\quad source        & CoNLL-2003 train spans \cite{tjongkimsang2003conll} \\
-\quad optimiser     & $3$ epochs, batch $16$, lr $2\times10^{-5}$, $100$ warmup \\
-Hard-neg.\ mining  & $8000$ triplets, $65\%$ hard, $3$ epochs \\
-\quad source        & target train splits, cross-validated \\
-Supervised typing  & LinearSVC, balanced weights \cite{fan2008liblinear} \\
-Zero-shot typing   & label-name prototype $+$ transductive $+$ fusion ($\beta{=}0.05$) \\
-Random seed        & $42$ \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \subsection{Evaluation Protocol}
 \label{sec:method:eval}

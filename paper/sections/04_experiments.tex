@@ -8,47 +8,86 @@
 
 \subsection{Datasets}
 \label{sec:exp:datasets}
+
+\begin{table}[H]
+\centering
+\caption{The 13 evaluation sets and their gold entity types. ``Test'' is the number of test sentences used (capped at 1000); each type is followed by its share (\%) of the test mentions, listed by decreasing frequency (types are the dataset's original labels).}
+\label{tab:datasets}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lllr>{\raggedright\arraybackslash}p{0.40\linewidth}@{}}
+\toprule
+Dataset & Abbr. & Domain & Test & Entity types (share \%) \\
+\midrule
+CrossNER-AI & AI & Encyclopedic (AI) & 430 & task 12, field 11, product 11, metrics 11, misc 10, algorithm 10, researcher 9, organisation 8, conference 5, person 4, programlang 3, country 2, location 2, university 2 \\
+\addlinespace
+CrossNER-Literature & Lit & Encyclopedic (literature) & 416 & writer 25, book 18, misc 11, literarygenre 9, person 8, award 6, poem 5, organisation 5, country 4, location 4, magazine 3, event 2 \\
+\addlinespace
+CrossNER-Music & Mus & Encyclopedic (music) & 465 & musicalartist 15, musicgenre 15, band 14, location 10, album 10, award 8, song 7, organisation 6, misc 5, country 5, person 2, event 2, musicalinstrument 1 \\
+\addlinespace
+CrossNER-Politics & Pol & Encyclopedic (politics) & 651 & politicalparty 23, location 14, organisation 12, politician 12, election 10, country 10, person 8, misc 6, event 5 \\
+\addlinespace
+CrossNER-Science & Sci & Encyclopedic (science) & 543 & misc 17, scientist 15, astronomicalobject 11, organisation 9, person 7, academicjournal 6, location 6, chemicalcompound 5, protein 5, award 5, university 4, chemicalelement 3, enzyme 3, discipline 2, event 1, country 1, theory 1 \\
+\addlinespace
+WNUT-17 & WNUT & Social media & 689 & person 40, group 15, location 14, creative-work 13, product 12, corporation 6 \\
+\addlinespace
+MIT-Restaurant & Rest & Restaurant search & 1000 & Location 21, Dish 18, Amenity 16, Hours 15, Restaurant\_Name 11, Price 10, Cuisine 5, Rating 4 \\
+\addlinespace
+MIT-Movie & Movie & Movie trivia & 1000 & TITLE 19, ACTOR 16, YEAR 16, GENRE 16, RATING 9, CHARACTER 9, TRAILER 5, REVIEW 3, RATINGS\_AVERAGE 3, PLOT 2, DIRECTOR 2, SONG 1 \\
+\addlinespace
+FabNER & Fab & Manufacturing & 1000 & MATE 27, CONPRI 21, MANP 15, PRO 11, APPL 6, FEAT 6, PARA 4, MACEQ 3, BIOP 2, CHAR 2, ENAT 2, MANS $<$1 \\
+\addlinespace
+BioNLP/JNLPBA-2004 & Bio & Biomedical & 1000 & protein 53, cell\_type 22, DNA 13, cell\_line 10, RNA 1 \\
+\addlinespace
+CoNLL-2003 & CoNLL & News & 1000 & PER 32, ORG 29, LOC 28, MISC 11 \\
+\addlinespace
+GUM & GUM & Multi-genre & 1000 & abstract 38, person 17, event 12, place 10, object 8, organization 8, time 5, substance 1, animal 1, plant $<$1 \\
+\addlinespace
+GENTLE & GEN & Multi-genre (challenge) & 1000 & abstract 55, person 10, event 9, time 8, object 7, place 5, organization 4, animal 1, substance 1, plant $<$1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 We evaluate on \textbf{13 evaluation sets} that span news, social media, spoken queries, encyclopedic text, biomedical abstracts and manufacturing literature, following the dataset selection of Genest et al. \cite{genest2025owner}.
 CrossNER \cite{liu2021crossner} contributes five domain-specific sets, evaluated separately (artificial intelligence, literature, music, politics, science).
 The remaining eight are CoNLL-2003 \cite{tjongkimsang2003conll}, WNUT-17 \cite{derczynski2017wnut}, the MIT-Restaurant and MIT-Movie spoken-query corpora \cite{liu2013asgard}, FabNER \cite{kumar2022fabner}, the BioNLP/JNLPBA-2004 biomedical task \cite{kim2004jnlpba}, and the GUM \cite{zeldes2017gum} and GENTLE \cite{aoyama2023gentle} multi-genre corpora.
 Label granularity ranges from four coarse types in CoNLL-2003 to twelve fine-grained categories in FabNER, including opaque domain acronyms.
 Two datasets used by \cite{genest2025owner}, GENIA \cite{kim2003genia} and i2b2, are license-gated and therefore not re-measured here; BioNLP/JNLPBA-2004 serves as our biomedical proxy.
 To homogenise evaluation cost across systems, we cap each test split at $1000$ sentences (the full split is used when it is smaller).
-\autoref{tab:datasets} summarises the benchmark.
 
-\begin{table}[tbp]
+\subsection{Baselines}
+\label{sec:exp:baselines}
+
+\begin{table}[H]
 \centering
-\caption{The 13 evaluation sets. ``Test'' is the number of test sentences used (capped at 1000).}
-\label{tab:datasets}
-\begin{tabular}{lllr}
+\caption{Backbones and size of the re-measured baselines and OPENER, in the spirit of Genest et al.\ \cite{genest2025owner}. ``Type'' is the transformer family; ``vs OPENER'' is the total parameter count relative to OPENER's end-to-end pipeline ($467$M $=$ GLiNER-L $330$M detector $+$ Nomic $137$M embedder). $^\dagger$\,OWNER reports $110$M for its BERT typing encoder alone; we count detection $+$ typing for parity with OPENER.}
+\label{tab:baselines}
+\footnotesize
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{@{}llllrr@{}}
 \toprule
-Dataset & Abbr. & Domain & Test \\
+Model & Backbone & Type & Version & Params & vs OPENER \\
 \midrule
-CrossNER-AI         & AI    & Encyclopedic (AI)         & 430 \\
-CrossNER-Literature & Lit   & Encyclopedic (literature) & 416 \\
-CrossNER-Music      & Mus   & Encyclopedic (music)      & 465 \\
-CrossNER-Politics   & Pol   & Encyclopedic (politics)   & 651 \\
-CrossNER-Science    & Sci   & Encyclopedic (science)    & 543 \\
-WNUT-17             & WNUT  & Social media              & 689 \\
-MIT-Restaurant      & Rest  & Restaurant search         & 1000 \\
-MIT-Movie           & Movie & Movie trivia              & 1000 \\
-FabNER              & Fab   & Manufacturing             & 1000 \\
-BioNLP/JNLPBA-2004  & Bio   & Biomedical                & 1000 \\
-CoNLL-2003          & CoNLL & News                      & 1000 \\
-GUM                 & GUM   & Multi-genre               & 1000 \\
-GENTLE              & GEN   & Multi-genre (challenge)   & 1000 \\
+GLiNER-S & DeBERTaV3 & Encoder & deberta-v3-small & 50M & 0.1$\times$ \\
+GLiNER-M & DeBERTaV3 & Encoder & deberta-v3-base & 200M & 0.4$\times$ \\
+GLiNER-L & DeBERTaV3 & Encoder & deberta-v3-large & 330M & 0.7$\times$ \\
+GNER & T5 & Enc.--Dec. & t5-base & 220M & 0.5$\times$ \\
+OWNER$^\dagger$ & DeBERTaV3+BERT & Encoder & deberta-v3 + bert-base & 294M & 0.6$\times$ \\
+Qwen2.5-1.5B & Qwen2.5 & Decoder & qwen2.5-1.5b-instruct & 1.5B & 3.2$\times$ \\
+\midrule
+\textbf{OPENER} (ours) & DeBERTaV3+Nomic & Encoder & deberta-v3-large + nomic-v1.5 & 467M & 1.0$\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Baselines}
-\label{sec:exp:baselines}
-We compare OPENER against representative open-world NER systems run end-to-end on the same splits.
-GLiNER \cite{zaratiana2024gliner} is evaluated in its small, medium and large variants to trace a size/efficiency trade-off.
-GNER \cite{ding2024gner} is a generative tagger built on T5 \cite{raffel2020t5}; we run the T5-base checkpoint.
-We further compare against OWNER \cite{genest2025owner}, executed in its original environment.
-Instruction-tuned and few-shot large-language-model NER systems, namely UniversalNER \cite{zhou2024universalner}, GoLLIE \cite{sainz2024gollie} and ChatIE \cite{wei2024chatie}, rely on 7B-parameter backbones \cite{touvron2023llama} that do not fit our hardware budget even under 4-bit NF4 quantization \cite{dettmers2023qlora}; for these we report the figures published by their authors rather than re-measuring them.
-As a generative model that \emph{does} run on our hardware, we additionally evaluate Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit NF4, prompted for JSON-formatted entities and scored under the same end-to-end protocol as the other systems.
+We compare OPENER against representative open-world systems, all run end-to-end on the same splits and scored with the same protocol (\autoref{sec:exp:protocol}); \autoref{tab:baselines} summarises their backbones and sizes.
+\begin{itemize}
+\item \textbf{GLiNER} \cite{zaratiana2024gliner}: an open-world span classifier on a DeBERTaV3 encoder \cite{he2023debertav3}; we run all three sizes (S/M/L) to trace a size/efficiency trade-off.
+\item \textbf{GNER} \cite{ding2024gner}: a generative tagger built on T5 \cite{raffel2020t5}; we run the T5-base checkpoint.
+\item \textbf{OWNER} \cite{genest2025owner}: our closest baseline, a DeBERTaV3 detector with a BERT typing encoder \cite{devlin2019bert} clustered into dynamically named types; executed in its original environment.
+\item \textbf{Qwen2.5-1.5B-Instruct} \cite{qwen2025}: the only generative LLM that fits our $6$\,GB GPU, run in 4-bit NF4 \cite{dettmers2023qlora} and prompted for JSON-formatted entities.
+\item \textbf{Large LLM systems}: UniversalNER \cite{zhou2024universalner}, GoLLIE \cite{sainz2024gollie} and ChatIE \cite{wei2024chatie} rely on $7$B-parameter backbones \cite{touvron2023llama} that exceed our hardware even under 4-bit quantization; we report the figures published by their authors rather than re-measuring them, and omit them from \autoref{tab:baselines}.
+\end{itemize}
 
 \subsection{Metrics}
 \label{sec:exp:metrics}
@@ -65,7 +104,7 @@ In the \emph{typing-on-gold} protocol, the entity-typing component is applied to
 In the \emph{end-to-end} protocol, mentions are produced by the detector and the sentinel labels above are active, which is the setting comparable to the baselines.
 All runs use a single fixed random seed ($42$); we note this as a limitation, since we do not report variance over seeds.
 
-\subsection{Implementation Details}
+\subsection{Experimental Settings}
 \label{sec:exp:impl}
 All experiments run on a single consumer-grade GPU with $6$\,GB of VRAM (CUDA~12.1, PyTorch~2.5.1 \cite{paszke2019pytorch}).
 We use the HuggingFace Transformers library \cite{wolf2020transformers} for the baselines, sentence-transformers \cite{reimers2019sbert} for the Matryoshka embedder \cite{nussbaum2024nomic, kusupati2022matryoshka}, and scikit-learn \cite{pedregosa2011scikit} for the linear classifier, whose solver is LIBLINEAR \cite{fan2008liblinear}.
@@ -73,6 +112,30 @@ Latency is measured with two warmup passes followed by timed passes with GPU syn
 Energy is measured with CodeCarbon \cite{lacoste2019codecarbon} in offline mode using the French grid carbon intensity; when hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
 All systems are measured on the same machine. Because the laptop-class GPU thermally throttles under sustained load, per-sentence latency and per-run energy carry roughly $\pm15\%$ run-to-run variance; we therefore read the per-system averages as indicative and do not over-interpret individual per-dataset cells. A controlled-temperature re-measurement of all systems in a single session is left to future work.
 The quality metrics, in contrast, are fully deterministic: with the fixed seed and the released model, no stage of the OPENER pipeline is stochastic at inference, so its AMI and $F_1$ reproduce exactly across re-runs (we verified identical CrossNER scores on an independent re-run), and only latency and energy fluctuate.
+\autoref{tab:hyperparams} collects the full OPENER configuration used throughout; all stochastic components use the single fixed seed ($42$).
+
+\begin{table}[t]
+\centering
+\caption{OPENER configuration. The detector and embedder are off-the-shelf; the contrastive and hard-mining stages produce the shared embedder; the typing head is fitted (supervised) or label-free (zero-shot).}
+\label{tab:hyperparams}
+\small
+\begin{tabular}{ll}
+\toprule
+Component & Setting \\
+\midrule
+Mention detector   & GLiNER-L (frozen) \cite{zaratiana2024gliner} \\
+Entity embedder    & Nomic v1.5, $D{=}768$, span-in-context \cite{nussbaum2024nomic} \\
+Contrastive loss   & Triplet margin $1$ \cite{schroff2015facenet} \\
+\quad source        & CoNLL-2003 train spans \cite{tjongkimsang2003conll} \\
+\quad optimiser     & $3$ epochs, batch $16$, lr $2\times10^{-5}$, $100$ warmup \\
+Hard-neg.\ mining  & $8000$ triplets, $65\%$ hard, $3$ epochs \\
+\quad source        & target train splits, cross-validated \\
+Supervised typing  & LinearSVC, balanced weights \cite{fan2008liblinear} \\
+Zero-shot typing   & label-name prototype $+$ transductive $+$ fusion ($\beta{=}0.05$) \\
+Random seed        & $42$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Main Results}
 \label{sec:exp:results}
