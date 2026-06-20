@@ -49,6 +49,13 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 | MPNet - Masked and Permuted Pre-training for Language Understanding | `song2020mpnet` | **all-mpnet-base-v2**. NeurIPS 2020. AMI 24.1. |
 | AnglE-optimized Text Embeddings | `li2024aoe` | Objectif AnglE/**AoE** derrière **mxbai-embed-large-v1**. ACL 2024. AMI 24.4. |
 
+**Backbones des détecteurs NER *closed-set* comparés dans l'axe MD de `tab:ablation` (montrent que le closed-set s'effondre → open-world nécessaire) :**
+
+| Fichier | Clé bib | Note |
+|---|---|---|
+| BERT Pre-training of Deep Bidirectional Transformers | `devlin2019bert` | Backbone de `dslim/bert-base-NER` (détecteur closed-set). NAACL 2019. AMI 33.9 / F1 17.9. |
+| RoBERTa - A Robustly Optimized BERT Pretraining Approach | `liu2019roberta` | Backbone de `roberta-large-ner-english`. arXiv 2019. AMI 39.4 / F1 24.6. |
+
 ## `02_baselines/` — modèles comparés / backbones (8)
 
 | Fichier | Clé bib | Rôle |

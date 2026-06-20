@@ -299,6 +299,22 @@
   year    = {2025}
 }
 
+% NER closed-set utilises comme detecteur (axe MD de tab:ablation) : backbones.
+% NOTE: pas encore de PDF dans paper_used/ -- a verifier (IDs arXiv standards).
+@inproceedings{devlin2019bert,
+  title     = {{BERT}: Pre-training of Deep Bidirectional Transformers for Language Understanding},
+  author    = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  booktitle = {Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics ({NAACL})},
+  year      = {2019}
+}
+
+@article{liu2019roberta,
+  title   = {{RoBERTa}: A Robustly Optimized {BERT} Pretraining Approach},
+  author  = {Liu, Yinhan and Ott, Myle and Goyal, Naman and Du, Jingfei and Joshi, Mandar and Chen, Danqi and Levy, Omer and Lewis, Mike and Zettlemoyer, Luke and Stoyanov, Veselin},
+  journal = {arXiv preprint arXiv:1907.11692},
+  year    = {2019}
+}
+
 % Encoders compares dans tab:ablation. Verifies sur les PDF de paper/paper_used/.
 @article{wang2022e5,
   title   = {Text Embeddings by Weakly-Supervised Contrastive Pre-training},
@@ -517,4 +533,101 @@
   number  = {7},
   pages   = {18--28},
   year    = {2022}
+}
+
+
+% =====================================================================
+% Classic / span-based NER and an open-world & green-AI extension.
+% Verified 2026-06-20 against the PDFs in paper_used/ (title page read).
+% =====================================================================
+
+% BiLSTM-CRF + Stack-LSTM. NAACL-HLT 2016, pp. 260-270. arXiv:1603.01360.
+@inproceedings{lample2016ner,
+  title     = {Neural Architectures for Named Entity Recognition},
+  author    = {Lample, Guillaume and Ballesteros, Miguel and Subramanian, Sandeep and Kawakami, Kazuya and Dyer, Chris},
+  booktitle = {Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies ({NAACL-HLT})},
+  pages     = {260--270},
+  year      = {2016}
+}
+
+% BiLSTM-CNNs-CRF. ACL 2016, pp. 1064-1074.
+@inproceedings{ma2016end,
+  title     = {End-to-end Sequence Labeling via Bi-directional {LSTM}-{CNNs}-{CRF}},
+  author    = {Ma, Xuezhe and Hovy, Eduard},
+  booktitle = {Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics ({ACL})},
+  pages     = {1064--1074},
+  year      = {2016}
+}
+
+% Biaffine NER (flat + nested). ACL 2020, pp. 6470-6476.
+@inproceedings{yu2020biaffine,
+  title     = {Named Entity Recognition as Dependency Parsing},
+  author    = {Yu, Juntao and Bohnet, Bernd and Poesio, Massimo},
+  booktitle = {Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics ({ACL})},
+  pages     = {6470--6476},
+  year      = {2020}
+}
+
+% MRC framework for NER. ACL 2020, pp. 5849-5859.
+@inproceedings{li2020mrc,
+  title     = {A Unified {MRC} Framework for Named Entity Recognition},
+  author    = {Li, Xiaoya and Feng, Jingrong and Meng, Yuxian and Han, Qinghong and Wu, Fei and Li, Jiwei},
+  booktitle = {Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics ({ACL})},
+  pages     = {5849--5859},
+  year      = {2020}
+}
+
+% Survey on deep learning for NER. IEEE TKDE vol.34(1), 2022 (accepted 2020). arXiv:1812.09449.
+@article{li2022survey,
+  title   = {A Survey on Deep Learning for Named Entity Recognition},
+  author  = {Li, Jing and Sun, Aixin and Han, Jianglei and Li, Chenliang},
+  journal = {IEEE Transactions on Knowledge and Data Engineering},
+  volume  = {34},
+  number  = {1},
+  pages   = {50--70},
+  year    = {2022}
+}
+
+% Zero-shot NERC via type descriptions. ACL-IJCNLP 2021, pp. 1516-1528.
+@inproceedings{aly2021zeroshot,
+  title     = {Leveraging Type Descriptions for Zero-shot Named Entity Recognition and Classification},
+  author    = {Aly, Rami and Vlachos, Andreas and McDonald, Ryan},
+  booktitle = {Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing ({ACL-IJCNLP})},
+  pages     = {1516--1528},
+  year      = {2021}
+}
+
+% Few-NERD few-shot NER dataset (8 coarse / 66 fine types). ACL-IJCNLP 2021, pp. 3198-3213.
+@inproceedings{ding2021fewnerd,
+  title     = {{Few-NERD}: A Few-shot Named Entity Recognition Dataset},
+  author    = {Ding, Ning and Xu, Guangwei and Chen, Yulin and Wang, Xiaobin and Han, Xu and Xie, Pengjun and Zheng, Hai-Tao and Liu, Zhiyuan},
+  booktitle = {Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing ({ACL-IJCNLP})},
+  pages     = {3198--3213},
+  year      = {2021}
+}
+
+% Inference-time energy/carbon of ML systems. FAccT 2024. arXiv:2311.16863.
+@inproceedings{luccioni2024power,
+  title     = {Power Hungry Processing: Watts Driving the Cost of {AI} Deployment?},
+  author    = {Luccioni, Alexandra Sasha and Jernite, Yacine and Strubell, Emma},
+  booktitle = {Proceedings of the 2024 ACM Conference on Fairness, Accountability, and Transparency ({FAccT})},
+  year      = {2024}
+}
+
+% Systematic energy/carbon reporting framework. JMLR 21 (2020) 1-44. arXiv:2002.05651.
+@article{henderson2020systematic,
+  title   = {Towards the Systematic Reporting of the Energy and Carbon Footprints of Machine Learning},
+  author  = {Henderson, Peter and Hu, Jieru and Romoff, Joshua and Brunskill, Emma and Jurafsky, Dan and Pineau, Joelle},
+  journal = {Journal of Machine Learning Research},
+  volume  = {21},
+  pages   = {1--44},
+  year    = {2020}
+}
+
+% Sustainable AI (data/algorithms/hardware lifecycle). MLSys 2022. arXiv:2111.00364.
+@inproceedings{wu2022sustainable,
+  title     = {Sustainable {AI}: Environmental Implications, Challenges and Opportunities},
+  author    = {Wu, Carole-Jean and Raghavendra, Ramya and Gupta, Udit and Acun, Bilge and Ardalani, Newsha and Maeng, Kiwan and Chang, Gloria and Aga, Fiona and Huang, Jinshi and Bai, Charles and others},
+  booktitle = {Proceedings of Machine Learning and Systems ({MLSys})},
+  year      = {2022}
 }

@@ -7,7 +7,7 @@ Removing that supervision, our zero-shot head OPENER-ZS --- label-name prototype
 
 Two findings carry beyond the specific system.
 First, an open-world typing head need not train its own encoder: a general-purpose embedding, once sharpened by a light contrastive step, is already discriminative enough to type entities, and the cost that does matter is fitting the cheap typing head, not the embedder.
-Second, the three-axis evaluation locates the open-world bottleneck in \emph{detection} rather than typing --- end-to-end quality tracks the detector's recall on specialised domains --- and exposes efficiency gaps that an accuracy-only comparison would hide.
+Second, the three-axis evaluation locates the open-world bottleneck in \emph{detection} rather than typing: typing on gold mentions reaches $62.5$ AMI but end-to-end scores drop to $40.2$ as detector recall falls on specialised domains, so improving the detector---not the typing head---is the clearest axis for future gains. The evaluation also exposes efficiency gaps that an accuracy-only comparison would hide.
 
 The approach has clear limits.
 End-to-end quality is capped by detector recall on specialised domains, the shared bottleneck, not by the typing head.
