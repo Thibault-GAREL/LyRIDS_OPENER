@@ -6,7 +6,7 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 
 ---
 
-## `00_inspiration/` — inspiration méthodologique (12)
+## `00_inspiration/` — inspiration méthodologique (19)
 
 | Fichier | Clé bib | Note |
 |---|---|---|
@@ -22,6 +22,13 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 | Entity-to-Text augmentation | `hu2023entity` | Augmentation NER. |
 | GMM-based augmentation (GNN) | `abbahaddou2024gmmgnn` | GMM pour l'augmentation. |
 | 1-FsPONER | `tang2024fsponer` | Few-shot prompt optimization (LLM NER). |
+| Neural Architectures for NER | `lample2016ner` | **(ajout RW-A 2026-06-20)** BiLSTM-CRF fondateur. NAACL-HLT 2016. |
+| End-to-end Seq. Labeling BiLSTM-CNNs-CRF | `ma2016end` | **(RW-A)** char-CNN + BiLSTM-CRF. ACL 2016. |
+| NER as Dependency Parsing | `yu2020biaffine` | **(RW-A)** Biaffine span, flat + nested. ACL 2020. |
+| A Unified MRC Framework for NER | `li2020mrc` | **(RW-A)** Typing = lecture/compréhension (description de type). ACL 2020. |
+| A Survey on Deep Learning for NER | `li2022survey` | **(RW-A)** Survey. IEEE TKDE vol.34, 2022 (accepté 2020). |
+| Leveraging Type Descriptions for Zero-shot NER | `aly2021zeroshot` | **(RW-B)** 1er zéro-shot NERC par description de type. ACL-IJCNLP 2021. |
+| FEW-NERD | `ding2021fewnerd` | **(RW-B)** Dataset few-shot, 8 coarse / 66 fine. ACL-IJCNLP 2021. |
 
 ## `01_technology_used/` — briques réellement utilisées dans Opener (12)
 
@@ -83,7 +90,7 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 | GENTLE | `aoyama2023gentle` | Multi-genres OOD. |
 | GENIA | `kim2003genia` | Biomed - **non testé** (mention only). |
 
-## `04_energy_green_ai/` — frugalité / Green AI (4)
+## `04_energy_green_ai/` — frugalité / Green AI (7)
 
 | Fichier | Clé bib | Note |
 |---|---|---|
@@ -91,6 +98,9 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 | Energy and Policy Considerations (Strubell) | `strubell2019energy` | ACL 2019. |
 | Carbon Footprint... (Patterson) | `patterson2022carbon` | IEEE Computer 2022. |
 | From Computation to Consumption (Douwes & Serizel) | *(hors bib)* | DCASE 2024. À intégrer si cité. |
+| Power Hungry Processing | `luccioni2024power` | **(ajout RW-E 2026-06-20)** Énergie d'**inférence**, task-specific vs généraliste. FAccT 2024. |
+| Towards Systematic Reporting of Energy/Carbon | `henderson2020systematic` | **(RW-E)** Framework de report énergie/carbone. JMLR 2020. |
+| Sustainable AI | `wu2022sustainable` | **(RW-E)** Cycle de vie (data/algo/hardware). MLSys 2022 (PDF = arXiv). |
 
 ## `99_misc/` — hors sujet (1)
 

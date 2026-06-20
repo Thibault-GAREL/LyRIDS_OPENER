@@ -58,3 +58,16 @@ Thumbs.db
 .hf_cache/
 
 *.zip
+
+# LaTeX build artifacts (paper)
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.toc
+paper/*.synctex.gz
+paper/sections/*.aux
+
+# Scratch render PNGs at paper/ root (real figures live in assets/)
+paper/*.png
