@@ -71,3 +71,4 @@ paper/sections/*.aux
 
 # Scratch render PNGs at paper/ root (real figures live in assets/)
 paper/*.png
+paper/.tmp/
