@@ -1,6 +1,26 @@
 \section{Method}
 \label{sec:method}
 
+\subsection{Problem Formulation}
+\label{sec:method:problem}
+Given a sentence, an open-world NER system must return a set of typed mentions whose type inventory is \emph{not} fixed at training time.
+Formally, a sentence $s$ yields candidate mentions $\mathcal{M}(s)=\{m_i\}$; an embedder $f_\theta$ maps each mention \emph{in context} to a vector and a typing head assigns it a type,
+\begin{equation}
+e_i = f_\theta(s, m_i)\in\mathbb{R}^{D},\qquad \hat y_i\in\mathcal{T},
+\end{equation}
+where the inventory $\mathcal{T}$ is unknown at training time.
+We adopt the evaluation of Genest et al. \cite{genest2025owner}.
+Predicted and gold mentions are aligned by exact character offsets; an unmatched gold mention (false negative) and an unmatched predicted mention (false positive) each receive a distinct sentinel type, so that detection errors are scored rather than ignored.
+Type-assignment quality is then measured by the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between the gold type partition $U$ and the predicted partition $V$ over the aligned mentions,
+\begin{equation}
+\mathrm{AMI}(U,V)=\frac{\mathrm{MI}(U,V)-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]}{\max\{H(U),H(V)\}-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]},
+\end{equation}
+where $\mathrm{MI}$ is mutual information and $H$ entropy; AMI does not require the two label vocabularies to coincide.
+We report two protocols that are never mixed in the same comparison: \emph{typing-on-gold}, where the typing component is applied to gold spans and detection is bypassed, and \emph{end-to-end}, where mentions come from the detector and the sentinels above are active.
+
+\subsection{Architecture Overview}
+\label{sec:method:overview}
+
 \begin{figure}[H]
 \centering
 % Prefers the exported SVG diagram (opener-architecture-v2.pdf) if present in
@@ -63,25 +83,6 @@
 \label{fig:pipeline}
 \end{figure}
 
-\subsection{Problem Formulation}
-\label{sec:method:problem}
-Given a sentence, an open-world NER system must return a set of typed mentions whose type inventory is \emph{not} fixed at training time.
-Formally, a sentence $s$ yields candidate mentions $\mathcal{M}(s)=\{m_i\}$; an embedder $f_\theta$ maps each mention \emph{in context} to a vector and a typing head assigns it a type,
-\begin{equation}
-e_i = f_\theta(s, m_i)\in\mathbb{R}^{D},\qquad \hat y_i\in\mathcal{T},
-\end{equation}
-where the inventory $\mathcal{T}$ is unknown at training time.
-We adopt the evaluation of Genest et al. \cite{genest2025owner}.
-Predicted and gold mentions are aligned by exact character offsets; an unmatched gold mention (false negative) and an unmatched predicted mention (false positive) each receive a distinct sentinel type, so that detection errors are scored rather than ignored.
-Type-assignment quality is then measured by the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between the gold type partition $U$ and the predicted partition $V$ over the aligned mentions,
-\begin{equation}
-\mathrm{AMI}(U,V)=\frac{\mathrm{MI}(U,V)-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]}{\max\{H(U),H(V)\}-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]},
-\end{equation}
-where $\mathrm{MI}$ is mutual information and $H$ entropy; AMI does not require the two label vocabularies to coincide.
-We report two protocols that are never mixed in the same comparison: \emph{typing-on-gold}, where the typing component is applied to gold spans and detection is bypassed, and \emph{end-to-end}, where mentions come from the detector and the sentinels above are active.
-
-\subsection{Architecture Overview}
-\label{sec:method:overview}
 OPENER is a three-stage pipeline, Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type (\autoref{fig:pipeline}), assembled from off-the-shelf components so that no encoder is trained from scratch.
 Three principles guide the design.
 (i)~A pretrained detector and a pretrained sentence embedder are reused as-is.

@@ -154,7 +154,7 @@ For reference, the only generative LLM that fits our $6$\,GB GPU     ---     Qwe
 OPENER-Sup remains the stronger configuration ($40.2$ end-to-end, $62.5$ on gold), so OPENER-ZS is best read as the frugal, annotation-free operating point of the same pipeline.
 A per-domain analysis of these results, the detection bottleneck and the learned embedding geometry follows in \autoref{sec:exp:analysis}.
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering
 \caption{Open-world NER, end-to-end. AMI ($\times 100$, $\uparrow$); abbreviations follow \autoref{tab:datasets}; bold marks the best value per column across all systems; systems are grouped by supervision (\emph{zero-shot} vs the \emph{supervised} OPENER-Sup). $^\dagger$\,CoNLL-2003 is in-domain for OWNER (training source) and OPENER (contrastive source) and is not bolded as a transfer result. $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample (indicative, not bolded). Typing-on-gold is reported in \autoref{tab:et-gold}.}
 \label{tab:main}
@@ -185,7 +185,7 @@ OPENER-ZS (base) & 31.6 & 43.8 & 41.7 & 36.7 & 44.2 & 23.0 & 28.4 & 32.4 & 28.3 
 \bottomrule
 \end{tabular}
 \end{table}
-\begin{figure}[tbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -229,7 +229,7 @@ OPENER-ZS (base) & 31.6 & 43.8 & 41.7 & 36.7 & 44.2 & 23.0 & 28.4 & 32.4 & 28.3 
 \label{fig:main}
 \end{figure}
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering
 \caption{Median per-sentence latency (ms, $\downarrow$), end-to-end; abbreviations follow \autoref{tab:datasets}, best per column in bold. $^\S$\,OWNER exposes no per-sentence call: its figure is an amortised wall-clock mean (its $88$-min training is excluded); $^\dagger$\,CoNLL is OWNER's in-domain source, measured by a separate inference-only run; $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.}
 \label{tab:latency}
@@ -258,7 +258,7 @@ OPENER-ZS (base) & 109 & 135 & 156 & 172 & 175 & 136 & 127 & 137 & 133 & 136 & 1
 \bottomrule
 \end{tabular}
 \end{table}
-\begin{figure}[tbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -296,7 +296,7 @@ OPENER-ZS (base) & 109 & 135 & 156 & 172 & 175 & 136 & 127 & 137 & 133 & 136 & 1
 \label{fig:latency}
 \end{figure}
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering
 \caption{Energy consumption per run (Wh, $\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}; best per column in bold. $^\S$\,OWNER is measured at inference only (its one-time $88$-min CoNLL-2003 training is amortised, not charged per run); $^\dagger$\,CoNLL is its in-domain training source, measured by a separate inference-only run; $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.}
 \label{tab:energy}
@@ -325,7 +325,7 @@ OPENER-ZS (base) & 0.95 & 1.06 & 1.37 & 1.97 & 1.69 & 1.52 & 2.07 & 2.28 & 2.15 
 \bottomrule
 \end{tabular}
 \end{table}
-\begin{figure}[tbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -366,7 +366,7 @@ OPENER-ZS (base) & 0.95 & 1.06 & 1.37 & 1.97 & 1.69 & 1.52 & 2.07 & 2.28 & 2.15 
 % hard-mining e2e re-run (Mus = 1.72 Wh). OPENER energy row + averages now come from that
 % clean run; true mean energy is 1.88 Wh (was 3.39, inflated by the single glitched cell).
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering
 \caption{Quality vs efficiency, $13$-set means. AMI ($\times 100$, $\uparrow$); p50 latency (ms), energy (Wh), carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); parameters (end-to-end OPENER $=$ GLiNER-L detector $330$M $+$ embedder $137$M $=$ $467$M, or $137$M on gold; OWNER $\approx$294M; GLiNER sizes from project notes). $^\S$\,OWNER's latency is an amortised wall-clock mean and its one-time $88$-min training is not charged per run (\autoref{tab:latency}). $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.}
 \label{tab:efficiency}
@@ -408,7 +408,7 @@ OPENER-ZS (base) & 467M & 34.2 & 137 & 1.85 & 0.10 \\
     enlarge x limits=0.04,
   }
 }
-\begin{figure}[tbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[metricbar, title={AMI ($\uparrow$)}, ymin=0, ymax=45, ytick={0,15,30,45}]
