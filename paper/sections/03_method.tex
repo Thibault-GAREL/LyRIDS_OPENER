@@ -13,9 +13,9 @@ We adopt the evaluation of Genest et al. \cite{genest2025owner}.
 Predicted and gold mentions are aligned by exact character offsets; an unmatched gold mention (false negative) and an unmatched predicted mention (false positive) each receive a distinct sentinel type, so that detection errors are scored rather than ignored.
 Type-assignment quality is then measured by the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between the gold type partition $U$ and the predicted partition $V$ over the aligned mentions,
 \begin{equation}
-\mathrm{AMI}(U,V)=\frac{\mathrm{MI}(U,V)-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]}{\max\{H(U),H(V)\}-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]},
+\mathrm{AMI}(U,V)=\frac{\mathrm{MI}(U,V)-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]}{\tfrac12\!\left[H(U)+H(V)\right]-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]},
 \end{equation}
-where $\mathrm{MI}$ is mutual information and $H$ entropy; AMI does not require the two label vocabularies to coincide.
+where $\mathrm{MI}$ is mutual information, $H$ entropy, and the denominator uses the arithmetic-mean normalisation (the scikit-learn default); AMI does not require the two label vocabularies to coincide.
 We report two protocols that are never mixed in the same comparison: \emph{typing-on-gold}, where the typing component is applied to gold spans and detection is bypassed, and \emph{end-to-end}, where mentions come from the detector and the sentinels above are active.
 
 \subsection{Architecture Overview}
@@ -40,19 +40,19 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
   flow/.style={->, semithick, black!55},
   side/.style={->, semithick, dashed, black!45},
 ]
-%  ---  main flow  ---
+%   --   main flow   --
 \node[io, fill=figamber!18, draw=figamber] (text) {\textbf{Text}\\[1pt]\scriptsize ``Marie Curie\\ discovered radium''};
 \node[stage, fill=figcyan!12, draw=figcyan!75!black, right=7mm of text] (det)
   {\textbf{Mention detection}\\[1pt]\scriptsize GLiNER-L\\\scriptsize frozen $\cdot$ + candidate label};
 \node[stage, fill=figsky!14, draw=figsky!85!black, right=7mm of det] (emb)
   {\textbf{Embedding}\\[1pt]\scriptsize Nomic v1.5 Matryoshka\\\scriptsize span-in-context\\\scriptsize contrastive + hard-neg.\ mining};
-%  ---  typing branches  ---
+%   --   typing branches   --
 \node[stage, fill=figviolet!12, draw=figviolet!75!black, text width=3.0cm,
       right=14mm of emb, yshift=11mm] (sup)
   {\textbf{OPENER-Sup}\\[1pt]\scriptsize LinearSVC (balanced)\\\scriptsize \emph{supervised} upper bound};
 \node[stage, fill=hlyellow, draw=figgold!85!black, very thick, text width=3.0cm,
       below=5mm of sup] (zs)
-  {\textbf{OPENER-ZS}~$\bigstar$\\[1pt]\scriptsize label-name prototypes\\\scriptsize {+}\,transductive {+}\,detector fusion\\\scriptsize \emph{zero-shot}\, --- \,no target labels};
+  {\textbf{OPENER-ZS}~$\bigstar$\\[1pt]\scriptsize label-name prototypes\\\scriptsize {+}\,transductive {+}\,detector fusion\\\scriptsize \emph{zero-shot}\,  --  \,no target labels};
 \node[io, fill=figgreen!14, draw=figgreen!60!black, text width=1.9cm,
       right=12mm of $(sup.east)!0.5!(zs.east)$] (out)
   {\textbf{Typed entities}\\[1pt]\scriptsize (span, type)};
@@ -61,25 +61,25 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
   \node[draw=figviolet!55!black, dashed, rounded corners=5pt, inner sep=5mm,
         fit=(sup)(zs), label={[font=\scriptsize\itshape, figviolet!60!black]above:Entity typing}] (tbox) {};
 \end{scope}
-%  ---  arrows  ---
+%   --   arrows   --
 \draw[flow] (text) -- (det);
 \draw[flow] (det) -- (emb);
 \draw[flow] (emb.east) -- ([yshift=1mm]tbox.west|-sup.west);
 \draw[flow] (emb.east) -- ([yshift=-1mm]tbox.west|-zs.west);
 \draw[flow] (sup.east) -- (out);
 \draw[flow] (zs.east) -- (out);
-%  ---  offline training feeding the embedder  ---
+%   --   offline training feeding the embedder   --
 \node[base, fill=figamber!10, draw=figamber!80!black, font=\scriptsize, align=center,
       text width=3.4cm, below=9mm of emb] (train)
   {\textbf{Offline embedder training}\\ \textcircled{\scriptsize1} triplet contrastive (CoNLL)\\ \textcircled{\scriptsize2} hard-neg.\ mining (target train, CV)};
 \draw[side, figamber!80!black] (train) -- (emb);
-%  ---  detector label reused by the zero-shot fusion  ---
+%   --   detector label reused by the zero-shot fusion   --
 \draw[side, figcyan!75!black] (det.south) |- ([yshift=-4mm]zs.south) -- (zs.south)
   node[pos=0.25, below, font=\scriptsize, black!55] {label + score (fusion)};
 \end{tikzpicture}%
 }%
 }}
-\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head---the only target-fitted component---has two operating points: \textbf{OPENER-Sup} (\emph{supervised}, the upper bound) and the \emph{zero-shot} \textbf{OPENER-ZS} ($\bigstar$, selected). All upstream components are off-the-shelf.}
+\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head -- the only target-fitted component -- has two operating points: \textbf{OPENER-Sup} (\emph{supervised}, the upper bound) and the \emph{zero-shot} \textbf{OPENER-ZS} ($\bigstar$, selected). All upstream components are off-the-shelf.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -117,7 +117,7 @@ We fine-tune the embedder with a Triplet Margin Loss \cite{schroff2015facenet} (
 A triplet $(a,p,n)$ takes an anchor span $a$, a positive $p$ of the \emph{same} type, and a negative $n$ of a \emph{different} type, with at most two triplets per anchor.
 Writing $\alpha$ for the margin, each triplet contributes
 \begin{equation}
-\mathcal{L}(a,p,n)=\max\!\big(0,\;\lVert e_a-e_p\rVert_2^2-\lVert e_a-e_n\rVert_2^2+\alpha\big),\quad \alpha=1,
+\mathcal{L}(a,p,n)=\max\!\big(0,\;\lVert e_a-e_p\rVert_2-\lVert e_a-e_n\rVert_2+\alpha\big),\quad \alpha=1,
 \end{equation}
 which pulls same-type spans together and pushes different-type spans apart.
 Training runs for $3$ epochs with batch size $16$, learning rate $2\times10^{-5}$ and $100$ warmup steps.

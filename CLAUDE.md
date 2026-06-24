@@ -77,17 +77,16 @@ python -m tests.test_opener_pipeline configs/my_experiment.yaml
 
 ---
 
-## ✅ État actuel (2026-06-12)
+## ✅ État actuel (2026-06-21)
 
-**V2 benchmarkée, benchmark COMPLET (toutes baselines 13/13).** Pipeline retenu : `GLiNER (MD) → Nomic v1.5 Matryoshka fine-tuné contrastif → LinearSVC class_weight='balanced'`. La V1 (GMM + anchor words + OOD + hiérarchie) reste une ablation, plus la voie principale.
+**Papier complet et soumissible : 16 p, IEEEtran double-blind, benchmark 13/13.** Pipeline retenu : `GLiNER-L (MD, frozen) → Nomic v1.5 Matryoshka fine-tuné contrastif + hard-negative mining → tête de typing`. Deux points de fonctionnement : **OPENER-Sup** (LinearSVC balanced, le plus précis : 40.2 e2e / 62.5 gold) et **OPENER-ZS** (prototypes label-name + transductif + fusion détecteur, meilleur zéro-shot : 39.4 e2e). La V1 (GMM + anchor words + OOD + hiérarchie) reste une ablation.
 
-- **Benchmark 13 datasets** consolidé dans `outputs/results/aggregate/results_all.json` : GLiNER S/M/L, GNER T5-base, OPENER (e2e + typing-gold) **et OWNER** complets 13/13.
-- **🔴 Correction de protocole OWNER (2026-06-12)** : on avait OWNER en **in-domain** (ré-entraîné par cible) = FAUX. Refait en **transfert zéro-shot** (entraîné 1× sur conll2003, 88 min, puis chargé sur chaque cible). Voir `outputs/results/baselines/owner/OWNER_NOTES.md` §7. Agrégation : `aggregate_results.py --owner transfer` (défaut). Fichiers : `owner_transfer*.json`.
-- **Constats clés (transfert)** : end-to-end, OPENER (AMI 0.366) sous GLiNER-L (0.389), OWNER zéro-shot **0.343**. Sur mentions gold, **OPENER (0.540) DEVANCE OWNER zéro-shot (0.430), mène 11/13** (inversion vs l'in-domain obsolète). ⚠️ Asymétrie de supervision à dire dans le papier : OPENER = sonde supervisée sur train cible ; OWNER/GLiNER/GNER = zéro-shot.
-- **Latence OWNER mesurée** : **~616 ms/phrase** (wall-clock amorti, pas un vrai p50), énergie **14.3 Wh**, CO₂ **0.74 g** — moyennes sur **13 sets** (CoNLL in-domain re-mesuré en inférence-only `load_finetuned`, 719 ms / 22 Wh, 2026-06-13). [Anciennes valeurs 12-sets hors CoNLL : 607 ms / 13.6 Wh / 0.71 g.]
-- **Frugalité instrumentée** : 3 axes (AMI + latence p50 + énergie kWh/gCO₂eq via CodeCarbon).
-- **🐛 À vérifier** : énergie OPENER sur `crossner_music` = 22.76 Wh (~10× outlier) → glitch probable, à recheck.
-- **Paper** (`paper/`, IEEEtran) : `04_experiments.tex` = 5 tables remplies avec chiffres transfert (marqueurs `§` zéro-shot, `†` CoNLL in-domain), latence OWNER remplie, abstract finalisé (headline 54.0 vs 43.0 gold, 3.4 Wh). **Compile en 6 p.** Restent à rédiger : Intro, Method, Conclusion (placeholders).
+- **Benchmark 13 datasets**, 3 axes (AMI + latence p50 + énergie/CO₂ via CodeCarbon) : GLiNER S/M/L, GNER T5-base, OWNER (transfert zéro-shot), Qwen2.5-1.5B 4-bit, OPENER (Sup + ZS). Asymétrie de supervision explicitée (OPENER-Sup supervisé sur train cible ; les autres zéro-shot).
+- **Paper rédigé en entier** : Abstract, Intro (cadrage transfer learning), Related Work (6 sous-parties, ~20 réfs), Method (formalisme + 7 équations), Experiments (Datasets + distributions de types, Baselines + table backbones/tailles, Experimental Settings + config, Main Results, **Analysis** + UMAP, Ablations), Conclusion, Acknowledgments (disclosure IA).
+- **Figures** : Fig 1 architecture (SVG→PDF), Fig 2 AMI, Fig 3 latence, Fig 4 énergie consumption, Fig 5 bar charts 4 métriques, Fig 6 **UMAP 3-panneaux** (contrastive en action, held-out WNUT — `scripts/make_umap.py`). Tables I-X.
+- **Overleaf** : `opener_overleaf.zip` (racine repo) prêt pour « Upload Project » (main.tex + sections + assets PDF + IEEEtran).
+- **Glitch énergie crossner_music** (22.76 Wh) : **résolu** (re-run hard-mining, 1.72 Wh).
+- **Reste avant soumission** : décider/retirer la note TODO Pareto (commentée dans `04_experiments.tex`), proofread final, éventuel multi-seed (limité par GPU 6 Go).
 
 ### Composants livrés
 

@@ -1,19 +1,17 @@
 # Index des PDFs — `paper_used/`
 
-Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a été **vérifié** (titre/auteurs/venue lus sur la page de titre) et possède une entrée correcte dans `paper/references.bib`, sauf mention `(hors bib)`.
+Classement des papiers par rôle dans le projet Opener. **Correspondance 1:1 : 60 PDFs ↔ 60 références.** Tout PDF présent ici a été **vérifié** (titre/auteurs/venue lus sur la page de titre) et possède une entrée correcte dans `paper/references.bib`.
 
 > Certains papiers ont un **double rôle** (ex. GLiNER est à la fois un composant utilisé ET une baseline ; OWNER est la référence principale ET une baseline). Ils sont rangés selon leur rôle *primaire*, noté ci-dessous.
 
 ---
 
-## `00_inspiration/` — inspiration méthodologique (19)
+## `00_inspiration/` — inspiration méthodologique (17)
 
 | Fichier | Clé bib | Note |
 |---|---|---|
 | 5-OWNER | `genest2025owner` | **Référence principale** (papier le plus proche). Aussi baseline. Citer en 3ᵉ pers. (double-blind). |
 | CONTAINER | `das2022container` | Few-shot NER par contrastive learning. ACL 2022. |
-| PromptORE | *(hors bib)* | Même labo qu'OWNER (Genest et al.), CIKM'22. 3ᵉ pers. si utilisé. |
-| Linked-DocRED | *(hors bib)* | Même labo qu'OWNER, SIGIR'23. 3ᵉ pers. |
 | 2-Joint Embedding of Words and Labels | `wang2018joint` | Idée label-word embedding. |
 | 3-KCL | `zhang2024kcl` | Few-shot NER contrastif + KG. |
 | 4-Span-based NER | `nguyen2023span` | Modèle span-based. |
@@ -30,7 +28,7 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 | Leveraging Type Descriptions for Zero-shot NER | `aly2021zeroshot` | **(RW-B)** 1er zéro-shot NERC par description de type. ACL-IJCNLP 2021. |
 | FEW-NERD | `ding2021fewnerd` | **(RW-B)** Dataset few-shot, 8 coarse / 66 fine. ACL-IJCNLP 2021. |
 
-## `01_technology_used/` — briques réellement utilisées dans Opener (12)
+## `01_technology_used/` — briques réellement utilisées dans Opener (14)
 
 | Fichier | Clé bib | Rôle |
 |---|---|---|
@@ -46,6 +44,8 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 | Transformers (HuggingFace) | `wolf2020transformers` | Chargement modèles/datasets. |
 | PyTorch | `paszke2019pytorch` | Framework. |
 | DeBERTaV3 | `he2023debertav3` | Backbone de GLiNER. |
+| EM Algorithm (Dempster et al.) | `dempster1977em` | EM qui fit le GMM (tête de typing V1, ablation). JRSS-B 39(1), 1977. |
+| Gaussian Mixture Models (Reynolds) | `reynolds2009gmm` | GMM par label (tête de typing V1, ablation). Encyclopedia of Biometrics, 2009. |
 
 **Candidats « entity embedder » comparés dans `tab:ablation` (frozen, NON retenus — Nomic gagne avec 25.8) :**
 
@@ -76,7 +76,7 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 | LLaMA | `touvron2023llama` | Backbone des 7B (GNER-LLaMA, UniNER, GoLLIE). |
 | QLoRA | `dettmers2023qlora` | NF4 (bitsandbytes) — quantif int4 inférence **uniquement**, pas le fine-tuning LoRA. |
 
-## `03_datasets/` — papiers originaux des datasets (8)
+## `03_datasets/` — papiers originaux des datasets (9)
 
 | Fichier | Clé bib | Note |
 |---|---|---|
@@ -90,29 +90,26 @@ Classement des papiers par rôle dans le projet Opener. Tout PDF présent ici a 
 | GENTLE | `aoyama2023gentle` | Multi-genres OOD. |
 | GENIA | `kim2003genia` | Biomed - **non testé** (mention only). |
 
-## `04_energy_green_ai/` — frugalité / Green AI (7)
+## `04_energy_green_ai/` — frugalité / Green AI (6)
 
 | Fichier | Clé bib | Note |
 |---|---|---|
 | Green AI | `schwartz2020greenai` | CACM 2020. |
 | Energy and Policy Considerations (Strubell) | `strubell2019energy` | ACL 2019. |
 | Carbon Footprint... (Patterson) | `patterson2022carbon` | IEEE Computer 2022. |
-| From Computation to Consumption (Douwes & Serizel) | *(hors bib)* | DCASE 2024. À intégrer si cité. |
 | Power Hungry Processing | `luccioni2024power` | **(ajout RW-E 2026-06-20)** Énergie d'**inférence**, task-specific vs généraliste. FAccT 2024. |
 | Towards Systematic Reporting of Energy/Carbon | `henderson2020systematic` | **(RW-E)** Framework de report énergie/carbone. JMLR 2020. |
 | Sustainable AI | `wu2022sustainable` | **(RW-E)** Cycle de vie (data/algo/hardware). MLSys 2022 (PDF = arXiv). |
 
-## `99_misc/` — hors sujet (1)
+## `99_misc/` — (0, vide)
 
-| Fichier | Note |
-|---|---|
-| Modeling Magnetization Dynamics (Jacquin) | Sans rapport avec Opener/NER. |
+_Le PDF Jacquin (sans rapport avec Opener/NER) a été retiré._
 
 ---
 
-## 📥 PDFs encore à fournir — ✅ tout est là (seul i2b2 optionnel reste)
+## 📥 État — ✅ complet : **60 PDFs = 60 références** (correspondance 1:1, chaque réf a son PDF vérifié, plus aucun hors-bib)
 
-### Optionnel (NON utilisé)
+### Optionnel (NON utilisé, hors bib)
 - **i2b2** — Stubbs, Uzuner, *2014 i2b2/UTHealth corpus*, J. Biomed. Inform. 58, 2015. À fournir **seulement** si le papier mentionne explicitement les datasets exclus pour licence.
 
 ### Bonus (OWNER compare aussi ces baselines, si tu veux étoffer le related work)
