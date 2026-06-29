@@ -1,4 +1,5 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><style>@page{size:980px 1080px;margin:0}html,body{margin:0;padding:0}svg{display:block}</style></head><body><svg viewBox="0 0 980 1080" xmlns="http://www.w3.org/2000/svg" width="980" height="1080" preserveAspectRatio="xMidYMid meet">
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>@page{size:980px 1080px;margin:0}html,body{margin:0;padding:0}svg{display:block}</style></head><body>
+<svg viewBox="0 0 980 1080" xmlns="http://www.w3.org/2000/svg" width="980" height="1080" preserveAspectRatio="xMidYMid meet">
   <title>OPENER — Architecture (Detect → Embed → Type), current pipeline</title>
   <defs>
     <style>
@@ -130,8 +131,8 @@
       <text x="364" y="624" font-size="9" font-weight="400" fill="#A16207" text-anchor="middle">spherical k-means on test</text>
       <text x="280" y="645" font-size="10" font-weight="600" fill="#854D0E">③ fuse GLiNER label  (β = 0.05)</text>
       <line x1="296" y1="654" x2="432" y2="654" stroke="#FDE68A" stroke-width="1"/>
-      <text x="364" y="674" font-size="11" font-weight="700" fill="#854D0E" text-anchor="middle">39.4 e2e AMI</text>
-      <text x="364" y="690" font-size="9.5" font-weight="600" fill="#A16207" text-anchor="middle">best zero-shot system</text>
+      <text x="364" y="668" font-size="11" font-weight="700" fill="#854D0E" text-anchor="middle">39.4 e2e AMI</text>
+      <text x="364" y="683" font-size="9.5" font-weight="600" fill="#A16207" text-anchor="middle">best zero-shot system</text>
     </g>
 
     <text x="480" y="726" font-size="10" font-weight="500" fill="#6366F1" text-anchor="middle">same pipeline · the typing head is the only target-fitted part · GMM is an ablation only</text>
@@ -140,23 +141,23 @@
 
   <!-- label names (left) -> ZS prototypes -->
   <g>
-    <rect x="40" y="496" width="204" height="84" rx="10" fill="#FFFFFF" stroke="#EAB308" stroke-width="1.5" filter="url(#shadow-sm)"/>
-    <rect x="40" y="496" width="4" height="84" rx="2" fill="#EAB308"/>
-    <text x="58" y="520" font-size="11.5" font-weight="600" fill="#854D0E">Label names (open set)</text>
-    <text x="58" y="539" font-size="9.5" font-weight="400" fill="#A16207">person, location, scientist…</text>
-    <text x="58" y="557" font-size="9.5" font-weight="400" fill="#A16207">embedded → type prototypes</text>
-    <text x="58" y="573" font-size="9.5" font-weight="500" fill="#854D0E">no target annotation needed</text>
+    <rect x="40" y="514" width="204" height="84" rx="10" fill="#FFFFFF" stroke="#EAB308" stroke-width="1.5" filter="url(#shadow-sm)"/>
+    <rect x="40" y="514" width="4" height="84" rx="2" fill="#EAB308"/>
+    <text x="58" y="538" font-size="11.5" font-weight="600" fill="#854D0E">Label names (open set)</text>
+    <text x="58" y="557" font-size="9.5" font-weight="400" fill="#A16207">person, location, scientist…</text>
+    <text x="58" y="575" font-size="9.5" font-weight="400" fill="#A16207">embedded → type prototypes</text>
+    <text x="58" y="591" font-size="9.5" font-weight="500" fill="#854D0E">no target annotation needed</text>
   </g>
-  <line x1="244" y1="538" x2="266" y2="556" stroke="#EAB308" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-amber)"/>
+  <line x1="244" y1="567" x2="266" y2="567" stroke="#EAB308" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-amber)"/>
 
   <!-- GLiNER candidate label -> ZS fusion (left chip) -->
   <g>
-    <rect x="40" y="598" width="204" height="44" rx="10" fill="#ECFEFF" stroke="#06B6D4" stroke-width="1.5" filter="url(#shadow-sm)"/>
-    <rect x="40" y="598" width="4" height="44" rx="2" fill="#06B6D4"/>
-    <text x="58" y="618" font-size="10.5" font-weight="600" fill="#164E63">Detector label + score</text>
-    <text x="58" y="634" font-size="9.5" font-weight="400" fill="#0E7490">reused by step ③ (fusion, β)</text>
+    <rect x="40" y="610" width="204" height="44" rx="10" fill="#ECFEFF" stroke="#06B6D4" stroke-width="1.5" filter="url(#shadow-sm)"/>
+    <rect x="40" y="610" width="4" height="44" rx="2" fill="#06B6D4"/>
+    <text x="58" y="630" font-size="10.5" font-weight="600" fill="#164E63">Detector label + score</text>
+    <text x="58" y="646" font-size="9.5" font-weight="400" fill="#0E7490">reused by step ③ (fusion, β)</text>
   </g>
-  <line x1="244" y1="628" x2="266" y2="640" stroke="#06B6D4" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-cyan)"/>
+  <line x1="244" y1="640" x2="266" y2="640" stroke="#06B6D4" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-cyan)"/>
 
   <!-- arrow typing -> output -->
   <line x1="480" y1="748" x2="480" y2="786" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -201,4 +202,5 @@
     <text x="682" y="95" font-size="10" fill="#1E293B">detector label reused by fusion</text>
   </g>
 </svg>
+
 </body></html>

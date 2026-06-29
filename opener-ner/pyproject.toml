@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opener-ner"
+version = "0.1.0"
+description = "OPENER: turnkey open-world NER. Frozen GLiNER detector + a contrastively fine-tuned Matryoshka embedder + a zero-shot (OPENER-ZS) or supervised (OPENER-Sup) typing head."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Thibault GAREL" }]
+keywords = ["ner", "named-entity-recognition", "open-world", "zero-shot", "gliner", "sentence-transformers"]
+
+# The model weights live on the Hugging Face Hub and are pulled at runtime by
+# from_pretrained(); these are the libraries needed to run the pipeline.
+dependencies = [
+    "numpy>=1.23",
+    "scikit-learn>=1.1",
+    "sentence-transformers>=2.2",
+    "gliner>=0.2.5",
+    "huggingface_hub>=0.20",
+    "torch>=2.0",
+    "einops",            # required by the Nomic v1.5 custom code
+    "joblib>=1.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/Thibault-GAREL/LyRIDS_Opener"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["opener*"]
