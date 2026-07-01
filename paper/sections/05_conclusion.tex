@@ -12,7 +12,7 @@ Second, the three-axis evaluation locates the open-world bottleneck in \emph{det
 The approach has clear limits.
 End-to-end quality is capped by detector recall on specialised domains, the shared bottleneck, not by the typing head.
 Supervised typing needs target-domain labels, and while OPENER-ZS removes them at typing time it depends on the quality of the label names and, in its transductive form, on access to the unlabelled test mentions; the inductive zero-shot head is correspondingly weaker.
-Finally, our experiments run on deliberately modest hardware: a single thermally-throttling consumer GPU with $6$\,GB of VRAM.
+Finally, our experiments run on deliberately modest hardware: a single consumer GPU with $6$\,GB of VRAM, subject to thermal throttling.
 This is the very setting that makes OPENER deployable, but it also bounded our experimental budget: despite an already broad benchmark ($13$ datasets, three axes and extensive ablations), we report a single random seed and cap each test split at $1000$ sentences, so per-run figures carry run-to-run variance and are read as averages rather than precise points.
 A larger compute budget would extend the same protocol to multiple random seeds with variance and significance tests, the full uncapped test splits, and a controlled-temperature re-measurement of latency and energy.
 

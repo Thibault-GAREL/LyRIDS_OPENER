@@ -52,7 +52,7 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
   {\textbf{OPENER-Sup}\\[1pt]\scriptsize LinearSVC (balanced)\\\scriptsize \emph{supervised} upper bound};
 \node[stage, fill=hlyellow, draw=figgold!85!black, very thick, text width=3.0cm,
       below=5mm of sup] (zs)
-  {\textbf{OPENER-ZS}~$\bigstar$\\[1pt]\scriptsize label-name prototypes\\\scriptsize {+}\,transductive {+}\,detector fusion\\\scriptsize \emph{zero-shot}\,  --  \,no target labels};
+  {\textbf{\zstr}~$\bigstar$\\[1pt]\scriptsize label-name prototypes\\\scriptsize {+}\,transductive {+}\,detector fusion\\\scriptsize \emph{zero-shot}\,  --  \,no target labels};
 \node[io, fill=figgreen!14, draw=figgreen!60!black, text width=1.9cm,
       right=12mm of $(sup.east)!0.5!(zs.east)$] (out)
   {\textbf{Typed entities}\\[1pt]\scriptsize (span, type)};
@@ -79,7 +79,7 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
 \end{tikzpicture}%
 }%
 }}
-\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head -- the only target-fitted component -- has two operating points: \textbf{OPENER-Sup} (\emph{supervised}, the upper bound) and the \emph{zero-shot} \textbf{OPENER-ZS} ($\bigstar$, selected). All upstream components are off-the-shelf.}
+\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head -- the only target-fitted component -- has two operating points: \textbf{OPENER-Sup} (\emph{supervised}, the upper bound) and the \emph{zero-shot} \textbf{\zstr} ($\bigstar$, selected). All upstream components are off-the-shelf.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -148,7 +148,7 @@ To remove target supervision at typing time, each type $t$ is represented by a p
 \begin{equation}
 p_t = \overline{e}_t\,\big/\,\lVert \overline{e}_t\rVert_2,\qquad \overline{e}_t=\!\!\sum_{w\,\in\,\mathrm{name}(t)}\!\!f_\theta(w),
 \end{equation}
-and a mention is assigned the type of the nearest prototype by cosine similarity.
+and a mention is assigned the type of the nearest prototype by cosine similarity; this inductive nearest-centroid head is \zsind.
 Two label-free refinements improve this head without using any target label.
 First, a \emph{transductive} refinement runs one pass of spherical $k$-means over the unlabelled test mentions, seeded by the prototypes.
 Second, a \emph{detector fusion} reuses a signal the prototype head otherwise discards: GLiNER already predicts a zero-shot type for each span with confidence $g_i$, which we add to the similarity score before taking the arg-max,
@@ -156,7 +156,7 @@ Second, a \emph{detector fusion} reuses a signal the prototype head otherwise di
 s_t(i)=\cos(e_i,p_t)+\beta\,g_i\,\mathbb{1}\!\left[t=\ell_{\text{GLiNER}}(i)\right],\qquad \hat y_i=\arg\max_t s_t(i),
 \end{equation}
 with a small $\beta{=}0.05$.
-The fused head is the selected zero-shot operating point: it reaches $39.4$ AMI end-to-end, ahead of every compared zero-shot system, while using no target labels (\autoref{sec:exp:results}).
+The refined, fused head is \zstr, the selected zero-shot operating point: it reaches $39.4$ AMI end-to-end, ahead of every compared zero-shot system, while using no target labels (\autoref{sec:exp:results}).
 A per-class Gaussian mixture \cite{reynolds2009gmm} is reported only as a typing ablation (\autoref{tab:ablation}).
 
 \subsection{Evaluation Protocol}

@@ -1,0 +1,10 @@
+[2026-07-01 12:35:42] multi-seed study START | seeds: 7 123 | datasets: conll2003 crossner_music fabner
+[2026-07-01 12:35:42] ========================= SEED 7 : START =========================
+[2026-07-01 12:35:42] [1/6] contrastive already present -> skip
+[2026-07-01 12:35:42] [2/6] hard-negative mining 8k/3ep (seed 7)...
+D:\Loisir\Code_python\LyRIDS_Opener\scripts\train_contrastive_hard.py:39: DeprecationWarning: Importing from 'sentence_transformers.losses' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.losses' instead.
+  from sentence_transformers import InputExample, SentenceTransformer, losses
+[12:35:52] === Error-driven contrastive (hard mining) ===
+[12:35:52] base-model=outputs/models/seed7_contrastive  output=outputs/models/seed7_hard  device=cuda
+[12:35:52] Phase 1-2 : embedding + detection des erreurs (13 datasets)...
+<All keys matched successfully>
