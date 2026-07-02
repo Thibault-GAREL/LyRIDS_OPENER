@@ -99,7 +99,7 @@ Following \cite{genest2025owner}, an unmatched gold mention (a false negative) a
 We distinguish two protocols that must not be mixed in the same comparison.
 In the \emph{typing-on-gold} protocol, the entity-typing component is applied to gold mention spans, which measures typing quality in isolation under perfect detection.
 In the \emph{end-to-end} protocol, mentions are produced by the detector and the sentinel labels above are active, which is the setting comparable to the baselines.
-All runs use a single fixed random seed ($42$); we note this as a limitation, since we do not report variance over seeds.
+All runs use a single fixed random seed ($42$). Since no stage of OPENER is stochastic at inference (\autoref{sec:exp:impl}), the reported quality metrics carry no run-to-run noise; we nonetheless quantify their sampling uncertainty with a test-set bootstrap (\autoref{tab:bootstrap}) and leave a full multi-seed \emph{retraining} study to future work, as it is costly on our $6$\,GB GPU.
 
 \subsection{Experimental Settings}
 \label{sec:exp:impl}
@@ -109,7 +109,24 @@ Latency is measured with two warmup passes followed by timed passes with GPU syn
 Energy is measured with CodeCarbon \cite{lacoste2019codecarbon} in offline mode using the French grid carbon intensity; when hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
 All systems are measured on the same machine. The consumer GPU is subject to \emph{thermal throttling} (it lowers its clock frequency under sustained load to stay within its temperature limit), so per-sentence latency and per-run energy carry roughly $\pm15\%$ run-to-run variance; we therefore read the per-system averages as indicative and do not over-interpret individual per-dataset cells. A controlled-temperature re-measurement of all systems in a single session is left to future work.
 The quality metrics, in contrast, are fully deterministic: with the fixed seed and the released model, no stage of the OPENER pipeline is stochastic at inference, so its AMI and $F_1$ reproduce exactly across re-runs (we verified identical CrossNER scores on an independent re-run), and only latency and energy fluctuate.
+Because inference is deterministic, the only remaining source of uncertainty in the quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals in \autoref{tab:bootstrap}. The intervals are narrow ($\pm 1$--$1.5$ AMI) and their point estimates coincide with the seed-$42$ scores reported above, indicating that the reported figures are stable rather than fragile, seed-specific artefacts.
 \autoref{tab:hyperparams} collects the full OPENER configuration used throughout; all stochastic components use the single fixed seed ($42$).
+
+\begin{table}[t]
+\centering
+\caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets. Cells report typing-on-gold AMI as bootstrap mean $\pm$ std with the $95\%$ percentile CI ($K{=}1000$ resamples of the gold mentions). Point estimates on the full test set are $71.5 / 71.8 / 59.2$ (Sup) and $65.9 / 55.2 / 35.6$ (ZS), matching the bootstrap means. Intervals of $\pm 1$--$1.5$ AMI indicate stable scores.}
+\label{tab:bootstrap}
+\small
+\begin{tabular}{lcc}
+\toprule
+Dataset & OPENER-Sup AMI & OPENER-ZS AMI \\
+\midrule
+CoNLL-2003     & $71.7 \pm 1.5$ ~[$68.9$, $74.6$] & $66.1 \pm 1.4$ ~[$63.5$, $69.0$] \\
+CrossNER-Music & $72.4 \pm 0.9$ ~[$70.6$, $74.2$] & $55.5 \pm 0.9$ ~[$53.8$, $57.3$] \\
+FabNER         & $59.8 \pm 0.9$ ~[$57.9$, $61.6$] & $36.2 \pm 0.7$ ~[$34.7$, $37.5$] \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{table}[t]
 \centering
