@@ -9,7 +9,8 @@
 set -u
 PY=/c/0-Code_py_temp/pytorch_cuda_env/Scripts/python.exe
 DS="conll2003 crossner_music fabner"
-SEEDS="7 123"
+# Seeds à traiter : passer en 1er argument pour n'en faire qu'une (ex: `bash scripts/run_multiseed.sh 7`).
+SEEDS="${1:-7 123}"
 ts() { date +'%Y-%m-%d %H:%M:%S'; }
 
 echo "[$(ts)] multi-seed study START | seeds: $SEEDS | datasets: $DS"
@@ -39,7 +40,7 @@ for S in $SEEDS; do
     $PY -m scripts.train_contrastive_hard --base-model "$CTR" --output-dir "$HARD" \
         --max-triplets 8000 --epochs 3 --hard-ratio 0.65 --easy-per-dataset 300 \
         --neg-per-error 2 --max-train 2000 --seed $S \
-        --cache outputs/cache/seed${S}_hard_triplets.json \
+        --cache outputs/cache/seed${S}_hard_triplets.json --from-cache \
       || { echo "[$(ts)] !! FAIL hard-mining seed $S -> skip seed"; continue; }
   fi
 
