@@ -146,17 +146,11 @@ def export_dataset(name, out_root, max_train, max_test):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--datasets', nargs='+', default=None)
-    parser.add_argument('--legal', action='store_true',
-                        help='Charge les datasets juridiques (src/data/legal_datasets).')
     parser.add_argument('--out', default='external/OWNER/data/lyrids',
                         help='Répertoire racine de sortie (un sous-dossier par dataset).')
     parser.add_argument('--max-train', type=int, default=2000)
     parser.add_argument('--max-test', type=int, default=1000)
     args = parser.parse_args()
-
-    if getattr(args, 'legal', False):
-        from src.data.legal_datasets import load_legal_dataset
-        globals()['load_owner_dataset'] = load_legal_dataset
 
     datasets = args.datasets or _DEFAULT_DATASETS
     print(f"Export OWNER -> {args.out}  ({len(datasets)} datasets)")
