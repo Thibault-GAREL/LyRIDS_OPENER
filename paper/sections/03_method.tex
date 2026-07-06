@@ -79,11 +79,11 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
 \end{tikzpicture}%
 }%
 }}
-\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head -- the only target-fitted component -- has two operating points: \textbf{OPENER-Sup} (\emph{supervised}, the upper bound) and the \emph{zero-shot} \textbf{\zstr} ($\bigstar$, selected). All upstream components are off-the-shelf.}
+\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head -- the only target-fitted component -- has two operating points: \textbf{OPENER-Sup} (\emph{supervised}, the upper bound) and the \emph{zero-shot} \textbf{\zstr} ($\bigstar$, selected). All upstream components are ready-to-use.}
 \label{fig:pipeline}
 \end{figure}
 
-OPENER is a three-stage pipeline, Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type (\autoref{fig:pipeline}), assembled from off-the-shelf components so that no encoder is trained from scratch.
+OPENER is a three-stage pipeline, Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type (\autoref{fig:pipeline}), assembled from ready-to-use components so that no encoder is trained from scratch.
 Three principles guide the design.
 (i)~A pretrained detector and a pretrained sentence embedder are reused as-is.
 (ii)~A light contrastive fine-tuning, refined by error-driven hard-negative mining, turns the general-purpose embedding into one that is discriminative for entity \emph{types}.
@@ -92,7 +92,7 @@ Only the typing head is fitted on target-side material, and it comes in two form
 
 \subsection{Mention Detection}
 \label{sec:method:detect}
-Mention detection is delegated to GLiNER \cite{zaratiana2024gliner}, a frozen, off-the-shelf detector that scores every span against the candidate type names in a single forward pass.
+Mention detection is delegated to GLiNER \cite{zaratiana2024gliner}, a frozen, ready-to-use detector that scores every span against the candidate type names in a single forward pass.
 Decoupling detection from typing lets each component be chosen and measured independently, and it lets the typing head operate on any span proposer.
 We use GLiNER-L by default; the small and medium variants trace a size/efficiency trade-off (\autoref{tab:ablation}).
 As shown in \autoref{sec:exp:results}, the detector is the shared end-to-end bottleneck: its recall on specialised domains, not the typing head, caps end-to-end quality.
