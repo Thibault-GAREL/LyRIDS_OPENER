@@ -197,9 +197,17 @@ On the 4 datasets directly comparable to the paper:
 - `ood_calibration_mode` = per_label_percentile
 - `ood_percentile` = 5.0
 
-And the same pipeline as a polished figure:
+And the same pipeline as a polished figure (old version):
 
-![Opener architecture diagram](assets/opener-architecture.svg)
+<p align="center">
+  <img src="assets/opener-architecture.svg" alt="Opener architecture diagram" width="80%">
+</p>
+
+New version:
+<p align="center">
+  <img src="assets/opener-architecture-v2.svg" alt="Opener architecture diagram" width="80%">
+</p>
+
 
 ---
 
