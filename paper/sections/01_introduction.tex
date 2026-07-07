@@ -1,13 +1,13 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Real-world Named Entity Recognition (NER) rarely operates with a static label set, as novel categories inevitably emerge across new domains. Although traditional models accurately classify contiguous tokens into predefined groups, called spans (e.g., extracting "Marie Curie" as a PERSON or "1898" as a DATE), this rigid training renders them blind to unobserved types, like identifying "radium" as a CHEMICAL \cite{nguyen2023span}.
+Real-world Named Entity Recognition (NER) rarely operates with a static label set, as novel categories inevitably emerge across new domains. Although traditional models accurately classify contiguous sequences of tokens, called spans, into predefined categories (e.g., extracting "Marie Curie" as a PERSON or "1898" as a DATE), this rigid training renders them blind to unobserved types, like identifying "radium" as a CHEMICAL \cite{nguyen2023span}.
 To avoid the slow and costly process of re-annotating data and retraining from scratch, \emph{open-world} NER is designed to dynamically recognize and type entities without relying on a frozen training inventory.
 
 However, existing open-world approaches buy this flexibility at a cost.
-Open-world detectors lift that bound: GLiNER \cite{zaratiana2024gliner} scores candidate spans against the target type names supplied as queries in a single forward pass, while GNER \cite{ding2024gner} recasts NER as text generation with a sequence-to-sequence model; both can type entities whose categories were not fixed at training time.
+Open-world detectors remove the frozen inventory: GLiNER \cite{zaratiana2024gliner} scores candidate spans against the target type names supplied as queries in a single forward pass, while GNER \cite{ding2024gner} recasts NER as text generation with a sequence-to-sequence model; both can type entities whose categories were not fixed at training time, at the cost of training a dedicated model for the task.
 A complementary line prompts or instruction-tunes billion-parameter language models \cite{zhou2024universalner, sainz2024gollie}, which are accurate but slow, brittle, and often too large for commodity hardware; even a small quantized instruction-tuned model that does fit, such as Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit which we evaluate, stays comparatively slow and costly.
-OWNER \cite{genest2025owner} takes yet another route, training a dedicated entity encoder with a triplet objective and clustering the resulting mentions into dynamically named types; But it still trains an encoder from scratch and pays a heavy per-sentence inference cost.
+OWNER \cite{genest2025owner} takes yet another route, training a dedicated entity encoder with a triplet objective and clustering the resulting mentions into dynamically named types; but it still trains an encoder from scratch and pays a heavy per-sentence inference cost.
 
 Across all of these, evaluation is reported almost exclusively on accuracy: the compute, latency and energy consumption that separate a $137$\,M-parameter pipeline from a $7$\,B-parameter model are left out of the comparison, even though they decide what can actually be deployed.
 

@@ -163,4 +163,8 @@ A per-class Gaussian mixture \cite{reynolds2009gmm} is reported only as a typing
 \label{sec:method:eval}
 We evaluate on the $13$ datasets of \autoref{sec:exp:datasets}, each test split capped at $1000$ sentences.
 Quality is AMI \cite{vinh2010ami} (with macro-$F_1$ and accuracy), latency is the median (p50) per-sentence time over GPU-synchronised, warmed-up passes, and energy is measured with CodeCarbon \cite{lacoste2019codecarbon} under the French grid carbon intensity; the full protocol and instrumentation are detailed in \autoref{sec:exp:protocol} and \autoref{sec:exp:impl}.
-The code and the per-experiment configurations are released for reproducibility.
+% Camera-ready links (double-blind: keep hidden until acceptance, then replace the red dots):
+%   code + configurations : https://github.com/Thibault-GAREL/LyRIDS_OPENER
+%   OPENER-ZS embedder    : https://huggingface.co/Thibault-GAREL/opener-zs
+%   OPENER-Sup embedder   : https://huggingface.co/Thibault-GAREL/opener-sup
+The code and the per-experiment configurations are released at \textcolor{red}{\texttt{...}}, and the fine-tuned embedders of OPENER-ZS and OPENER-Sup are available at \textcolor{red}{\texttt{...}} and \textcolor{red}{\texttt{...}}, respectively.

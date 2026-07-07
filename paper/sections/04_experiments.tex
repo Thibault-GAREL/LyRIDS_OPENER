@@ -114,12 +114,12 @@ Because inference is deterministic, the only remaining source of uncertainty in 
 
 \begin{table}[t]
 \centering
-\caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets. Cells report typing-on-gold AMI as bootstrap mean $\pm$ std with the $95\%$ percentile CI ($K{=}1000$ resamples of the gold mentions). Point estimates on the full test set are $71.5 / 71.8 / 59.2$ (Sup) and $65.9 / 55.2 / 35.6$ (ZS), matching the bootstrap means. Intervals of $\pm 1$--$1.5$ AMI indicate stable scores.}
+\caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets, for OPENER-Sup and the inductive zero-shot head \zsind{} (the transductive refinement is excluded, as it adapts to the resampled test distribution). Cells report typing-on-gold AMI as bootstrap mean $\pm$ std with the $95\%$ percentile CI ($K{=}1000$ resamples of the gold mentions). Point estimates on the full test set are $71.5 / 71.8 / 59.2$ (Sup) and $65.9 / 55.2 / 35.6$ (\zsind), matching the bootstrap means. Intervals of $\pm 1$--$1.5$ AMI indicate stable scores.}
 \label{tab:bootstrap}
 \small
 \begin{tabular}{lcc}
 \toprule
-Dataset & OPENER-Sup AMI & OPENER-ZS AMI \\
+Dataset & OPENER-Sup AMI & \zsind{} AMI \\
 \midrule
 CoNLL-2003     & $71.7 \pm 1.5$ ~[$68.9$, $74.6$] & $66.1 \pm 1.4$ ~[$63.5$, $69.0$] \\
 CrossNER-Music & $72.4 \pm 0.9$ ~[$70.6$, $74.2$] & $55.5 \pm 0.9$ ~[$53.8$, $57.3$] \\
@@ -487,9 +487,6 @@ OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 \label{fig:metrics-bars}
 \end{figure}
 
-% DRAFT TODO (not rendered): consider adding Pareto diagrams (AMI vs. latency,
-% AMI vs. energy consumption) to visualise the frugality frontier. Decide before submission.
-
 \subsection{Analysis}
 \label{sec:exp:analysis}
 
@@ -530,7 +527,7 @@ Starting from the default pipeline, we vary a single component while holding the
 Among embedder variants, an error-driven \emph{hard-negative mining} pass, fine-tuning the contrastive embedder on the entity pairs it most often confuses (e.g.\ \emph{writer}/\emph{person}, \emph{album}/\emph{band}, \emph{country}/\emph{location}), mixed with correctly-typed mentions for diversity, raises typing-on-gold AMI from $54.0$ to $60.1$; scaling the mined triplets ($3000\!\to\!8000$) and epochs ($2\!\to\!3$) lifts it further to $62.5$ ($+8.5$ over the contrastive embedder, better on $12$ of $13$ sets), our selected configuration.
 \autoref{tab:ablation} reports this search; the protocol comparison between typing-on-gold and end-to-end is discussed alongside the main results.
 The remaining axes confirm the rest of the pipeline: among frozen ready-to-use base encoders, Nomic v1.5 is the most discriminative for entity typing ($25.8$ AMI, ahead of e5-base $25.3$, mxbai $24.4$, MPNet $24.1$ and BGE $23.6$) and is selected (the heaviest candidate, mxbai-large, is moreover $\sim$8$\times$ slower per sentence for no quality gain); even so, frozen embeddings are only weakly discriminative, so the contrastive step is what makes the space usable ($+28.2$); the detector -- which only proposes spans, re-typed by the OPENER head -- trades quality for cost (GLiNER-S\,$\to$\,L: $37.7\!\to\!40.2$ AMI at $51\!\to\!143$\,ms end-to-end), and OPENER's typing on GLiNER-L's spans ($40.2$) even beats GLiNER-L's own typing ($38.9$, \autoref{tab:main}); a closed-set NER detector (BERT- or RoBERTa-NER, CoNLL-trained) used in its place collapses to $\sim$0 recall outside PER/ORG/LOC/MISC (MIT, FabNER, BioNLP), dragging macro-$F_1$ to $17.9$/$24.6$ (vs $30.5$) and confirming that open-world detection is required; and for typing a balanced linear SVM edges out a per-class GMM and logistic regression ($62.5$ vs $56.1$ vs $55.6$).
-Replacing the supervised typing head with a label-name nearest-centroid removes target supervision entirely, at a cost of $18.1$ AMI ($62.5\!\to\!44.4$); this base variant, \zsind, still surpasses the zero-shot OWNER baseline ($43.0$, \autoref{tab:et-gold}) while fitting in $293$\,ms instead of $3.5$\,s, making it the frugal choice when no target labels are available.
+Replacing the supervised typing head with a label-name nearest-centroid removes target supervision entirely, at a cost of $18.1$ AMI ($62.5\!\to\!44.4$); this base variant, \zsind, still surpasses the zero-shot OWNER baseline ($43.0$, \autoref{tab:et-gold}) while fitting in $293$\,ms instead of $2.2$\,s, making it the frugal choice when no target labels are available.
 A label-free \emph{transductive} refinement of the prototypes      --      spherical k-means seeded by the label names and run once on the unlabelled test mentions      --      recovers $7.0$ AMI on gold mentions ($44.4\!\to\!51.4$, \autoref{tab:ablation}) and $2.6$ end-to-end ($34.2\!\to\!36.8$, above OWNER's $34.3$), widening \zstr's margin over OWNER while still using no target labels; this is a transductive rather than inductive setting, as it exploits the unlabelled test distribution.
 We further probed whether the zero-shot head could be improved by aligning entity mentions and label \emph{names} in a shared space, trained on the large label vocabulary of Pile-NER \cite{zhou2024universalner} ($\approx$4.6k types) with an entity$\leftrightarrow$label-name contrastive objective (\autoref{tab:zs-embedder}).
 This produces a \emph{strictly} domain-agnostic embedder (unlike the selected hard-mining embedder, it never sees any target-side data), yet it does not improve mean AMI ($42.2$ vs $44.4$): the Pile-NER vocabulary lifts macro-$F_1$ ($+3.8$) and helps encyclopedic domains (CrossNER-Politics $+14.2$, -Science $+8.6$) but hurts specialised schemas (MIT-Restaurant $-15.9$, FabNER $-11.8$, BioNLP $-11.8$).
