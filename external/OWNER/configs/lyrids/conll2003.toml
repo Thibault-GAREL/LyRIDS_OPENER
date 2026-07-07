@@ -1,0 +1,20 @@
+seed = 100
+model = "entity_typing"
+save_state = "none"
+
+[data]
+train_dataset_path = "D:/Loisir/Code_python/LyRIDS_Opener/external/OWNER/data/lyrids/conll2003/train.json"
+train_dataset_name = "conll2003"
+test_dataset_path = "D:/Loisir/Code_python/LyRIDS_Opener/external/OWNER/data/lyrids/conll2003/test.json"
+test_dataset_name = "conll2003"
+
+[entity_typing]
+template = "{sentence} {entity} is a [MASK]."
+plm_name = "bert-base-uncased"
+max_len = 256
+batch_size = 8
+num_epochs = 1
+learning_rate = 2e-5
+k_min = 2
+k_max = 30
+k_step = 2

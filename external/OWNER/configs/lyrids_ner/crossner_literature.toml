@@ -1,0 +1,27 @@
+seed = 100
+model = "ner"
+save_state = "none"
+
+[data]
+train_dataset_path = "D:/Loisir/Code_python/LyRIDS_Opener/external/OWNER/data/lyrids/crossner_literature/train.json"
+train_dataset_name = "crossner_literature"
+test_dataset_path = "D:/Loisir/Code_python/LyRIDS_Opener/external/OWNER/data/lyrids/crossner_literature/test.json"
+test_dataset_name = "crossner_literature"
+
+[mention_detection]
+plm_name = "microsoft/deberta-v3-base"
+max_len = 256
+batch_size = 8
+num_epochs = 1
+learning_rate = 2e-5
+
+[entity_typing]
+template = "{sentence} {entity} is a [MASK]."
+plm_name = "bert-base-uncased"
+max_len = 256
+batch_size = 8
+num_epochs = 1
+learning_rate = 2e-5
+k_min = 2
+k_max = 30
+k_step = 2

@@ -1,0 +1,994 @@
+{
+  "families": {
+    "GLiNER-S": "end-to-end",
+    "GLiNER-M": "end-to-end",
+    "GLiNER-L": "end-to-end",
+    "GNER-T5-base": "end-to-end",
+    "Opener-V2-e2e": "end-to-end",
+    "Opener-ZS-e2e": "end-to-end",
+    "OWNER-e2e": "end-to-end",
+    "OWNER": "typing-on-gold",
+    "Opener-ZS-gold": "typing-on-gold",
+    "Opener-V2-gold": "typing-on-gold"
+  },
+  "datasets": [
+    "crossner_ai",
+    "crossner_literature",
+    "crossner_music",
+    "crossner_politics",
+    "crossner_science",
+    "wnut17",
+    "mit_restaurant",
+    "mit_movie",
+    "fabner",
+    "bionlp2004",
+    "conll2003",
+    "gum",
+    "gentle"
+  ],
+  "results": {
+    "GLiNER-S": {
+      "crossner_ai": {
+        "ami": 0.417,
+        "macro_f1": 0.4588,
+        "p50_ms": 21.081,
+        "kwh": 0.000187,
+        "gco2eq": 0.0105,
+        "wall_clock_s": null
+      },
+      "crossner_literature": {
+        "ami": 0.4979,
+        "macro_f1": 0.4697,
+        "p50_ms": 21.579,
+        "kwh": 0.000175,
+        "gco2eq": 0.0098,
+        "wall_clock_s": null
+      },
+      "crossner_music": {
+        "ami": 0.5642,
+        "macro_f1": 0.5247,
+        "p50_ms": 21.257,
+        "kwh": 0.000195,
+        "gco2eq": 0.0109,
+        "wall_clock_s": null
+      },
+      "crossner_politics": {
+        "ami": 0.5062,
+        "macro_f1": 0.4496,
+        "p50_ms": 21.14,
+        "kwh": 0.000268,
+        "gco2eq": 0.015,
+        "wall_clock_s": null
+      },
+      "crossner_science": {
+        "ami": 0.5326,
+        "macro_f1": 0.5097,
+        "p50_ms": 21.318,
+        "kwh": 0.000224,
+        "gco2eq": 0.0125,
+        "wall_clock_s": null
+      },
+      "wnut17": {
+        "ami": 0.2974,
+        "macro_f1": 0.2924,
+        "p50_ms": 20.245,
+        "kwh": 0.000273,
+        "gco2eq": 0.0153,
+        "wall_clock_s": null
+      },
+      "mit_restaurant": {
+        "ami": 0.2608,
+        "macro_f1": 0.1219,
+        "p50_ms": 18.987,
+        "kwh": 0.000353,
+        "gco2eq": 0.0198,
+        "wall_clock_s": null
+      },
+      "mit_movie": {
+        "ami": 0.356,
+        "macro_f1": 0.0086,
+        "p50_ms": 20.194,
+        "kwh": 0.000391,
+        "gco2eq": 0.0219,
+        "wall_clock_s": null
+      },
+      "fabner": {
+        "ami": 0.1071,
+        "macro_f1": 0.0079,
+        "p50_ms": 20.463,
+        "kwh": 0.000403,
+        "gco2eq": 0.0226,
+        "wall_clock_s": null
+      },
+      "bionlp2004": {
+        "ami": 0.3177,
+        "macro_f1": 0.3096,
+        "p50_ms": 21.685,
+        "kwh": 0.000424,
+        "gco2eq": 0.0238,
+        "wall_clock_s": null
+      },
+      "conll2003": {
+        "ami": 0.1894,
+        "macro_f1": 0.0688,
+        "p50_ms": 19.87,
+        "kwh": 0.000371,
+        "gco2eq": 0.0208,
+        "wall_clock_s": null
+      },
+      "gum": {
+        "ami": 0.3405,
+        "macro_f1": 0.0881,
+        "p50_ms": 21.169,
+        "kwh": 0.000411,
+        "gco2eq": 0.023,
+        "wall_clock_s": null
+      },
+      "gentle": {
+        "ami": 0.3612,
+        "macro_f1": 0.0807,
+        "p50_ms": 21.058,
+        "kwh": 0.000395,
+        "gco2eq": 0.0221,
+        "wall_clock_s": null
+      }
+    },
+    "GLiNER-M": {
+      "crossner_ai": {
+        "ami": 0.4202,
+        "macro_f1": 0.4859,
+        "p50_ms": 35.835,
+        "kwh": 0.000307,
+        "gco2eq": 0.0172,
+        "wall_clock_s": null
+      },
+      "crossner_literature": {
+        "ami": 0.5007,
+        "macro_f1": 0.4658,
+        "p50_ms": 36.426,
+        "kwh": 0.000294,
+        "gco2eq": 0.0165,
+        "wall_clock_s": null
+      },
+      "crossner_music": {
+        "ami": 0.574,
+        "macro_f1": 0.5413,
+        "p50_ms": 37.437,
+        "kwh": 0.000333,
+        "gco2eq": 0.0186,
+        "wall_clock_s": null
+      },
+      "crossner_politics": {
+        "ami": 0.5025,
+        "macro_f1": 0.4712,
+        "p50_ms": 38.166,
+        "kwh": 0.000476,
+        "gco2eq": 0.0267,
+        "wall_clock_s": null
+      },
+      "crossner_science": {
+        "ami": 0.5421,
+        "macro_f1": 0.5032,
+        "p50_ms": 39.494,
+        "kwh": 0.000405,
+        "gco2eq": 0.0227,
+        "wall_clock_s": null
+      },
+      "wnut17": {
+        "ami": 0.2807,
+        "macro_f1": 0.2892,
+        "p50_ms": 38.505,
+        "kwh": 0.0005,
+        "gco2eq": 0.028,
+        "wall_clock_s": null
+      },
+      "mit_restaurant": {
+        "ami": 0.2793,
+        "macro_f1": 0.1424,
+        "p50_ms": 37.62,
+        "kwh": 0.000661,
+        "gco2eq": 0.037,
+        "wall_clock_s": null
+      },
+      "mit_movie": {
+        "ami": 0.3642,
+        "macro_f1": 0.0066,
+        "p50_ms": 40.416,
+        "kwh": 0.000764,
+        "gco2eq": 0.0428,
+        "wall_clock_s": null
+      },
+      "fabner": {
+        "ami": 0.1134,
+        "macro_f1": 0.0156,
+        "p50_ms": 40.741,
+        "kwh": 0.000772,
+        "gco2eq": 0.0432,
+        "wall_clock_s": null
+      },
+      "bionlp2004": {
+        "ami": 0.3488,
+        "macro_f1": 0.3442,
+        "p50_ms": 42.004,
+        "kwh": 0.00079,
+        "gco2eq": 0.0443,
+        "wall_clock_s": null
+      },
+      "conll2003": {
+        "ami": 0.2487,
+        "macro_f1": 0.0487,
+        "p50_ms": 43.708,
+        "kwh": 0.000688,
+        "gco2eq": 0.0385,
+        "wall_clock_s": null
+      },
+      "gum": {
+        "ami": 0.3282,
+        "macro_f1": 0.1064,
+        "p50_ms": 46.458,
+        "kwh": 0.000821,
+        "gco2eq": 0.046,
+        "wall_clock_s": null
+      },
+      "gentle": {
+        "ami": 0.316,
+        "macro_f1": 0.087,
+        "p50_ms": 44.886,
+        "kwh": 0.000751,
+        "gco2eq": 0.0421,
+        "wall_clock_s": null
+      }
+    },
+    "GLiNER-L": {
+      "crossner_ai": {
+        "ami": 0.4288,
+        "macro_f1": 0.4798,
+        "p50_ms": 144.229,
+        "kwh": 0.000684,
+        "gco2eq": 0.0383,
+        "wall_clock_s": null
+      },
+      "crossner_literature": {
+        "ami": 0.4885,
+        "macro_f1": 0.4568,
+        "p50_ms": 148.907,
+        "kwh": 0.000668,
+        "gco2eq": 0.0375,
+        "wall_clock_s": null
+      },
+      "crossner_music": {
+        "ami": 0.5802,
+        "macro_f1": 0.5429,
+        "p50_ms": 153.27,
+        "kwh": 0.000767,
+        "gco2eq": 0.043,
+        "wall_clock_s": null
+      },
+      "crossner_politics": {
+        "ami": 0.4981,
+        "macro_f1": 0.4705,
+        "p50_ms": 149.489,
+        "kwh": 0.001036,
+        "gco2eq": 0.058,
+        "wall_clock_s": null
+      },
+      "crossner_science": {
+        "ami": 0.5284,
+        "macro_f1": 0.5112,
+        "p50_ms": 154.579,
+        "kwh": 0.000911,
+        "gco2eq": 0.051,
+        "wall_clock_s": null
+      },
+      "wnut17": {
+        "ami": 0.2895,
+        "macro_f1": 0.2929,
+        "p50_ms": 137.083,
+        "kwh": 0.001005,
+        "gco2eq": 0.0563,
+        "wall_clock_s": null
+      },
+      "mit_restaurant": {
+        "ami": 0.3089,
+        "macro_f1": 0.1921,
+        "p50_ms": 131.676,
+        "kwh": 0.001371,
+        "gco2eq": 0.0768,
+        "wall_clock_s": null
+      },
+      "mit_movie": {
+        "ami": 0.3765,
+        "macro_f1": 0.0069,
+        "p50_ms": 144.57,
+        "kwh": 0.001514,
+        "gco2eq": 0.0848,
+        "wall_clock_s": null
+      },
+      "fabner": {
+        "ami": 0.2811,
+        "macro_f1": 0.0154,
+        "p50_ms": 147.486,
+        "kwh": 0.001541,
+        "gco2eq": 0.0864,
+        "wall_clock_s": null
+      },
+      "bionlp2004": {
+        "ami": 0.3456,
+        "macro_f1": 0.3504,
+        "p50_ms": 143.299,
+        "kwh": 0.001491,
+        "gco2eq": 0.0836,
+        "wall_clock_s": null
+      },
+      "conll2003": {
+        "ami": 0.2968,
+        "macro_f1": 0.1302,
+        "p50_ms": 130.513,
+        "kwh": 0.001375,
+        "gco2eq": 0.077,
+        "wall_clock_s": null
+      },
+      "gum": {
+        "ami": 0.3268,
+        "macro_f1": 0.1124,
+        "p50_ms": 140.633,
+        "kwh": 0.001523,
+        "gco2eq": 0.0853,
+        "wall_clock_s": null
+      },
+      "gentle": {
+        "ami": 0.3052,
+        "macro_f1": 0.1088,
+        "p50_ms": 136.91,
+        "kwh": 0.001425,
+        "gco2eq": 0.0799,
+        "wall_clock_s": null
+      }
+    },
+    "GNER-T5-base": {
+      "crossner_ai": {
+        "ami": 0.4192,
+        "macro_f1": 0.2234,
+        "p50_ms": 3431.428,
+        "kwh": 0.017133,
+        "gco2eq": 0.9601,
+        "wall_clock_s": null
+      },
+      "crossner_literature": {
+        "ami": 0.4685,
+        "macro_f1": 0.3101,
+        "p50_ms": 5408.476,
+        "kwh": 0.024284,
+        "gco2eq": 1.3605,
+        "wall_clock_s": null
+      },
+      "crossner_music": {
+        "ami": 0.535,
+        "macro_f1": 0.3774,
+        "p50_ms": 7461.219,
+        "kwh": 0.03975,
+        "gco2eq": 2.2276,
+        "wall_clock_s": null
+      },
+      "crossner_politics": {
+        "ami": 0.4888,
+        "macro_f1": 0.3181,
+        "p50_ms": 6472.276,
+        "kwh": 0.05088,
+        "gco2eq": 2.8512,
+        "wall_clock_s": null
+      },
+      "crossner_science": {
+        "ami": 0.4988,
+        "macro_f1": 0.2318,
+        "p50_ms": 7109.546,
+        "kwh": 0.044755,
+        "gco2eq": 2.508,
+        "wall_clock_s": null
+      },
+      "wnut17": {
+        "ami": 0.3004,
+        "macro_f1": 0.2457,
+        "p50_ms": 2906.23,
+        "kwh": 0.020605,
+        "gco2eq": 1.1552,
+        "wall_clock_s": null
+      },
+      "mit_restaurant": {
+        "ami": 0.3003,
+        "macro_f1": 0.1063,
+        "p50_ms": 1609.519,
+        "kwh": 0.017016,
+        "gco2eq": 0.9531,
+        "wall_clock_s": null
+      },
+      "mit_movie": {
+        "ami": 0.3684,
+        "macro_f1": 0.0033,
+        "p50_ms": 3344.101,
+        "kwh": 0.037172,
+        "gco2eq": 2.0828,
+        "wall_clock_s": null
+      },
+      "fabner": {
+        "ami": 0.17,
+        "macro_f1": 0.0115,
+        "p50_ms": 4310.391,
+        "kwh": 0.049109,
+        "gco2eq": 2.7516,
+        "wall_clock_s": null
+      },
+      "bionlp2004": {
+        "ami": 0.2908,
+        "macro_f1": 0.2215,
+        "p50_ms": 5034.216,
+        "kwh": 0.0635,
+        "gco2eq": 3.5578,
+        "wall_clock_s": null
+      },
+      "conll2003": {
+        "ami": 0.4367,
+        "macro_f1": 0.4222,
+        "p50_ms": 2913.571,
+        "kwh": 0.045219,
+        "gco2eq": 2.5344,
+        "wall_clock_s": null
+      },
+      "gum": {
+        "ami": 0.3284,
+        "macro_f1": 0.0496,
+        "p50_ms": 3435.01,
+        "kwh": 0.038687,
+        "gco2eq": 2.1672,
+        "wall_clock_s": null
+      },
+      "gentle": {
+        "ami": 0.3157,
+        "macro_f1": 0.0612,
+        "p50_ms": 1500.218,
+        "kwh": 0.0265,
+        "gco2eq": 1.4859,
+        "wall_clock_s": null
+      }
+    },
+    "Opener-V2-e2e": {},
+    "Opener-ZS-e2e": {
+      "crossner_ai": {
+        "ami": 0.316,
+        "macro_f1": 0.2386,
+        "p50_ms": 108.916,
+        "kwh": 0.000955,
+        "gco2eq": 0.0535,
+        "wall_clock_s": null
+      },
+      "crossner_literature": {
+        "ami": 0.4376,
+        "macro_f1": 0.3521,
+        "p50_ms": 134.593,
+        "kwh": 0.001057,
+        "gco2eq": 0.0593,
+        "wall_clock_s": null
+      },
+      "crossner_music": {
+        "ami": 0.4173,
+        "macro_f1": 0.3495,
+        "p50_ms": 155.936,
+        "kwh": 0.001369,
+        "gco2eq": 0.0767,
+        "wall_clock_s": null
+      },
+      "crossner_politics": {
+        "ami": 0.3674,
+        "macro_f1": 0.2982,
+        "p50_ms": 172.493,
+        "kwh": 0.001969,
+        "gco2eq": 0.1103,
+        "wall_clock_s": null
+      },
+      "crossner_science": {
+        "ami": 0.4425,
+        "macro_f1": 0.402,
+        "p50_ms": 174.594,
+        "kwh": 0.001695,
+        "gco2eq": 0.095,
+        "wall_clock_s": null
+      },
+      "wnut17": {
+        "ami": 0.2299,
+        "macro_f1": 0.2386,
+        "p50_ms": 136.424,
+        "kwh": 0.001516,
+        "gco2eq": 0.0849,
+        "wall_clock_s": null
+      },
+      "mit_restaurant": {
+        "ami": 0.2836,
+        "macro_f1": 0.1667,
+        "p50_ms": 127.392,
+        "kwh": 0.002074,
+        "gco2eq": 0.1162,
+        "wall_clock_s": null
+      },
+      "mit_movie": {
+        "ami": 0.3241,
+        "macro_f1": 0.013,
+        "p50_ms": 136.889,
+        "kwh": 0.002277,
+        "gco2eq": 0.1276,
+        "wall_clock_s": null
+      },
+      "fabner": {
+        "ami": 0.2827,
+        "macro_f1": 0.0304,
+        "p50_ms": 132.861,
+        "kwh": 0.00215,
+        "gco2eq": 0.1205,
+        "wall_clock_s": null
+      },
+      "bionlp2004": {
+        "ami": 0.2913,
+        "macro_f1": 0.3251,
+        "p50_ms": 135.962,
+        "kwh": 0.002303,
+        "gco2eq": 0.129,
+        "wall_clock_s": null
+      },
+      "conll2003": {
+        "ami": 0.4259,
+        "macro_f1": 0.2339,
+        "p50_ms": 117.027,
+        "kwh": 0.002097,
+        "gco2eq": 0.1175,
+        "wall_clock_s": null
+      },
+      "gum": {
+        "ami": 0.3152,
+        "macro_f1": 0.0703,
+        "p50_ms": 127.345,
+        "kwh": 0.002327,
+        "gco2eq": 0.1304,
+        "wall_clock_s": null
+      },
+      "gentle": {
+        "ami": 0.3118,
+        "macro_f1": 0.0669,
+        "p50_ms": 124.307,
+        "kwh": 0.002264,
+        "gco2eq": 0.1269,
+        "wall_clock_s": null
+      }
+    },
+    "OWNER-e2e": {
+      "mit_restaurant": {
+        "ami": 0.0763,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.008586,
+        "gco2eq": 0.4465,
+        "wall_clock_s": 281
+      },
+      "wnut17": {
+        "ami": 0.2231,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.006539,
+        "gco2eq": 0.34,
+        "wall_clock_s": 214
+      },
+      "fabner": {
+        "ami": 0.1874,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.013383,
+        "gco2eq": 0.6959,
+        "wall_clock_s": 438
+      },
+      "conll2003": {
+        "ami": 0.5026,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": null,
+        "gco2eq": null,
+        "wall_clock_s": null
+      },
+      "crossner_science": {
+        "ami": 0.5033,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.012558,
+        "gco2eq": 0.653,
+        "wall_clock_s": 411
+      },
+      "crossner_politics": {
+        "ami": 0.5093,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.018303,
+        "gco2eq": 0.9517,
+        "wall_clock_s": 599
+      },
+      "crossner_music": {
+        "ami": 0.4656,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.012711,
+        "gco2eq": 0.661,
+        "wall_clock_s": 416
+      },
+      "crossner_literature": {
+        "ami": 0.4396,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.009044,
+        "gco2eq": 0.4703,
+        "wall_clock_s": 296
+      },
+      "mit_movie": {
+        "ami": 0.2404,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.016256,
+        "gco2eq": 0.8453,
+        "wall_clock_s": 532
+      },
+      "bionlp2004": {
+        "ami": 0.2654,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.01705,
+        "gco2eq": 0.8866,
+        "wall_clock_s": 558
+      },
+      "gentle": {
+        "ami": 0.3127,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.019128,
+        "gco2eq": 0.9946,
+        "wall_clock_s": 626
+      },
+      "crossner_ai": {
+        "ami": 0.4389,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.006569,
+        "gco2eq": 0.3416,
+        "wall_clock_s": 215
+      },
+      "gum": {
+        "ami": 0.291,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.023192,
+        "gco2eq": 1.206,
+        "wall_clock_s": 759
+      }
+    },
+    "OWNER": {
+      "mit_restaurant": {
+        "ami": 0.2934,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.008586,
+        "gco2eq": 0.4465,
+        "wall_clock_s": 281
+      },
+      "wnut17": {
+        "ami": 0.3048,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.006539,
+        "gco2eq": 0.34,
+        "wall_clock_s": 214
+      },
+      "fabner": {
+        "ami": 0.319,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.013383,
+        "gco2eq": 0.6959,
+        "wall_clock_s": 438
+      },
+      "conll2003": {
+        "ami": 0.5251,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": null,
+        "gco2eq": null,
+        "wall_clock_s": null
+      },
+      "crossner_science": {
+        "ami": 0.6312,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.012558,
+        "gco2eq": 0.653,
+        "wall_clock_s": 411
+      },
+      "crossner_politics": {
+        "ami": 0.6317,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.018303,
+        "gco2eq": 0.9517,
+        "wall_clock_s": 599
+      },
+      "crossner_music": {
+        "ami": 0.5982,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.012711,
+        "gco2eq": 0.661,
+        "wall_clock_s": 416
+      },
+      "crossner_literature": {
+        "ami": 0.5432,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.009044,
+        "gco2eq": 0.4703,
+        "wall_clock_s": 296
+      },
+      "mit_movie": {
+        "ami": 0.3183,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.016256,
+        "gco2eq": 0.8453,
+        "wall_clock_s": 532
+      },
+      "bionlp2004": {
+        "ami": 0.2919,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.01705,
+        "gco2eq": 0.8866,
+        "wall_clock_s": 558
+      },
+      "gentle": {
+        "ami": 0.2715,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.019128,
+        "gco2eq": 0.9946,
+        "wall_clock_s": 626
+      },
+      "crossner_ai": {
+        "ami": 0.5574,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.006569,
+        "gco2eq": 0.3416,
+        "wall_clock_s": 215
+      },
+      "gum": {
+        "ami": 0.3002,
+        "macro_f1": null,
+        "p50_ms": null,
+        "kwh": 0.023192,
+        "gco2eq": 1.206,
+        "wall_clock_s": 759
+      }
+    },
+    "Opener-ZS-gold": {
+      "bionlp2004": {
+        "ami": 0.5406,
+        "macro_f1": 0.7016,
+        "p50_ms": 22.211,
+        "kwh": 0.000523,
+        "gco2eq": 0.0293,
+        "wall_clock_s": null
+      },
+      "conll2003": {
+        "ami": 0.6593,
+        "macro_f1": 0.8301,
+        "p50_ms": 22.087,
+        "kwh": 0.000471,
+        "gco2eq": 0.0264,
+        "wall_clock_s": null
+      },
+      "crossner": {
+        "ami": 0.4916,
+        "macro_f1": 0.2708,
+        "p50_ms": 23.542,
+        "kwh": 0.000624,
+        "gco2eq": 0.035,
+        "wall_clock_s": null
+      },
+      "crossner_ai": {
+        "ami": 0.4141,
+        "macro_f1": 0.3305,
+        "p50_ms": 27.773,
+        "kwh": 0.000322,
+        "gco2eq": 0.0181,
+        "wall_clock_s": null
+      },
+      "crossner_literature": {
+        "ami": 0.6138,
+        "macro_f1": 0.5601,
+        "p50_ms": 45.448,
+        "kwh": 0.000419,
+        "gco2eq": 0.0235,
+        "wall_clock_s": null
+      },
+      "crossner_music": {
+        "ami": 0.5517,
+        "macro_f1": 0.4956,
+        "p50_ms": 60.906,
+        "kwh": 0.000603,
+        "gco2eq": 0.0338,
+        "wall_clock_s": null
+      },
+      "crossner_politics": {
+        "ami": 0.5073,
+        "macro_f1": 0.4832,
+        "p50_ms": 55.578,
+        "kwh": 0.000789,
+        "gco2eq": 0.0442,
+        "wall_clock_s": null
+      },
+      "crossner_science": {
+        "ami": 0.5801,
+        "macro_f1": 0.5668,
+        "p50_ms": 47.964,
+        "kwh": 0.000604,
+        "gco2eq": 0.0338,
+        "wall_clock_s": null
+      },
+      "fabner": {
+        "ami": 0.3561,
+        "macro_f1": 0.3093,
+        "p50_ms": 30.57,
+        "kwh": 0.000717,
+        "gco2eq": 0.0402,
+        "wall_clock_s": null
+      },
+      "gentle": {
+        "ami": 0.3017,
+        "macro_f1": 0.3715,
+        "p50_ms": 29.407,
+        "kwh": 0.000669,
+        "gco2eq": 0.0375,
+        "wall_clock_s": null
+      },
+      "gum": {
+        "ami": 0.3112,
+        "macro_f1": 0.3992,
+        "p50_ms": 31.131,
+        "kwh": 0.000725,
+        "gco2eq": 0.0406,
+        "wall_clock_s": null
+      },
+      "mit_movie": {
+        "ami": 0.1839,
+        "macro_f1": 0.0635,
+        "p50_ms": 32.469,
+        "kwh": 0.000681,
+        "gco2eq": 0.0382,
+        "wall_clock_s": null
+      },
+      "mit_restaurant": {
+        "ami": 0.4264,
+        "macro_f1": 0.4407,
+        "p50_ms": 29.555,
+        "kwh": 0.000497,
+        "gco2eq": 0.0279,
+        "wall_clock_s": null
+      },
+      "wnut17": {
+        "ami": 0.3299,
+        "macro_f1": 0.5254,
+        "p50_ms": 29.313,
+        "kwh": 0.000354,
+        "gco2eq": 0.0199,
+        "wall_clock_s": null
+      }
+    },
+    "Opener-V2-gold": {
+      "crossner_ai": {
+        "ami": 0.5558,
+        "macro_f1": 0.5275,
+        "p50_ms": 27.273,
+        "kwh": 0.000377,
+        "gco2eq": 0.0211,
+        "wall_clock_s": null
+      },
+      "crossner_literature": {
+        "ami": 0.5346,
+        "macro_f1": 0.5697,
+        "p50_ms": 41.751,
+        "kwh": 0.000461,
+        "gco2eq": 0.0259,
+        "wall_clock_s": null
+      },
+      "crossner_music": {
+        "ami": 0.6424,
+        "macro_f1": 0.6272,
+        "p50_ms": 57.547,
+        "kwh": 0.000662,
+        "gco2eq": 0.0371,
+        "wall_clock_s": null
+      },
+      "crossner_politics": {
+        "ami": 0.6658,
+        "macro_f1": 0.5345,
+        "p50_ms": 221.794,
+        "kwh": 0.002178,
+        "gco2eq": 0.122,
+        "wall_clock_s": null
+      },
+      "crossner_science": {
+        "ami": 0.6611,
+        "macro_f1": 0.689,
+        "p50_ms": 276.267,
+        "kwh": 0.002175,
+        "gco2eq": 0.1219,
+        "wall_clock_s": null
+      },
+      "wnut17": {
+        "ami": 0.4181,
+        "macro_f1": 0.6398,
+        "p50_ms": 79.56,
+        "kwh": 0.00154,
+        "gco2eq": 0.0863,
+        "wall_clock_s": null
+      },
+      "mit_restaurant": {
+        "ami": 0.512,
+        "macro_f1": 0.6957,
+        "p50_ms": 79.096,
+        "kwh": 0.002104,
+        "gco2eq": 0.1179,
+        "wall_clock_s": null
+      },
+      "fabner": {
+        "ami": 0.365,
+        "macro_f1": 0.48,
+        "p50_ms": 167.3,
+        "kwh": 0.005697,
+        "gco2eq": 0.3192,
+        "wall_clock_s": null
+      },
+      "bionlp2004": {
+        "ami": 0.6025,
+        "macro_f1": 0.8217,
+        "p50_ms": 118.576,
+        "kwh": 0.004596,
+        "gco2eq": 0.2576,
+        "wall_clock_s": null
+      },
+      "conll2003": {
+        "ami": 0.7069,
+        "macro_f1": 0.8686,
+        "p50_ms": 79.224,
+        "kwh": 0.002635,
+        "gco2eq": 0.1476,
+        "wall_clock_s": null
+      },
+      "mit_movie": {
+        "ami": 0.5416,
+        "macro_f1": 0.616,
+        "p50_ms": 62.931,
+        "kwh": 0.006754,
+        "gco2eq": 0.3512,
+        "wall_clock_s": null
+      },
+      "gum": {
+        "ami": 0.3769,
+        "macro_f1": 0.5538,
+        "p50_ms": 47.123,
+        "kwh": 0.006872,
+        "gco2eq": 0.3573,
+        "wall_clock_s": null
+      },
+      "gentle": {
+        "ami": 0.4423,
+        "macro_f1": 0.6009,
+        "p50_ms": 44.957,
+        "kwh": 0.00716,
+        "gco2eq": 0.3723,
+        "wall_clock_s": null
+      }
+    }
+  }
+}

@@ -10,11 +10,25 @@ data/crossner_raw/*
 !data/1-raw/*.py
 !data/2-processed/*.py
 
-# Outputs : models fittés, résultats
+# Outputs : models fittés, résultats (volumineux), sauf l'agrégat du benchmark
+# (results_all.json, ~24 Ko) qui alimente toutes les tables du papier.
 outputs/models/*
 outputs/results/*
 !outputs/models/.gitkeep
 !outputs/results/.gitkeep
+!outputs/results/aggregate/
+outputs/results/aggregate/*
+!outputs/results/aggregate/results_all.json
+
+# OWNER baseline (upstream : https://github.com/alteca/OWNER, commit d1e6cb7).
+# Le code upstream n'est pas versionné ici : on ne garde que nos configs LyRIDS
+# et les fichiers patchés (ajoutés une fois avec `git add -f`, restent suivis
+# ensuite). Reconstruction : voir external/README.md.
+external/OWNER/*
+!external/OWNER/configs/
+external/OWNER/configs/*
+!external/OWNER/configs/lyrids/
+!external/OWNER/configs/lyrids_ner/
 
 # MLflow (si on l'ajoute plus tard)
 mlruns/
