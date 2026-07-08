@@ -128,7 +128,7 @@ We then mine the model's own confusions.
 On each target training split we run a cross-validated typing pass (so no test label is ever seen) and collect the type pairs that are most often confused, such as \emph{writer}/\emph{person}, \emph{album}/\emph{band} and \emph{country}/\emph{location}.
 For each such error we form a \emph{hard} triplet whose anchor is the mistyped span (true type $L$), whose positive is another span of $L$, and whose negative is a span of the confused type $C$.
 Hard triplets are mixed with correctly-typed (easy) triplets for diversity, targeting a $65\%$ hard fraction, and the Stage-1 embedder is fine-tuned further with the same optimiser settings.
-The selected run mines $8000$ triplets over $3$ epochs and reaches $62.5$ AMI ($+8.5$ over Stage~1, better on $12$ of $13$ sets).
+The selected run mines $8000$ triplets over $3$ epochs and reaches $62.5$ AMI at the released seed ($+8.5$ over Stage~1, better on $12$ of $13$ sets); retraining the full two-stage recipe under three seeds yields $62.3 \pm 1.0$ (\autoref{sec:exp:protocol}).
 This embedder is shared unchanged by every typing head below.
 
 \subsection{Entity Typing}
@@ -156,7 +156,7 @@ Second, a \emph{detector fusion} reuses a signal the prototype head otherwise di
 s_t(i)=\cos(e_i,p_t)+\beta\,g_i\,\mathbb{1}\!\left[t=\ell_{\text{GLiNER}}(i)\right],\qquad \hat y_i=\arg\max_t s_t(i),
 \end{equation}
 with a small $\beta{=}0.05$.
-The refined, fused head is \zstr, the selected zero-shot operating point: it reaches $39.4$ AMI end-to-end, ahead of every compared zero-shot system, while using no target labels (\autoref{sec:exp:results}).
+The refined, fused head is \zstr, the selected zero-shot operating point: it reaches $39.5$ AMI end-to-end (mean over three retraining seeds), ahead of every compared zero-shot system, while using no target labels (\autoref{sec:exp:results}).
 A per-class Gaussian mixture \cite{reynolds2009gmm} is reported only as a typing ablation (\autoref{tab:ablation}).
 
 \subsection{Evaluation Protocol}

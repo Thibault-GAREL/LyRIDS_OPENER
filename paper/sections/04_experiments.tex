@@ -99,7 +99,10 @@ Following \cite{genest2025owner}, an unmatched gold mention (a false negative) a
 We distinguish two protocols that must not be mixed in the same comparison.
 In the \emph{typing-on-gold} protocol, the entity-typing component is applied to gold mention spans, which measures typing quality in isolation under perfect detection.
 In the \emph{end-to-end} protocol, mentions are produced by the detector and the sentinel labels above are active, which is the setting comparable to the baselines.
-All runs use a single fixed random seed ($42$). Since no stage of OPENER is stochastic at inference (\autoref{sec:exp:impl}), the reported quality metrics carry no run-to-run noise; we nonetheless quantify their sampling uncertainty with a test-set bootstrap (\autoref{tab:bootstrap}) and leave a full multi-seed \emph{retraining} study to future work, as it is costly on our $6$\,GB GPU.
+OPENER's embedder \emph{training} is stochastic (triplet sampling and optimisation), so we retrain the complete embedder (contrastive Stage~1, then hard-negative mining Stage~2) under three random seeds ($7$, $42$, $123$) and re-evaluate every OPENER operating point on the full benchmark with each resulting embedder.
+Every OPENER cell in the result tables therefore reports the mean\,$\pm$\,standard deviation over the three seeds; seed $42$ is the released model.
+The compared baselines are frozen pretrained checkpoints whose inference is deterministic, so re-running them under a different seed returns identical predictions and they are reported as single runs; OWNER, the only baseline that trains, is likewise reported from a single training run of its published protocol.
+We additionally quantify the test-set sampling uncertainty with a bootstrap on the released model (\autoref{tab:bootstrap}), a source of uncertainty orthogonal to the retraining seed.
 
 \subsection{Experimental Settings}
 \label{sec:exp:impl}
@@ -109,8 +112,8 @@ Latency is measured with two warmup passes followed by timed passes with GPU syn
 Energy is measured with CodeCarbon \cite{lacoste2019codecarbon} in offline mode using the French grid carbon intensity; when hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
 All systems are measured on the same machine. The consumer GPU is subject to \emph{thermal throttling} (it lowers its clock frequency under sustained load to stay within its temperature limit), so per-sentence latency and per-run energy carry roughly $\pm15\%$ run-to-run variance; we therefore read the per-system averages as indicative and do not over-interpret individual per-dataset cells. A controlled-temperature re-measurement of all systems in a single session is left to future work.
 The quality metrics, in contrast, are fully deterministic: with the fixed seed and the released model, no stage of the OPENER pipeline is stochastic at inference, so its AMI and $F_1$ reproduce exactly across re-runs (we verified identical CrossNER scores on an independent re-run), and only latency and energy fluctuate.
-Because inference is deterministic, the only remaining source of uncertainty in the quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals in \autoref{tab:bootstrap}. The intervals are narrow ($\pm 1$--$1.5$ AMI) and their point estimates coincide with the seed-$42$ scores reported above, indicating that the reported figures are stable rather than fragile, seed-specific artefacts.
-\autoref{tab:hyperparams} collects the full OPENER configuration used throughout; all stochastic components use the single fixed seed ($42$).
+Because inference is deterministic, the only remaining source of uncertainty in the quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals in \autoref{tab:bootstrap}. The intervals are narrow ($\pm 1$--$1.5$ AMI) and their point estimates coincide with the released model's full-test-set scores (given in the caption of \autoref{tab:bootstrap}), indicating that the reported figures are stable rather than fragile, seed-specific artefacts.
+\autoref{tab:hyperparams} collects the full OPENER configuration used throughout; the embedder is retrained under each of the three seeds ($7$, $42$, $123$) while every other component is fixed.
 
 \begin{table}[t]
 \centering
@@ -146,32 +149,34 @@ Hard-neg.\ mining  & $8000$ triplets, $65\%$ hard, $3$ epochs \\
 \quad source        & target train splits, cross-validated \\
 Supervised typing  & LinearSVC, balanced weights \cite{fan2008liblinear} \\
 Zero-shot typing   & label-name prototype $+$ transductive $+$ fusion ($\beta{=}0.05$) \\
-Random seed        & $42$ \\
+Random seeds       & $7$ / $42$ / $123$ (full embedder retraining per seed; $42$ = released) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsection{Main Results}
 \label{sec:exp:results}
-% Numbers filled from outputs/results/aggregate/results_all.json (2026-06-12).
-% OWNER now in its native zero-shot transfer protocol (train once on CoNLL-2003,
+% OPENER numbers = mean±std over seeds 7/42/123, from
+% outputs/results/aggregate/results_multiseed.json (scripts/aggregate_multiseed.py,
+% 2026-07-08); baseline numbers from results_all.json (2026-06-12).
+% OWNER in its native zero-shot transfer protocol (train once on CoNLL-2003,
 % infer on every target). $\S$ = zero-shot transfer; $\dagger$ = in-domain (CoNLL source).
 The tables below report the benchmark on all $13$ sets, and \autoref{fig:main} plots the per-dataset end-to-end AMI of every system.
 OWNER is run in its native protocol \cite{genest2025owner}: a single model is trained once on the CoNLL-2003 source (a one-time cost of $88$ minutes on our 6\,GB GPU) and then applied \emph{zero-shot} to every target set (cells marked $^\S$).
 CoNLL-2003 is therefore in-domain for OWNER (marked $^\dagger$) and is excluded when reading OWNER as a transfer system.
-Concretely, excluding CoNLL-2003 (in-domain for both OWNER and OPENER), OWNER's reported $34.3$ thirteen-set mean becomes a $32.9$ transfer mean, still well below \zstr ($39.1$ on the same $12$ sets); the margin in fact widens from $+5.1$ to $+6.2$ AMI under this fair transfer reading.
+Concretely, excluding CoNLL-2003 (in-domain for both OWNER and OPENER), OWNER's reported $34.3$ thirteen-set mean becomes a $32.9$ transfer mean, still well below \zstr ($39.1$ on the same $12$ sets); the margin in fact widens from $+5.2$ to $+6.2$ AMI under this fair transfer reading.
 One protocol asymmetry must be kept in mind when reading the typing scores: OPENER-Sup fits a lightweight linear classifier on each target's training split (a supervised probe), whereas OWNER, GLiNER and GNER use no target-side labels.
 The two systems thus trade annotation for inference cost: OPENER needs target labels but stays cheap at test time, while OWNER needs none but pays a heavy per-sentence cost -- it re-encodes every mention and clusters at inference time -- an order of magnitude above OPENER (\autoref{tab:latency},\,\autoref{tab:energy}).
 To close this asymmetry we also evaluate OPENER-ZS, a zero-shot variant that drops the supervised probe and types each mention against label-name prototypes, using no target labels.
-Its un-refined nearest-centroid baseline, \zsind, already matches the zero-shot OWNER baseline end-to-end ($34.2$ vs $34.3$ mean AMI) and edges it on gold ($44.4$ vs $43.0$, \autoref{tab:et-gold}), while keeping OPENER's frugal inference profile ($137$\,ms, $1.85$\,Wh vs $616$\,ms, $14.3$\,Wh).
-Two label-free refinements then build \zstr: a transductive k-means on the prototypes, and \emph{fusing in the detector's own zero-shot label predictions}      --      a signal the centroid otherwise discards      --      which together reach $39.4$ end-to-end, the best of all compared zero-shot systems, ahead of GLiNER-L ($38.9$) and within $0.8$ AMI of OPENER-Sup, all without any target label.
+Its un-refined nearest-centroid baseline, \zsind, already sits within half a point of the zero-shot OWNER baseline end-to-end ($33.8$ vs $34.3$ mean AMI) and matches it on gold ($43.2$ vs $43.0$, \autoref{tab:et-gold}), while keeping OPENER's frugal inference profile ($137$\,ms, $1.85$\,Wh vs $616$\,ms, $14.3$\,Wh).
+Two label-free refinements then build \zstr: a transductive k-means on the prototypes, and \emph{fusing in the detector's own zero-shot label predictions}      --      a signal the centroid otherwise discards      --      which together reach $39.5$ end-to-end, the best of all compared zero-shot systems, ahead of GLiNER-L ($38.9$) and within $0.6$ AMI of OPENER-Sup, all without any target label.
 For reference, the only generative LLM that fits our $6$\,GB GPU      --      Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, prompted for JSON-formatted entities      --      trails every dedicated system ($26.1$ mean AMI on a $150$-sentence subsample, \autoref{tab:main}) while being the slowest and most energy-hungry per sentence ($5.1$\,s, $11.4$\,Wh; \autoref{tab:efficiency}): a small open LLM pays on both axes at once.
-OPENER-Sup remains the stronger configuration ($40.2$ end-to-end, $62.5$ on gold), so OPENER-ZS is best read as the frugal, annotation-free operating point of the same pipeline.
+OPENER-Sup remains the stronger configuration ($40.1$ end-to-end, $62.3$ on gold), so OPENER-ZS is best read as the frugal, annotation-free operating point of the same pipeline.
 A per-domain analysis of these results, the detection bottleneck and the learned embedding geometry follows in \autoref{sec:exp:analysis}.
 
 \begin{table}[H]
 \centering
-\caption{Open-world NER, end-to-end. AMI ($\times 100$, $\uparrow$); abbreviations follow \autoref{tab:datasets}; bold marks the best value per column across all systems; systems are grouped by supervision (\emph{zero-shot} vs the \emph{supervised} OPENER-Sup). $^\dagger$\,CoNLL-2003 is in-domain for OWNER (training source) and OPENER (contrastive source) and is not bolded as a transfer result. $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample (indicative, not bolded). Typing-on-gold is reported in \autoref{tab:et-gold}.}
+\caption{Open-world NER, end-to-end. AMI ($\times 100$, $\uparrow$); abbreviations follow \autoref{tab:datasets}; bold marks the best value per column across all systems; systems are grouped by supervision (\emph{zero-shot} vs the \emph{supervised} OPENER-Sup). OPENER rows report mean\,$\pm$\,std over the three embedder-retraining seeds (\autoref{sec:exp:protocol}); the baselines are frozen checkpoints with deterministic inference (single run). $^\dagger$\,CoNLL-2003 is in-domain for OWNER (training source) and OPENER (contrastive source) and is not bolded as a transfer result. $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample (indicative, not bolded). Typing-on-gold is reported in \autoref{tab:et-gold}.}
 \label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -182,12 +187,15 @@ Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & G
 \multicolumn{15}{l}{\emph{Zero-shot (no target labels)}} \\
 GLiNER-S & 41.7 & 49.8 & 56.4 & 50.6 & 53.3 & 29.7 & 26.1 & 35.6 & 10.7 & 31.8 & 18.9 & \textbf{34.1} & \textbf{36.1} & 36.5 \\
 GLiNER-M & 42.0 & \textbf{50.1} & 57.4 & 50.2 & \textbf{54.2} & 28.1 & 27.9 & 36.4 & 11.3 & 34.9 & 24.9 & 32.8 & 31.6 & 37.1 \\
-GLiNER-L & 42.9 & 48.9 & \textbf{58.0} & 49.8 & 52.8 & 28.9 & 30.9 & 37.6 & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & 38.9 \\
+GLiNER-L & 42.9 & 48.9 & 58.0 & 49.8 & 52.8 & 28.9 & 30.9 & 37.6 & 28.1 & 34.6 & 29.7 & 32.7 & 30.5 & 38.9 \\
 GNER & 41.9 & 46.9 & 53.5 & 48.9 & 49.9 & \textbf{30.0} & 30.0 & 36.8 & 17.0 & 29.1 & \textbf{43.7} & 32.8 & 31.6 & 37.9 \\
 Qwen2.5-1.5B$^\ddagger$ & 25.4 & 30.5 & 30.5 & 28.3 & 34.1 & 27.8 & 5.0 & 27.4 & 12.9 & 29.9 & 15.5 & 37.2 & 34.6 & 26.1 \\
 OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 & 18.7 & 26.5 & 50.3$^\dagger$ & 29.1 & 31.3 & 34.3 \\
-\zsind & 31.6 & 43.8 & 41.7 & 36.7 & 44.2 & 23.0 & 28.4 & 32.4 & 28.3 & 29.1 & 42.6$^\dagger$ & 31.5 & 31.2 & 34.2 \\
-\rowcolor{hlyellow} \zstr & 39.4 & 48.8 & \textbf{58.0} & 48.6 & 52.8 & 29.6 & 31.5 & 35.5 & 27.8 & 35.7 & 43.1$^\dagger$ & 31.2 & 30.4 & 39.4 \\
+% Multi-seed (7/42/123, mean±std). NB: la ligne \zsind suit desormais le protocole
+% "fusion beta=0" (inductif pur du run fusion), coherent seed a seed ; l'ancien run
+% separe opener_zs_e2e (seed 42 : 31.6 43.8 41.7 ... | 34.2) est conserve ici.
+\zsind & 29.7$_{\pm2.2}$ & 41.6$_{\pm2.3}$ & 43.6$_{\pm0.3}$ & 40.4$_{\pm0.7}$ & 42.5$_{\pm0.6}$ & 21.9$_{\pm1.3}$ & 28.0$_{\pm1.9}$ & 32.8$_{\pm0.9}$ & 27.6$_{\pm0.1}$ & 26.2$_{\pm1.4}$ & 43.5$_{\pm1.6}^\dagger$ & 30.8$_{\pm1.4}$ & 30.1$_{\pm1.0}$ & 33.8$_{\pm0.7}$ \\
+\rowcolor{hlyellow} \zstr & 39.4$_{\pm2.1}$ & 48.7$_{\pm0.7}$ & \textbf{58.3$_{\pm0.3}$} & 49.2$_{\pm0.9}$ & 52.6$_{\pm0.2}$ & 28.8$_{\pm1.0}$ & 31.2$_{\pm0.2}$ & 36.0$_{\pm0.6}$ & 28.1$_{\pm0.3}$ & 34.7$_{\pm0.9}$ & 43.7$_{\pm1.1}^\dagger$ & 32.0$_{\pm0.7}$ & 30.7$_{\pm0.3}$ & 39.5$_{\pm0.1}$ \\
 %       --       MOVED to architecture search (\autoref{tab:ablation}); preserved e2e per-dataset:
 % OPENER-ZS (transd.) & 33.7 & 48.9 & 53.7 & 45.3 & 45.9 & 24.2 & 30.4 & 34.7 & 27.9 & 27.9 & 44.4$^\dagger$ & 31.0 & 30.8 & 36.8 \\
 \addlinespace
@@ -196,7 +204,7 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 % OPENER & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} & 31.4 & 39.4 & 32.5 & 32.5 & 36.6 \\
 %       --       end preserved       --
 % hard-mining 3k tr./2 ep. e2e (recorded in project notes): 41.0 47.0 53.3 48.3 50.0 24.0 33.1 37.3 30.1 33.5 45.6 33.2 33.9 | 39.2
-\rowcolor{hlred} OPENER-Sup & 40.2 & 49.6 & 55.3 & 50.3 & 51.7 & 24.9 & \textbf{33.6} & \textbf{37.8} & \textbf{30.2} & \textbf{36.5} & 44.8$^\dagger$ & 33.7 & 34.2 & \textbf{40.2} \\
+\rowcolor{hlred} OPENER-Sup & 40.3$_{\pm0.2}$ & 48.7$_{\pm1.3}$ & 55.2$_{\pm0.8}$ & 49.1$_{\pm1.4}$ & 51.8$_{\pm1.7}$ & 24.8$_{\pm0.2}$ & \textbf{34.1$_{\pm0.9}$} & \textbf{37.8$_{\pm0.2}$} & \textbf{29.8$_{\pm0.5}$} & \textbf{35.9$_{\pm0.5}$} & 46.1$_{\pm2.1}^\dagger$ & 33.8$_{\pm0.1}$ & 34.0$_{\pm0.3}$ & \textbf{40.1$_{\pm0.5}$} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -233,14 +241,14 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 \addplot[figpink, semithick, mark=pentagon, mark size=1.5pt] coordinates
   {(AI,43.9)(Lit,44.0)(Mus,46.6)(Pol,50.9)(Sci,50.3)(WNUT,22.3)(Rest,7.6)(Movie,24.0)(Fab,18.7)(Bio,26.5)(CoNLL,50.3)(GUM,29.1)(GEN,31.3)};
 \addplot[figgold!90!black, very thick, mark=square*, mark size=1.6pt] coordinates
-  {(AI,39.4)(Lit,48.8)(Mus,58.0)(Pol,48.6)(Sci,52.8)(WNUT,29.6)(Rest,31.5)(Movie,35.5)(Fab,27.8)(Bio,35.7)(CoNLL,43.1)(GUM,31.2)(GEN,30.4)};
+  {(AI,39.4)(Lit,48.7)(Mus,58.3)(Pol,49.2)(Sci,52.6)(WNUT,28.8)(Rest,31.2)(Movie,36.0)(Fab,28.1)(Bio,34.7)(CoNLL,43.7)(GUM,32.0)(GEN,30.7)};
 %       --       supervised (dashed)       --
 \addplot[figred, very thick, densely dashed, mark=*, mark size=1.6pt] coordinates
-  {(AI,40.2)(Lit,49.6)(Mus,55.3)(Pol,50.3)(Sci,51.7)(WNUT,24.9)(Rest,33.6)(Movie,37.8)(Fab,30.2)(Bio,36.5)(CoNLL,44.8)(GUM,33.7)(GEN,34.2)};
+  {(AI,40.3)(Lit,48.7)(Mus,55.2)(Pol,49.1)(Sci,51.8)(WNUT,24.8)(Rest,34.1)(Movie,37.8)(Fab,29.8)(Bio,35.9)(CoNLL,46.1)(GUM,33.8)(GEN,34.0)};
 \legend{GLiNER-S, GLiNER-M, GLiNER-L, GNER, Qwen2.5-1.5B, OWNER, \zstr, OPENER-Sup}
 \end{axis}
 \end{tikzpicture}
-\caption{End-to-end AMI per dataset (\autoref{tab:main}). \emph{Zero-shot} systems are drawn solid; OPENER-Sup (the \emph{supervised} upper bound) is the dashed red line. $^\dagger$\,CoNLL-2003 (shaded) is in-domain for OWNER and OPENER; $^\ddagger$\,Qwen is evaluated on a $150$-sentence subsample per set.}
+\caption{End-to-end AMI per dataset (\autoref{tab:main}; OPENER curves show the three-seed means). \emph{Zero-shot} systems are drawn solid; OPENER-Sup (the \emph{supervised} upper bound) is the dashed red line. $^\dagger$\,CoNLL-2003 (shaded) is in-domain for OWNER and OPENER; $^\ddagger$\,Qwen is evaluated on a $150$-sentence subsample per set.}
 \label{fig:main}
 \end{figure}
 
@@ -383,7 +391,7 @@ OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & 2
 
 \begin{table}[H]
 \centering
-\caption{Quality vs efficiency, $13$-set means. AMI ($\times 100$, $\uparrow$); p50 latency (ms), energy (Wh), carbon (gCO\textsubscript{2}eq) per run ($\downarrow$); parameters (end-to-end OPENER $=$ GLiNER-L detector $330$M $+$ embedder $137$M $=$ $467$M, or $137$M on gold; OWNER $\approx$294M; GLiNER sizes from project notes). $^\S$\,OWNER's latency is an amortised wall-clock mean and its one-time $88$-min training is not charged per run (\autoref{tab:latency}). $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.}
+\caption{Quality vs efficiency, $13$-set means. AMI ($\times 100$, $\uparrow$, OPENER rows: mean\,$\pm$\,std over three retraining seeds); p50 latency (ms), energy (Wh), carbon (gCO\textsubscript{2}eq) per run ($\downarrow$, measured on the released seed-$42$ run); parameters (end-to-end OPENER $=$ GLiNER-L detector $330$M $+$ embedder $137$M $=$ $467$M, or $137$M on gold; OWNER $\approx$294M; GLiNER sizes from project notes). $^\S$\,OWNER's latency is an amortised wall-clock mean and its one-time $88$-min training is not charged per run (\autoref{tab:latency}). $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.}
 \label{tab:efficiency}
 \small
 \begin{tabular}{lrrrrr}
@@ -397,14 +405,14 @@ GLiNER-L  & 330M & 38.9 & 143 & 1.18 & 0.07 \\
 GNER      & 220M & 37.9 & 4226 & 36.51 & 2.05 \\
 Qwen2.5-1.5B (4-bit)$^\ddagger$ & 1.5B & 26.1 & 5051 & 11.4 & 0.60 \\
 OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
-\zsind & 467M & 34.2 & 137 & 1.85 & 0.10 \\
-\rowcolor{hlyellow} \zstr & 467M & 39.4 & 182 & 1.70 & 0.10 \\
+\zsind & 467M & 33.8$_{\pm0.7}$ & 137 & 1.85 & 0.10 \\
+\rowcolor{hlyellow} \zstr & 467M & 39.5$_{\pm0.1}$ & 182 & 1.70 & 0.10 \\
 % MOVED to architecture search (\autoref{tab:ablation}); preserved:
 % OPENER-ZS (transd.) & 467M & 36.8 & 151 & 1.89 & 0.11 \\
 \addlinespace
 \multicolumn{6}{l}{\emph{Supervised (target labels)}} \\
 % PRESERVED pre-hard-mining: OPENER & 467M & 36.6 & 160 & 3.39 & 0.19 \\ (energy inflated by a CodeCarbon glitch on Mus)
-\rowcolor{hlred} OPENER-Sup & 467M & 40.2 & 143 & 1.59 & 0.09 \\
+\rowcolor{hlred} OPENER-Sup & 467M & 40.1$_{\pm0.5}$ & 143 & 1.59 & 0.09 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -433,9 +441,9 @@ OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 \addplot[ybar,bar shift=0pt,fill=figgreen!65!black,draw=figgreen!45!black] coordinates {(4,37.9)};
 \addplot[ybar,bar shift=0pt,fill=figviolet,draw=figviolet!65!black] coordinates {(5,26.1)};
 \addplot[ybar,bar shift=0pt,fill=figpink,draw=figpink!65!black] coordinates {(6,34.3)};
-\addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,34.2)};
-\addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,39.4)};
-\addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,40.2)};
+\addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,33.8)};
+\addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,39.5)};
+\addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,40.1)};
 \draw[densely dotted, semithick, black!55] (axis cs:8.5,0) -- (axis cs:8.5,45);
 \end{axis}
 \end{tikzpicture}\hfill
@@ -492,13 +500,13 @@ OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 
 \paragraph{Where OPENER wins, and why}
 Two domain patterns stand out across \autoref{tab:main} and \autoref{fig:main}.
-First, the detector-fusion gains of \zstr concentrate on the context-rich encyclopedic CrossNER domains ($+16.3$ AMI on Music, $+11.9$ on Politics, $+8.6$ on Science over the un-fused centroid), where the detector's own zero-shot label is most reliable and lifts OPENER-ZS to detector-level quality (e.g.\ Music $58.0$, matching GLiNER-L).
-Second, on specialised schemas with opaque, abbreviation-like labels (FabNER, BioNLP), OPENER's contrastive typing maps cryptic surface forms far better than OWNER's prompt-based naming: OPENER-Sup leads end-to-end ($30.2$ and $36.5$ AMI), and on gold mentions the gap widens sharply ($59.2$/$71.2$ versus OWNER's $31.9$/$29.2$, \autoref{tab:et-gold}).
+First, the detector-fusion gains of \zstr concentrate on the context-rich encyclopedic CrossNER domains ($+14.7$ AMI on Music, $+10.1$ on Science, $+8.8$ on Politics over the un-fused centroid), where the detector's own zero-shot label is most reliable and lifts OPENER-ZS to detector-level quality (e.g.\ Music $58.3$, edging GLiNER-L's $58.0$).
+Second, on specialised schemas with opaque, abbreviation-like labels (FabNER, BioNLP), OPENER's contrastive typing maps cryptic surface forms far better than OWNER's prompt-based naming: OPENER-Sup leads end-to-end ($29.8$ and $35.9$ AMI), and on gold mentions the gap widens sharply ($57.1$/$69.2$ versus OWNER's $31.9$/$29.2$, \autoref{tab:et-gold}).
 
 \paragraph{Detection is the bottleneck, worst on specialised domains}
 Contrasting typing on gold mentions with the end-to-end scores isolates the cost of detection.
-For OPENER-Sup, the mean drop from gold to end-to-end is $22.3$ AMI, but it is far from uniform: it averages $18.6$ on the encyclopedic CrossNER domains against $30.6$ on the specialised schemas (BioNLP, MIT-Restaurant, MIT-Movie, FabNER), peaking at $34.7$ on BioNLP.
-The typing head is strong everywhere (gold AMI $50$--$75$); what caps end-to-end quality is the open-world detector's recall on cryptic, domain-specific surface forms, which confirms detection, not typing, as the dominant bottleneck.
+For OPENER-Sup, the mean drop from gold to end-to-end is $22.2$ AMI, but it is far from uniform: it averages $18.8$ on the encyclopedic CrossNER domains against $29.9$ on the specialised schemas (BioNLP, MIT-Restaurant, MIT-Movie, FabNER), peaking at $33.3$ on BioNLP.
+The typing head is strong everywhere (gold AMI above $50$ on $11$ of $13$ sets); what caps end-to-end quality is the open-world detector's recall on cryptic, domain-specific surface forms, which confirms detection, not typing, as the dominant bottleneck.
 
 \paragraph{What remains hard}
 The residual typing errors are dominated by confusions between fine-grained, lexically close types \emph{within} a domain rather than across domains.
@@ -527,8 +535,8 @@ Starting from the default pipeline, we vary a single component while holding the
 Among embedder variants, an error-driven \emph{hard-negative mining} pass, fine-tuning the contrastive embedder on the entity pairs it most often confuses (e.g.\ \emph{writer}/\emph{person}, \emph{album}/\emph{band}, \emph{country}/\emph{location}), mixed with correctly-typed mentions for diversity, raises typing-on-gold AMI from $54.0$ to $60.1$; scaling the mined triplets ($3000\!\to\!8000$) and epochs ($2\!\to\!3$) lifts it further to $62.5$ ($+8.5$ over the contrastive embedder, better on $12$ of $13$ sets), our selected configuration.
 \autoref{tab:ablation} reports this search; the protocol comparison between typing-on-gold and end-to-end is discussed alongside the main results.
 The remaining axes confirm the rest of the pipeline: among frozen ready-to-use base encoders, Nomic v1.5 is the most discriminative for entity typing ($25.8$ AMI, ahead of e5-base $25.3$, mxbai $24.4$, MPNet $24.1$ and BGE $23.6$) and is selected (the heaviest candidate, mxbai-large, is moreover $\sim$8$\times$ slower per sentence for no quality gain); even so, frozen embeddings are only weakly discriminative, so the contrastive step is what makes the space usable ($+28.2$); the detector -- which only proposes spans, re-typed by the OPENER head -- trades quality for cost (GLiNER-S\,$\to$\,L: $37.7\!\to\!40.2$ AMI at $51\!\to\!143$\,ms end-to-end), and OPENER's typing on GLiNER-L's spans ($40.2$) even beats GLiNER-L's own typing ($38.9$, \autoref{tab:main}); a closed-set NER detector (BERT- or RoBERTa-NER, CoNLL-trained) used in its place collapses to $\sim$0 recall outside PER/ORG/LOC/MISC (MIT, FabNER, BioNLP), dragging macro-$F_1$ to $17.9$/$24.6$ (vs $30.5$) and confirming that open-world detection is required; and for typing a balanced linear SVM edges out a per-class GMM and logistic regression ($62.5$ vs $56.1$ vs $55.6$).
-Replacing the supervised typing head with a label-name nearest-centroid removes target supervision entirely, at a cost of $18.1$ AMI ($62.5\!\to\!44.4$); this base variant, \zsind, still surpasses the zero-shot OWNER baseline ($43.0$, \autoref{tab:et-gold}) while fitting in $293$\,ms instead of $2.2$\,s, making it the frugal choice when no target labels are available.
-A label-free \emph{transductive} refinement of the prototypes      --      spherical k-means seeded by the label names and run once on the unlabelled test mentions      --      recovers $7.0$ AMI on gold mentions ($44.4\!\to\!51.4$, \autoref{tab:ablation}) and $2.6$ end-to-end ($34.2\!\to\!36.8$, above OWNER's $34.3$), widening \zstr's margin over OWNER while still using no target labels; this is a transductive rather than inductive setting, as it exploits the unlabelled test distribution.
+Replacing the supervised typing head with a label-name nearest-centroid removes target supervision entirely, at a cost of $18.1$ AMI ($62.5\!\to\!44.4$); this base variant, \zsind, stays on par with the zero-shot OWNER baseline ($43.2$ vs $43.0$ over the three seeds, \autoref{tab:et-gold}) while fitting in $293$\,ms instead of $2.2$\,s, making it the frugal choice when no target labels are available.
+A label-free \emph{transductive} refinement of the prototypes      --      spherical k-means seeded by the label names and run once on the unlabelled test mentions      --      recovers $7.0$ AMI on gold mentions ($44.4\!\to\!51.4$, \autoref{tab:ablation}) and $2.6$ end-to-end at the released seed ($34.2\!\to\!36.8$, above OWNER's $34.3$), widening \zstr's margin over OWNER while still using no target labels; this is a transductive rather than inductive setting, as it exploits the unlabelled test distribution.
 We further probed whether the zero-shot head could be improved by aligning entity mentions and label \emph{names} in a shared space, trained on the large label vocabulary of Pile-NER \cite{zhou2024universalner} ($\approx$4.6k types) with an entity$\leftrightarrow$label-name contrastive objective (\autoref{tab:zs-embedder}).
 This produces a \emph{strictly} domain-agnostic embedder (unlike the selected hard-mining embedder, it never sees any target-side data), yet it does not improve mean AMI ($42.2$ vs $44.4$): the Pile-NER vocabulary lifts macro-$F_1$ ($+3.8$) and helps encyclopedic domains (CrossNER-Politics $+14.2$, -Science $+8.6$) but hurts specialised schemas (MIT-Restaurant $-15.9$, FabNER $-11.8$, BioNLP $-11.8$).
 A second label-name hard-mining pass degrades it further ($39.7$ AMI): Pile-NER's GPT-generated types include many near-synonyms (e.g.\ \emph{person}/\emph{per}, \emph{location}/\emph{loc}), so mining ``confusions'' between them manufactures negatives that pull apart labels that should stay close.
@@ -538,7 +546,7 @@ To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OP
 
 \begin{table}[tbp]
 \centering
-\caption{OPENER architecture search: one component is varied at a time around the default pipeline (\textbf{bold}). AMI and macro-$F_1$ ($\times100$, $\uparrow$); Fit\,(ms) is the typing-head training time; per-row latency, energy and carbon ($\downarrow$). On the \emph{mention-detector} axis, each row is OPENER's \emph{end-to-end} AMI with that detector -- it only proposes spans, re-typed by the OPENER head (unlike the standalone systems of \autoref{tab:main}). The $^\ast$\,embedder, $^\ddagger$\,typing and $^\S$\,dimension axes are typing-on-gold over the $13$ sets ($^\S$ truncates the Matryoshka vector after encoding); $^\P$\,marks the zero-shot nearest-centroid head (no target labels; its Fit is the one-off prototype-embedding cost). Latency/energy is the deployed end-to-end cost on the MD axis and the constant embedder-plus-typing cost elsewhere; per-axis findings are analysed in \autoref{sec:exp:ablations}.}
+\caption{OPENER architecture search: one component is varied at a time around the default pipeline (\textbf{bold}). AMI and macro-$F_1$ ($\times100$, $\uparrow$); Fit\,(ms) is the typing-head training time; per-row latency, energy and carbon ($\downarrow$). All ablation rows use the released seed ($42$). On the \emph{mention-detector} axis, each row is OPENER's \emph{end-to-end} AMI with that detector -- it only proposes spans, re-typed by the OPENER head (unlike the standalone systems of \autoref{tab:main}). The $^\ast$\,embedder, $^\ddagger$\,typing and $^\S$\,dimension axes are typing-on-gold over the $13$ sets ($^\S$ truncates the Matryoshka vector after encoding); $^\P$\,marks the zero-shot nearest-centroid head (no target labels; its Fit is the one-off prototype-embedding cost). Latency/energy is the deployed end-to-end cost on the MD axis and the constant embedder-plus-typing cost elsewhere; per-axis findings are analysed in \autoref{sec:exp:ablations}.}
 \label{tab:ablation}
 \small
 \begin{tabular}{lccrrrr}
@@ -583,7 +591,7 @@ Configuration & AMI & F\textsubscript{1} & Fit\,(ms) & p50\,(ms) & En.\,(Wh) & C
 
 \begin{table}[tbp]
 \centering
-\caption{Entity typing on gold mentions (detection bypassed): OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best value per column; systems are grouped by supervision. Here \zstr is the transductively-refined prototype head (the detector fusion of \autoref{tab:main} is end-to-end-only, inactive without a detector); \zsind is the un-refined nearest centroid; OPENER-Sup is the supervised upper bound. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (training source) and OPENER (contrastive source) and is not bolded.}
+\caption{Entity typing on gold mentions (detection bypassed): OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}; bold marks the best value per column; systems are grouped by supervision. OPENER rows report mean\,$\pm$\,std over the three embedder-retraining seeds (\autoref{sec:exp:protocol}); OWNER is a single training run. Here \zstr is the transductively-refined prototype head (the detector fusion of \autoref{tab:main} is end-to-end-only, inactive without a detector); \zsind is the un-refined nearest centroid; OPENER-Sup is the supervised upper bound. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (training source) and OPENER (contrastive source) and is not bolded.}
 \label{tab:et-gold}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -597,12 +605,12 @@ Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & G
 %       --       end preserved       --
 \multicolumn{15}{l}{\emph{Zero-shot (no target labels)}} \\
 OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52.5$^\dagger$ & 30.0 & 27.2 & 43.0 \\
-\zsind & 41.4 & 61.4 & 55.2 & 50.7 & 58.0 & 33.0 & 42.6 & 18.4 & 35.6 & 54.1 & 65.9$^\dagger$ & 31.1 & 30.2 & 44.4 \\
-\rowcolor{hlyellow} \zstr & 46.4 & 65.0 & 68.6 & 66.5 & 57.3 & 31.8 & 52.1 & 45.8 & 37.5 & 49.5 & 71.0$^\dagger$ & 38.6 & 37.5 & 51.4 \\
+\zsind & 38.7$_{\pm3.6}$ & 57.7$_{\pm3.3}$ & 54.7$_{\pm1.7}$ & 57.4$_{\pm5.8}$ & 57.8$_{\pm1.6}$ & 31.3$_{\pm2.6}$ & 38.1$_{\pm4.6}$ & 16.1$_{\pm7.1}$ & 30.4$_{\pm5.1}$ & 51.1$_{\pm2.9}$ & 63.9$_{\pm3.0}^\dagger$ & 33.7$_{\pm3.8}$ & 31.0$_{\pm2.5}$ & 43.2$_{\pm1.3}$ \\
+\rowcolor{hlyellow} \zstr & 46.1$_{\pm2.0}$ & 63.5$_{\pm2.3}$ & 67.0$_{\pm1.9}$ & 66.4$_{\pm1.2}$ & 59.6$_{\pm2.0}$ & 32.7$_{\pm2.8}$ & 47.3$_{\pm4.8}$ & 44.8$_{\pm1.1}$ & 33.9$_{\pm3.3}$ & 49.8$_{\pm0.3}$ & 70.7$_{\pm1.7}^\dagger$ & 41.5$_{\pm2.5}$ & 38.8$_{\pm1.6}$ & 50.9$_{\pm0.4}$ \\
 \addlinespace
 \multicolumn{15}{l}{\emph{Supervised (target labels)}} \\
 % hard-mining 3k tr./2 ep. (recorded in project notes): 57.3 64.7 71.1 72.5 67.2 40.1 59.5 61.1 50.7 64.7 70.6 48.6 53.1 | 60.1
-\rowcolor{hlred} OPENER-Sup & \textbf{57.6} & \textbf{67.0} & \textbf{71.8} & \textbf{74.8} & \textbf{68.9} & \textbf{38.6} & \textbf{63.0} & \textbf{66.9} & \textbf{59.2} & \textbf{71.2} & 71.5$^\dagger$ & \textbf{50.3} & \textbf{51.5} & \textbf{62.5} \\
+\rowcolor{hlred} OPENER-Sup & \textbf{57.6$_{\pm0.9}$} & \textbf{66.0$_{\pm2.0}$} & \textbf{72.3$_{\pm1.5}$} & \textbf{73.6$_{\pm1.8}$} & \textbf{69.4$_{\pm2.2}$} & \textbf{38.8$_{\pm1.0}$} & \textbf{63.2$_{\pm2.0}$} & \textbf{67.7$_{\pm1.9}$} & \textbf{57.1$_{\pm2.0}$} & \textbf{69.2$_{\pm1.8}$} & 73.3$_{\pm1.6}^\dagger$ & \textbf{49.8$_{\pm0.6}$} & \textbf{51.5$_{\pm0.2}$} & \textbf{62.3$_{\pm1.0}$} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -610,7 +618,7 @@ OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52
 
 \begin{table}[tbp]
 \centering
-\caption{Zero-shot typing: effect of the contrastive embedder on \zsind (typing-on-gold, $13$-set means; the nearest label-name centroid head is fixed, only the embedder changes). AMI, macro-$F_1$, accuracy ($\times100$, $\uparrow$); best per column in bold. The selected hard-negative-mining embedder (target-tuned) is compared with Pile-NER \cite{zhou2024universalner} variants that are strictly domain-agnostic (never see target data); we report Pile-NER as a negative ablation (\autoref{sec:exp:ablations}).}
+\caption{Zero-shot typing: effect of the contrastive embedder on \zsind (typing-on-gold, $13$-set means at the released seed ($42$); the nearest label-name centroid head is fixed, only the embedder changes). AMI, macro-$F_1$, accuracy ($\times100$, $\uparrow$); best per column in bold. The selected hard-negative-mining embedder (target-tuned) is compared with Pile-NER \cite{zhou2024universalner} variants that are strictly domain-agnostic (never see target data); we report Pile-NER as a negative ablation (\autoref{sec:exp:ablations}).}
 \label{tab:zs-embedder}
 \small
 \begin{tabular}{llccc}

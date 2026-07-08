@@ -1,6 +1,7 @@
-% Abstract v3 (2026-06-15, FINAL). Energy-aware framing, headline = OPENER-ZS
+% Abstract v4 (2026-07-08, multi-seed). Energy-aware framing, headline = OPENER-ZS
 % (fusion) as the best zero-shot system end-to-end; supervised probe = upper bound.
-% Numbers final: 62.5 gold (sup.), 39.4 e2e (ZS fusion), 1.7 Wh.
+% Numbers = means over 3 retraining seeds (7/42/123): 62.3 gold (sup.), 39.5 e2e
+% (ZS fusion), 40.1 e2e (sup.), 1.7 Wh (seed-42 run).
 
 Open-world named entity recognition (NER) must assign entity types that were not fixed at training time.
 Recent systems either train a dedicated encoder or prompt billion-parameter language models, and they are compared almost exclusively on accuracy, ignoring their compute and energy cost.
@@ -9,7 +10,7 @@ This still-uncommon design reuses pretrained parts rather than the prevailing tr
 The typing head comes in two forms. \textbf{OPENER-ZS} is \emph{zero-shot}: it types each mention against label-name prototypes and needs no target labels, for the truly open-world setting where entity types are not known in advance. \textbf{OPENER-Sup} instead fits a lightweight supervised probe when a domain's entity classes are fixed and labelled, trading openness for accuracy.
 We benchmark OPENER against GLiNER, GNER, OWNER and a 4-bit Qwen2.5-1.5B large language model on 13 datasets along three axes at once: \textbf{quality} (measured by AMI, for Adjusted Mutual Information), \textbf{inference latency} (median per-sentence p50), and \textbf{energy consumption} (watt-hours and grams of CO\textsubscript{2}eq per run).
 Throughout, we separate entity typing on gold mentions from the full end-to-end setting, and the energy-aware comparison exposes order-of-magnitude efficiency gaps that a quality-only evaluation would hide.
-On our 13-dataset benchmark, both forms lead their category. \textbf{OPENER-ZS} is the most accurate \emph{zero-shot} system end-to-end ($39.4$ AMI, ahead of GLiNER-L's $38.9$ and OWNER's $34.3$) while staying frugal, at $1.7$\,Wh and $\sim$$180$\,ms per sentence: several times less energy and latency than OWNER ($14.3$\,Wh, $616$\,ms), and far below the 4-bit Qwen LLM ($11.4$\,Wh, $5$\,s). Given a domain's labels, \textbf{OPENER-Sup} is the most accurate system overall ($40.2$ end-to-end). On gold mentions, with detection removed, typing alone reaches $62.5$ AMI versus OWNER's $43.0$: the wide gap to the end-to-end scores pins the open-world bottleneck on mention \emph{detection} rather than typing -- the clearest axis for future gains.
+On our 13-dataset benchmark, with every OPENER score averaged over three embedder-retraining seeds, both forms lead their category. \textbf{OPENER-ZS} is the most accurate \emph{zero-shot} system end-to-end ($39.5$ AMI, ahead of GLiNER-L's $38.9$ and OWNER's $34.3$) while staying frugal, at $1.7$\,Wh and $\sim$$180$\,ms per sentence: several times less energy and latency than OWNER ($14.3$\,Wh, $616$\,ms), and far below the 4-bit Qwen LLM ($11.4$\,Wh, $5$\,s). Given a domain's labels, \textbf{OPENER-Sup} is the most accurate system overall ($40.1$ end-to-end). On gold mentions, with detection removed, typing alone reaches $62.3$ AMI versus OWNER's $43.0$: the wide gap to the end-to-end scores pins the open-world bottleneck on mention \emph{detection} rather than typing -- the clearest axis for future gains.
 % Camera-ready: the release links (GitHub + HuggingFace) live in sections/03_method.tex,
 % end of the Evaluation Protocol subsection; the real URLs are kept in comments there.
 We release the code, the per-experiment configurations, the fine-tuned embedders and the full benchmark.

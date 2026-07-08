@@ -77,16 +77,17 @@ python -m tests.test_opener_pipeline configs/my_experiment.yaml
 
 ---
 
-## ✅ État actuel (2026-06-21)
+## ✅ État actuel (2026-07-08)
 
-**Papier complet et soumissible : 16 p, IEEEtran double-blind, benchmark 13/13.** Pipeline retenu : `GLiNER-L (MD, frozen) → Nomic v1.5 Matryoshka fine-tuné contrastif + hard-negative mining → tête de typing`. Deux points de fonctionnement : **OPENER-Sup** (LinearSVC balanced, le plus précis : 40.2 e2e / 62.5 gold) et **OPENER-ZS** (prototypes label-name + transductif + fusion détecteur, meilleur zéro-shot : 39.4 e2e). La V1 (GMM + anchor words + OOD + hiérarchie) reste une ablation.
+**Papier complet et soumissible : 18 p, IEEEtran double-blind, benchmark 13/13, multi-seed.** Pipeline retenu : `GLiNER-L (MD, frozen) → Nomic v1.5 Matryoshka fine-tuné contrastif + hard-negative mining → tête de typing`. Deux points de fonctionnement : **OPENER-Sup** (LinearSVC balanced, le plus précis : 40.1 ±0.5 e2e / 62.3 ±1.0 gold) et **OPENER-ZS** (prototypes label-name + transductif + fusion détecteur, meilleur zéro-shot : 39.5 ±0.1 e2e). Tous les chiffres OPENER = mean±std sur 3 seeds de re-training complet (7/42/123 ; `scripts/run_multiseed.sh` + `scripts/aggregate_multiseed.py`, validé cellule à cellule) ; les ablations restent seed-42. La V1 (GMM + anchor words + OOD + hiérarchie) reste une ablation.
 
 - **Benchmark 13 datasets**, 3 axes (AMI + latence p50 + énergie/CO₂ via CodeCarbon) : GLiNER S/M/L, GNER T5-base, OWNER (transfert zéro-shot), Qwen2.5-1.5B 4-bit, OPENER (Sup + ZS). Asymétrie de supervision explicitée (OPENER-Sup supervisé sur train cible ; les autres zéro-shot).
 - **Paper rédigé en entier** : Abstract, Intro (cadrage transfer learning), Related Work (6 sous-parties, ~20 réfs), Method (formalisme + 7 équations), Experiments (Datasets + distributions de types, Baselines + table backbones/tailles, Experimental Settings + config, Main Results, **Analysis** + UMAP, Ablations), Conclusion, Acknowledgments (disclosure IA).
 - **Figures** : Fig 1 architecture (SVG→PDF), Fig 2 AMI, Fig 3 latence, Fig 4 énergie consumption, Fig 5 bar charts 4 métriques, Fig 6 **UMAP 3-panneaux** (contrastive en action, held-out WNUT — `scripts/make_umap.py`). Tables I-X.
 - **Overleaf** : `opener_overleaf.zip` (racine repo) prêt pour « Upload Project » (main.tex + sections + assets PDF + IEEEtran).
 - **Glitch énergie crossner_music** (22.76 Wh) : **résolu** (re-run hard-mining, 1.72 Wh).
-- **Reste avant soumission** : décider/retirer la note TODO Pareto (commentée dans `04_experiments.tex`), proofread final, éventuel multi-seed (limité par GPU 6 Go).
+- **Multi-seed (2026-07-08)** : fait. `run_multiseed.sh` est frugal (évals dataset par dataset avec resume fin, `HF_HUB_OFFLINE=1` obligatoire pour les runs nocturnes, threads OMP/MKL=4, priorité BelowNormal). Protocoles exacts des variantes : ZS gold = `run_opener_zs_sweep` (`raw (baseline)` = ZS-ind, `ensemble+refine` = ZS-trans) ; ZS e2e = fusion `inductive['0']` / `transductive['0.05']` ; Sup e2e = `by_threshold['0.3']['linear_svm_balanced']`.
+- **Reste avant soumission** : mots-clés IEEE définitifs (le bloc IEEEkeywords de `main.tex` contient encore des notes de brouillon en français !), proofread final, recompiler `paper/main.pdf` et régénérer `opener_overleaf.zip`.
 
 ### Composants livrés
 
