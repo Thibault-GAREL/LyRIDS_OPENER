@@ -6,7 +6,7 @@
 % Cles encore manquantes (PDF non fourni), laissees en commentaire si besoin :
 %   BERT (Devlin 2019), survey DL-NER (Li et al. 2022), InstructUIE, GPT-NER.
 
-OPENER sits at the intersection of three lines of research: open-world and zero-shot named entity recognition (NER), pretrained entity representations refined by contrastive learning, and energy-aware machine learning.
+OPENER sits at the intersection of three lines of research: open-world and zero-shot NER, pretrained entity representations refined by contrastive learning, and energy-aware machine learning.
 We review each in turn and state how OPENER differs.
 
 \subsection{Closed-set and Span-based NER}
@@ -43,7 +43,7 @@ This cost is precisely what motivates the lightweight design and the energy-awar
 OPENER relies on a pretrained sentence embedder rather than a task-specific encoder.
 Nomic Embed \cite{nussbaum2024nomic} provides an open, long-context model trained with the Matryoshka objective \cite{kusupati2022matryoshka}, whose representations can be truncated to lower dimensions without retraining, trading quality for compute.
 Such embedders build on the Sentence-BERT line of work \cite{reimers2019sbert}, and we sharpen the entity-type geometry with a triplet margin objective in the spirit of FaceNet \cite{schroff2015facenet}.
-The choice of base encoder is made empirically: we compare several strong open sentence encoders -- E5 \cite{wang2022e5}, BGE \cite{xiao2023cpack}, MPNet \cite{song2020mpnet} and mxbai \cite{li2024aoe} -- on entity typing under a common protocol (\autoref{tab:ablation}); Nomic v1.5 \cite{nussbaum2024nomic} edges them out while additionally offering native Matryoshka truncation, so we adopt it as the base and fine-tune it.
+The choice of base encoder is made empirically: we compare several strong open sentence encoders (E5 \cite{wang2022e5}, BGE \cite{xiao2023cpack}, MPNet \cite{song2020mpnet} and mxbai \cite{li2024aoe}) on entity typing under a common protocol (\autoref{tab:ablation}). Nomic v1.5 \cite{nussbaum2024nomic} edges them out while additionally offering native Matryoshka truncation, so we adopt it as the base and fine-tune it.
 Embedding labels and entities in a shared space \cite{wang2018joint}, modeling entity types with Gaussian components \cite{zhang2025contrastivegaussian}, generating synthetic entity-bearing text for augmentation \cite{hu2023entity}, and using mixtures to augment training data \cite{abbahaddou2024gmmgnn} are recurring ideas in low-resource NER, all grounded in classical Gaussian mixture models fitted by expectation-maximization \cite{reynolds2009gmm, dempster1977em}.
 Unlike methods that train a dedicated encoder, OPENER takes transfer learning in its purest form: it keeps a general-purpose pretrained space largely frozen and only applies a light contrastive fine-tuning, testing whether such a representation is already discriminative enough for entity typing.
 

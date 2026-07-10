@@ -56,5 +56,5 @@ OPENER-ZS reaches **39.4 end-to-end AMI**, the best of the compared zero-shot sy
 
 ## License & credits
 
-MIT. Base embedder Apache-2.0 (`nomic-ai/nomic-embed-text-v1.5`); detector GLiNER
+MIT. Base embedder Apache-2.0 (`nomic-ai/nomic-embed-text-v1.5`), detector GLiNER
 (`urchade/gliner_large-v2.1`). From the OPENER research code (LyRIDS Symposium 2026).

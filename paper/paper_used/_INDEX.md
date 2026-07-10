@@ -2,7 +2,7 @@
 
 Classement des papiers par rôle dans le projet Opener. **Correspondance 1:1 : 60 PDFs ↔ 60 références.** Tout PDF présent ici a été **vérifié** (titre/auteurs/venue lus sur la page de titre) et possède une entrée correcte dans `paper/references.bib`.
 
-> Certains papiers ont un **double rôle** (ex. GLiNER est à la fois un composant utilisé ET une baseline ; OWNER est la référence principale ET une baseline). Ils sont rangés selon leur rôle *primaire*, noté ci-dessous.
+> Certains papiers ont un **double rôle** (ex. GLiNER est à la fois un composant utilisé ET une baseline. OWNER est la référence principale ET une baseline). Ils sont rangés selon leur rôle *primaire*, noté ci-dessous.
 
 ---
 

@@ -104,7 +104,7 @@ Starting from the simple **GMM-per-label** pipeline (AMI **0.170**), Opener went
 
 ### 🏆 Vs OWNER paper baselines (Table 1, IEEE Access 2025)
 
-> ⚠️ **Protocol disclaimer (important).** The numbers below measure **entity typing on gold mentions** (the detector is bypassed, so there are no false negatives / false positives). This is an **upper bound** on the typing quality, **not** an end-to-end score, so it is **not directly comparable** to the end-to-end baselines. The fair **end-to-end** evaluation (GLiNER detects → Opener types, with FN/FP penalised) is currently being finalized; under that protocol Opener is **competitive with but does not dominate** GLiNER, because the open-world bottleneck is *detection recall*, not typing. Treat the table below as "how good is the typing if detection were perfect", and see the caveats at the end of this section.
+> ⚠️ **Protocol disclaimer (important).** The numbers below measure **entity typing on gold mentions** (the detector is bypassed, so there are no false negatives / false positives). This is an **upper bound** on the typing quality, **not** an end-to-end score, so it is **not directly comparable** to the end-to-end baselines. The fair **end-to-end** evaluation (GLiNER detects → Opener types, with FN/FP penalised) is currently being finalized. under that protocol, Opener is **competitive with but does not dominate** GLiNER, because the open-world bottleneck is *detection recall*, not typing. Treat the table below as "how good is the typing if detection were perfect", and see the caveats at the end of this section.
 
 <p align="center">
   <img src="assets/opener-comparison-chart.png" alt="AMI per dataset: Opener vs OWNER baselines (curated 6 models)" width="850">
@@ -132,7 +132,7 @@ On the 4 datasets directly comparable to the paper:
 1. **Typing-on-gold ≠ end-to-end.** All AMI numbers above are entity typing on **gold mentions** (no detection errors). The end-to-end pipeline (GLiNER detects → Opener types) scores **lower**, because detection recall is the real bottleneck on vertical domains (e.g. FabNER, MIT-Movie). The end-to-end comparison is being finalized - it is the one that matters for "Opener vs GLiNER", and there Opener is competitive, not dominant.
 2. **In-domain leakage on CoNLL-2003.** CoNLL-2003 is the **source domain** of the contrastive training, so its 0.707 AMI is **in-domain** and inflates the overall mean. The real cross-domain transfer mean (other datasets, CoNLL excluded) is the number to trust.
 
-> 🚧 **Status (2026-06-11):** the full 13-dataset benchmark (Opener gold + end-to-end, GLiNER S/M/L, GNER, OWNER, on AMI / speed / energy) is aggregated in `outputs/results/aggregate/results_all.json`. Current honest reading: **end-to-end, Opener (mean AMI 0.366) still trails GLiNER-L (0.389)**; on gold mentions **OWNER (0.590, partial) leads Opener (0.540)**. The encoder/method is being reworked accordingly, and OWNER is still running. Numbers here will be refreshed once all runs finish.
+> 🚧 **Status (2026-06-11):** the full 13-dataset benchmark (Opener gold + end-to-end, GLiNER S/M/L, GNER, OWNER, on AMI / speed / energy) is aggregated in `outputs/results/aggregate/results_all.json`. Current honest reading: **end-to-end, Opener (mean AMI 0.366) still trails GLiNER-L (0.389)**. On gold mentions, **OWNER (0.590, partial) leads Opener (0.540)**. The encoder/method is being reworked accordingly, and OWNER is still running. Numbers here will be refreshed once all runs finish.
 
 ### 📂 Full details
 

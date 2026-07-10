@@ -18,7 +18,7 @@ used in its **supervised** operating point (OPENER-Sup): the most accurate setti
 where a tiny balanced linear head is fitted on **your** labelled spans.
 
 Pipeline: `GLiNER-L (frozen detector) → this fine-tuned embedder → LinearSVC (balanced)`.
-The embedder is identical to [`Thibault-GAREL/opener-zs`](https://huggingface.co/Thibault-GAREL/opener-zs);
+The embedder is identical to [`Thibault-GAREL/opener-zs`](https://huggingface.co/Thibault-GAREL/opener-zs),
 only the typing head differs (a trained probe vs. label-name prototypes).
 
 ## Usage (turnkey)
@@ -44,7 +44,7 @@ m.save_head("opener_sup_head.joblib")   # reuse with m.load_head("opener_sup_hea
 ## How it was trained
 
 Same embedder as OPENER-ZS:
-- Base `nomic-ai/nomic-embed-text-v1.5`; Triplet contrastive (CoNLL-2003) + hard-negative mining.
+- Base `nomic-ai/nomic-embed-text-v1.5`, Triplet contrastive (CoNLL-2003) + hard-negative mining.
 - The typing head is a `LinearSVC(class_weight="balanced")` fitted one-vs-rest on the
   target's labelled spans (in this embedding space).
 
@@ -55,4 +55,4 @@ gold mentions** (vs a zero-shot OWNER 43.0), while staying frugal (~143 ms / 1.6
 
 ## License & credits
 
-MIT. Base embedder Apache-2.0; detector GLiNER. From the OPENER research code (LyRIDS Symposium 2026).
+MIT. Base embedder Apache-2.0, detector GLiNER. From the OPENER research code (LyRIDS Symposium 2026).

@@ -4,18 +4,20 @@
 \subsection{Problem Formulation}
 \label{sec:method:problem}
 Given a sentence, an open-world NER system must return a set of typed mentions whose type inventory is \emph{not} fixed at training time.
-Formally, a sentence $s$ yields candidate mentions $\mathcal{M}(s)=\{m_i\}$; an embedder $f_\theta$ maps each mention \emph{in context} to a vector and a typing head assigns it a type,
+Formally, a sentence $s$ yields candidate mentions $\mathcal{M}(s)=\{m_i\}$, an embedder $f_\theta$ maps each mention \emph{in context} to a vector and a typing head assigns it a type,
 \begin{equation}
 e_i = f_\theta(s, m_i)\in\mathbb{R}^{D},\qquad \hat y_i\in\mathcal{T},
 \end{equation}
 where the inventory $\mathcal{T}$ is unknown at training time.
-We adopt the evaluation of Genest et al. \cite{genest2025owner}.
-Predicted and gold mentions are aligned by exact character offsets; an unmatched gold mention (false negative) and an unmatched predicted mention (false positive) each receive a distinct sentinel type, so that detection errors are scored rather than ignored.
+We adopt the same evaluation OWNER \cite{genest2025owner}.
+Predicted and gold mentions are aligned by exact character offsets. An unmatched gold mention (false negative) and an unmatched predicted mention (false positive) each receive a distinct sentinel type, so that detection errors are scored rather than ignored.
+
 Type-assignment quality is then measured by the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between the gold type partition $U$ and the predicted partition $V$ over the aligned mentions,
 \begin{equation}
 \mathrm{AMI}(U,V)=\frac{\mathrm{MI}(U,V)-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]}{\tfrac12\!\left[H(U)+H(V)\right]-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]},
 \end{equation}
-where $\mathrm{MI}$ is mutual information, $H$ entropy, and the denominator uses the arithmetic-mean normalisation (the scikit-learn default); AMI does not require the two label vocabularies to coincide.
+where $\mathrm{MI}$ is mutual information, $H$ entropy, and the denominator uses the arithmetic-mean normalisation (the scikit-learn default). AMI does not require the two label vocabularies to coincide.
+
 We report two protocols that are never mixed in the same comparison: \emph{typing-on-gold}, where the typing component is applied to gold spans and detection is bypassed, and \emph{end-to-end}, where mentions come from the detector and the sentinels above are active.
 
 \subsection{Architecture Overview}
@@ -79,7 +81,7 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
 \end{tikzpicture}%
 }%
 }}
-\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head -- the only target-fitted component -- has two operating points: \textbf{OPENER-Sup} (\emph{supervised}, the upper bound) and the \emph{zero-shot} \textbf{\zstr} ($\bigstar$, selected). All upstream components are ready-to-use.}
+\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (Nomic, contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head (the only target-fitted component) has two operating points: the \emph{zero-shot} \textbf{\zstr} ($\bigstar$, selected) and \textbf{OPENER-Sup} (\emph{supervised}, the upper bound). All upstream components are ready-to-use.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -94,14 +96,14 @@ Only the typing head is fitted on target-side material, and it comes in two form
 \label{sec:method:detect}
 Mention detection is delegated to GLiNER \cite{zaratiana2024gliner}, a frozen, ready-to-use detector that scores every span against the candidate type names in a single forward pass.
 Decoupling detection from typing lets each component be chosen and measured independently, and it lets the typing head operate on any span proposer.
-We use GLiNER-L by default; the small and medium variants trace a size/efficiency trade-off (\autoref{tab:ablation}).
+We use GLiNER-L by default. The small and medium variants trace a size/efficiency trade-off (\autoref{tab:ablation}).
 As shown in \autoref{sec:exp:results}, the detector is the shared end-to-end bottleneck: its recall on specialised domains, not the typing head, caps end-to-end quality.
 
 \subsection{Entity Embedding}
 \label{sec:method:embed}
 Detected spans are embedded with Nomic Embed v1.5 \cite{nussbaum2024nomic}, a sentence embedder trained with the Matryoshka objective \cite{kusupati2022matryoshka}, whose representation can be truncated to a lower dimension and renormalised without retraining.
 Each mention is embedded \emph{in context} rather than in isolation: the span is presented together with its surrounding sentence, so that polysemous surface forms (e.g.\ a company versus a fruit) are disambiguated.
-This yields a vector $e_i \in \mathbb{R}^{D}$ with $D$ truncatable in $\{768,512,256,128,64\}$; we keep the full $D{=}768$ by default.
+This yields a vector $e_i \in \mathbb{R}^{D}$ with $D$ truncatable in $\{768,512,256,128,64\}$. We keep the full $D{=}768$ by default.
 Truncation is a post-encoding slice of the first $d$ coordinates followed by renormalisation,
 \begin{equation}
 e_i^{(d)} = e_{i,1:d}\,\big/\,\lVert e_{i,1:d}\rVert_2 ,
@@ -162,7 +164,7 @@ A per-class Gaussian mixture \cite{reynolds2009gmm} is reported only as a typing
 \subsection{Evaluation Protocol}
 \label{sec:method:eval}
 We evaluate on the $13$ datasets of \autoref{sec:exp:datasets}, each test split capped at $1000$ sentences.
-Quality is AMI \cite{vinh2010ami} (with macro-$F_1$ and accuracy), latency is the median (p50) per-sentence time over GPU-synchronised, warmed-up passes, and energy is measured with CodeCarbon \cite{lacoste2019codecarbon} under the French grid carbon intensity; the full protocol and instrumentation are detailed in \autoref{sec:exp:protocol} and \autoref{sec:exp:impl}.
+Quality is AMI \cite{vinh2010ami} (with macro-$F_1$ and accuracy), latency is the median (p50) per-sentence time over GPU-synchronised, warmed-up passes, and energy is measured with CodeCarbon \cite{lacoste2019codecarbon} under the French grid carbon intensity. The full protocol and instrumentation are detailed in \autoref{sec:exp:protocol} and \autoref{sec:exp:impl}.
 % Camera-ready links (double-blind: keep hidden until acceptance, then replace the red dots):
 %   code + configurations : https://github.com/Thibault-GAREL/LyRIDS_OPENER
 %   OPENER-ZS embedder    : https://huggingface.co/Thibault-GAREL/opener-zs

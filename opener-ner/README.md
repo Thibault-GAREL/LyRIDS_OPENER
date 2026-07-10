@@ -11,7 +11,7 @@ Two operating points, same encoder:
 - **OPENER-Sup** — *supervised*: fit a tiny balanced linear head on your labelled spans (most accurate).
 
 The fine-tuned embedder is hosted on the Hugging Face Hub and pulled by
-`from_pretrained()`; GLiNER-L is auto-downloaded on first use.
+`from_pretrained()`. GLiNER-L is auto-downloaded on first use.
 
 ## Install
 

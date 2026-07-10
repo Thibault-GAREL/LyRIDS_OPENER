@@ -4,13 +4,13 @@
 (commit `d1e6cb7`, "Publish Source Code"), utilisé comme baseline dans le papier.
 
 Note : le `.git` du clone a été renommé en `.git-upstream-disabled`. Git refuse de
-versionner des fichiers à l'intérieur d'un repo imbriqué ; ce renommage permet au repo
+versionner des fichiers à l'intérieur d'un repo imbriqué. Ce renommage permet au repo
 principal de suivre nos patches directement. Pour retrouver un repo git upstream
 fonctionnel (diff, pull), re-renommer temporairement en `.git`.
 
 Le code upstream n'est **pas** versionné dans ce repo (voir `.gitignore`). Sont versionnés uniquement :
 
-- `configs/lyrids/` et `configs/lyrids_ner/` : nos configs TOML par dataset (les 13 sets du benchmark), générées par `scripts/baselines/owner_make_configs.py` / `owner_make_transfer.py` ;
+- `configs/lyrids/` et `configs/lyrids_ner/` : nos configs TOML par dataset (les 13 sets du benchmark), générées par `scripts/baselines/owner_make_configs.py` / `owner_make_transfer.py`
 - les fichiers patchés localement (fixes Windows, garde anti-NaN, allègement des évals intermédiaires et du logging MLflow) :
   - `MLproject`
   - `env.yml`
