@@ -45,7 +45,7 @@ GENTLE & GEN & Multi-genre (challenge) & 1000 & abstract 55, person 10, event 9,
 \end{tabular}
 \end{table}
 
-We evaluate on \textbf{13 evaluation sets} that span news, social media, spoken queries, encyclopedic text, biomedical abstracts and manufacturing literature, following the dataset selection of Genest et al. \cite{genest2025owner}.
+We evaluate on \textbf{13 evaluation sets} that span news, social media, spoken queries, encyclopedic text, biomedical abstracts and manufacturing literature, following the dataset selection of OWNER \cite{genest2025owner}.
 CrossNER \cite{liu2021crossner} contributes five domain-specific sets, evaluated separately (artificial intelligence, literature, music, politics, science).
 The remaining eight are CoNLL-2003 \cite{tjongkimsang2003conll}, WNUT-17 \cite{derczynski2017wnut}, the MIT-Restaurant and MIT-Movie spoken-query corpora \cite{liu2013asgard}, FabNER \cite{kumar2022fabner}, the BioNLP/JNLPBA-2004 biomedical task \cite{kim2004jnlpba}, and the GUM \cite{zeldes2017gum} and GENTLE \cite{aoyama2023gentle} multi-genre corpora.
 Label granularity ranges from four coarse types in CoNLL-2003 to twelve fine-grained categories in FabNER, including opaque domain acronyms.
@@ -57,7 +57,7 @@ To homogenise evaluation cost across systems, we cap each test split at $1000$ s
 
 \begin{table}[H]
 \centering
-\caption{Backbones and size of the re-measured baselines and OPENER, in the spirit of Genest et al.\ \cite{genest2025owner}. ``Type'' is the transformer family; ``vs OPENER'' is the total parameter count relative to OPENER's end-to-end pipeline ($467$M $=$ GLiNER-L $330$M detector $+$ Nomic $137$M embedder). $^\dagger$\,OWNER reports $110$M for its BERT typing encoder alone; we count detection $+$ typing for parity with OPENER.}
+\caption{Backbones and size of the re-measured baselines and OPENER, in the spirit of OWNER \cite{genest2025owner}. ``Type'' is the transformer family; ``vs OPENER'' is the total parameter count relative to OPENER's end-to-end pipeline ($467$M $=$ GLiNER-L $330$M detector $+$ Nomic $137$M embedder). $^\dagger$\,OWNER reports $110$M for its BERT typing encoder alone; we count detection $+$ typing for parity with OPENER.}
 \label{tab:baselines}
 \footnotesize
 \setlength{\tabcolsep}{4.5pt}
@@ -94,8 +94,7 @@ Beyond quality, we report two efficiency axes: inference \emph{speed}, as the me
 
 \subsection{Evaluation Protocol}
 \label{sec:exp:protocol}
-Predicted and gold mentions are aligned by exact character offsets.
-Following \cite{genest2025owner}, an unmatched gold mention (a false negative) and an unmatched predicted mention (a false positive) are each assigned a distinct sentinel label before computing AMI, so that detection errors are penalised rather than ignored.
+Predicted and gold mentions are aligned by exact character offsets, and any unmatched mention receives a distinct sentinel label so that detection errors are penalised rather than ignored, following the sentinel-based scoring detailed in \autoref{sec:method:problem}.
 We distinguish two protocols that must not be mixed in the same comparison.
 In the \emph{typing-on-gold} protocol, the entity-typing component is applied to gold mention spans, which measures typing quality in isolation under perfect detection.
 In the \emph{end-to-end} protocol, mentions are produced by the detector and the sentinel labels above are active, which is the setting comparable to the baselines.
@@ -109,7 +108,7 @@ We additionally quantify the test-set sampling uncertainty with a bootstrap on t
 All experiments run on a single consumer-grade GPU with $6$\,GB of VRAM (CUDA~12.1, PyTorch~2.5.1 \cite{paszke2019pytorch}).
 We use the HuggingFace Transformers library \cite{wolf2020transformers} for the baselines, sentence-transformers \cite{reimers2019sbert} for the Matryoshka embedder \cite{nussbaum2024nomic, kusupati2022matryoshka}, and scikit-learn \cite{pedregosa2011scikit} for the linear classifier, whose solver is LIBLINEAR \cite{fan2008liblinear}.
 Latency is measured with two warmup passes followed by timed passes with GPU synchronisation, reporting p50, p95 and p99 per sentence.
-Energy is measured with CodeCarbon \cite{lacoste2019codecarbon} in offline mode using the French grid carbon intensity; when hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
+Energy is measured with CodeCarbon \cite{luccioni2019quantifying} in offline mode using the French grid carbon intensity; when hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
 All systems are measured on the same machine. The consumer GPU is subject to \emph{thermal throttling} (it lowers its clock frequency under sustained load to stay within its temperature limit), so per-sentence latency and per-run energy carry roughly $\pm15\%$ run-to-run variance; we therefore read the per-system averages as indicative and do not over-interpret individual per-dataset cells. A controlled-temperature re-measurement of all systems in a single session is left to future work.
 The quality metrics, in contrast, are fully deterministic: with the fixed seed and the released model, no stage of the OPENER pipeline is stochastic at inference, so its AMI and $F_1$ reproduce exactly across re-runs (we verified identical CrossNER scores on an independent re-run), and only latency and energy fluctuate.
 Because inference is deterministic, the only remaining source of uncertainty in the quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals in \autoref{tab:bootstrap}. The intervals are narrow ($\pm 1$--$1.5$ AMI) and their point estimates coincide with the released model's full-test-set scores (given in the caption of \autoref{tab:bootstrap}), indicating that the reported figures are stable rather than fragile, seed-specific artefacts.
@@ -561,7 +560,7 @@ Configuration & AMI & F\textsubscript{1} & Fit\,(ms) & p50\,(ms) & En.\,(Wh) & C
 \quad RoBERTa-NER (closed-set) \cite{liu2019roberta}   & 39.4 & 24.6 & 0.0 & 54 & 0.58 & 0.04 \\
 \addlinespace
 \multicolumn{7}{l}{\emph{Entity embedder}$^{\ast}$} \\
-\quad frozen bge-base-en-v1.5 \cite{xiao2023cpack}      & 23.6 & 41.9 & 0 & 43 & 0.63 & 0.04 \\
+\quad frozen bge-base-en-v1.5 \cite{xiao2024cpack}      & 23.6 & 41.9 & 0 & 43 & 0.63 & 0.04 \\
 \quad frozen all-mpnet-base-v2 \cite{song2020mpnet}     & 24.1 & 42.6 & 0 & 52 & 0.85 & 0.05 \\
 \quad frozen mxbai-embed-large-v1 \cite{li2024aoe}      & 24.4 & 42.5 & 0 & 363 & 3.86 & 0.25 \\
 \quad frozen e5-base-v2 \cite{wang2022e5}               & 25.3 & 43.4 & 0 & 39 & 0.59 & 0.04 \\

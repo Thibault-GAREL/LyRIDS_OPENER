@@ -9,8 +9,8 @@ Formally, a sentence $s$ yields candidate mentions $\mathcal{M}(s)=\{m_i\}$, an 
 e_i = f_\theta(s, m_i)\in\mathbb{R}^{D},\qquad \hat y_i\in\mathcal{T},
 \end{equation}
 where the inventory $\mathcal{T}$ is unknown at training time.
-We adopt the same evaluation OWNER \cite{genest2025owner}.
-Predicted and gold mentions are aligned by exact character offsets. An unmatched gold mention (false negative) and an unmatched predicted mention (false positive) each receive a distinct sentinel type, so that detection errors are scored rather than ignored.
+We adopt the same evaluation protocol as OWNER \cite{genest2025owner}.
+To keep the end-to-end score honest, detection errors must be penalised rather than quietly ignored. We align predicted and gold mentions by their exact character offsets, so a prediction is a match only when it covers exactly the same span as a gold mention. Any mention left unmatched is then a detection error of one of two kinds. A gold mention that no prediction matches is a \emph{false negative} (a missed entity, for example the detector finds ``Marie Curie'' but misses ``radium'' in ``Marie Curie discovered radium''). A predicted mention that matches no gold entity is a \emph{false positive} (a spurious span, for example the detector wrongly proposes ``discovered'' as an entity). Each unmatched mention receives its own distinct sentinel type, so that these errors count as mismatches when computing the AMI instead of being ignored.
 
 Type-assignment quality is then measured by the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between the gold type partition $U$ and the predicted partition $V$ over the aligned mentions,
 \begin{equation}
@@ -170,7 +170,7 @@ This is the strongest configuration but requires target-side labels.
 \subsection{Evaluation Protocol}
 \label{sec:method:eval}
 We evaluate on the $13$ datasets of \autoref{sec:exp:datasets}, each test split capped at $1000$ sentences.
-Quality is AMI \cite{vinh2010ami} (with macro-$F_1$ and accuracy), latency is the median (p50) per-sentence time over GPU-synchronised, warmed-up passes, and energy is measured with CodeCarbon \cite{lacoste2019codecarbon} under the French grid carbon intensity. The full protocol and instrumentation are detailed in \autoref{sec:exp:protocol} and \autoref{sec:exp:impl}.
+Quality is AMI \cite{vinh2010ami} (with macro-$F_1$ and accuracy), latency is the median (p50) per-sentence time over GPU-synchronised, warmed-up passes, and energy is measured with CodeCarbon \cite{luccioni2019quantifying} under the French grid carbon intensity. The full protocol and instrumentation are detailed in \autoref{sec:exp:protocol} and \autoref{sec:exp:impl}.
 % Camera-ready links (double-blind: keep hidden until acceptance, then replace the red dots):
 %   code + configurations : https://github.com/Thibault-GAREL/LyRIDS_OPENER
 %   OPENER-ZS embedder    : https://huggingface.co/Thibault-GAREL/opener-zs

@@ -18,7 +18,7 @@ Classement des papiers par rôle dans le projet Opener. **Correspondance 1:1 : 6
 | 6-Contrastive Learning w/ Gaussian Embeddings | `zhang2025contrastivegaussian` | Contrastif + gaussiennes few-shot NER. |
 | Handling Missing Entities (IRRA) | `cai2025handling` | Zero-shot NER. |
 | Entity-to-Text augmentation | `hu2023entity` | Augmentation NER. |
-| GMM-based augmentation (GNN) | `abbahaddou2024gmmgnn` | GMM pour l'augmentation. |
+| GMM-based augmentation (GNN) | `abbahaddou2025gmmgnn` | GMM pour l'augmentation. |
 | 1-FsPONER | `tang2024fsponer` | Few-shot prompt optimization (LLM NER). |
 | Neural Architectures for NER | `lample2016ner` | **(ajout RW-A 2026-06-20)** BiLSTM-CRF fondateur. NAACL-HLT 2016. |
 | End-to-end Seq. Labeling BiLSTM-CNNs-CRF | `ma2016end` | **(RW-A)** char-CNN + BiLSTM-CRF. ACL 2016. |
@@ -52,7 +52,7 @@ Classement des papiers par rôle dans le projet Opener. **Correspondance 1:1 : 6
 | Fichier | Clé bib | Note |
 |---|---|---|
 | Text Embeddings by Weakly-Supervised Contrastive Pre-training | `wang2022e5` | **E5** (e5-base-v2). arXiv 2212.03533, 2022. AMI 25.3. |
-| C-Pack - Packed Resources For General Chinese Embeddings | `xiao2023cpack` | **BGE** (bge-base-en-v1.5). SIGIR 2024. AMI 23.6. |
+| C-Pack - Packed Resources For General Chinese Embeddings | `xiao2024cpack` | **BGE** (bge-base-en-v1.5). SIGIR 2024. AMI 23.6. |
 | MPNet - Masked and Permuted Pre-training for Language Understanding | `song2020mpnet` | **all-mpnet-base-v2**. NeurIPS 2020. AMI 24.1. |
 | AnglE-optimized Text Embeddings | `li2024aoe` | Objectif AnglE/**AoE** derrière **mxbai-embed-large-v1**. ACL 2024. AMI 24.4. |
 
