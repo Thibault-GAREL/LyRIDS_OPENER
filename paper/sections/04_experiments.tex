@@ -79,11 +79,11 @@ Qwen2.5-1.5B & Qwen2.5 & Decoder & qwen2.5-1.5b-instruct & 1.5B & 3.2$\times$ \\
 
 We compare OPENER against representative open-world systems, all run end-to-end on the same splits and scored with the same protocol (\autoref{sec:exp:protocol}). \autoref{tab:baselines} summarises their backbones and sizes.
 \begin{itemize}
-\item \textbf{GLiNER} \cite{zaratiana2024gliner}: an open-world span classifier on a DeBERTaV3 encoder \cite{he2023debertav3}. We run all three sizes (S/M/L) to trace a size/efficiency trade-off.
-\item \textbf{GNER} \cite{ding2024gner}: a generative tagger built on T5 \cite{raffel2020t5}. We run the T5-base checkpoint.
-\item \textbf{OWNER} \cite{genest2025owner}: our closest baseline, a DeBERTaV3 detector with a BERT typing encoder \cite{devlin2019bert} clustered into dynamically named types. Executed in its original environment.
-\item \textbf{Qwen2.5-1.5B-Instruct} \cite{qwen2025}: the only generative LLM that fits our $6$\,GB GPU, run in 4-bit NF4 \cite{dettmers2023qlora} and prompted for JSON-formatted entities.
-\item \textbf{Large LLM systems}: UniversalNER \cite{zhou2024universalner}, GoLLIE \cite{sainz2024gollie} and ChatIE \cite{wei2024chatie} rely on $7$B-parameter backbones \cite{touvron2023llama} that exceed our hardware even under 4-bit quantization. We report the figures published by their authors rather than re-measuring them, and omit them from \autoref{tab:baselines}.
+\item \textbf{GLiNER} \cite{zaratiana2024gliner}: an open-world span classifier that scores every candidate span against the supplied type names in a single forward pass on a DeBERTaV3 encoder \cite{he2023debertav3}. It is a strong and fast detector, but its predicted types are limited to the names given as queries. We run all three sizes (S/M/L) to trace a size/efficiency trade-off.
+\item \textbf{GNER} \cite{ding2024gner}: a generative tagger built on T5 \cite{raffel2020t5} that regenerates the sentence with inline type tags. It is accurate, but its autoregressive decoding makes inference markedly slower than the encoder-based detectors. We run the T5-base checkpoint.
+\item \textbf{OWNER} \cite{genest2025owner}: our closest baseline, a DeBERTaV3 detector with a BERT typing encoder \cite{devlin2019bert} refined by contrastive learning, whose mentions are then grouped into dynamically named types by a plain unsupervised $k$-means. This keeps it fully label-free, but it re-encodes and re-clusters every mention at inference time, which is costly. Executed in its original environment.
+\item \textbf{Qwen2.5-1.5B-Instruct} \cite{qwen2025}: the only generative LLM that fits our $6$\,GB GPU, run in 4-bit NF4 \cite{dettmers2023qlora} and prompted for JSON-formatted entities. Even at this small size, its autoregressive decoding makes it the slowest and most energy-hungry system we measure, showing that generative extraction stays costly regardless of model size.
+\item \textbf{Large LLM systems}: UniversalNER \cite{zhou2024universalner}, GoLLIE \cite{sainz2024gollie} and ChatIE \cite{wei2024chatie} reach strong accuracy, but rely on $7$B-parameter backbones \cite{touvron2023llama} whose compute and energy cost is far higher and which exceed our hardware even under 4-bit quantization. We report the figures published by their authors rather than re-measuring them, and omit them from \autoref{tab:baselines}.
 \end{itemize}
 
 \subsection{Metrics}
@@ -116,16 +116,15 @@ Because inference is deterministic, the only remaining source of uncertainty in 
 
 \begin{table}[t]
 \centering
-\caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets, for OPENER-Sup and the inductive zero-shot head \zsind{} (the transductive refinement is excluded, as it adapts to the resampled test distribution). Cells report typing-on-gold AMI as bootstrap mean $\pm$ std with the $95\%$ percentile CI ($K{=}1000$ resamples of the gold mentions). Point estimates on the full test set are $71.5 / 71.8 / 59.2$ (Sup) and $65.9 / 55.2 / 35.6$ (\zsind), matching the bootstrap means. Intervals of $\pm 1$ to $1.5$ AMI indicate stable scores.}
+\caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets, for OPENER-Sup and the inductive zero-shot head \zsind{} (the transductive refinement is excluded, as it adapts to the resampled test distribution). Cells report typing-on-gold AMI ($\uparrow$) as bootstrap mean $\pm$ std with the $95\%$ percentile CI ($K{=}1000$ resamples of the gold mentions). Point estimates on the full test set are $71.5 / 71.8 / 59.2$ (Sup) and $65.9 / 55.2 / 35.6$ (\zsind), matching the bootstrap means. Intervals of $\pm 1$ to $1.5$ AMI indicate stable scores.}
 \label{tab:bootstrap}
 \small
-\begin{tabular}{lcc}
+\begin{tabular}{lccc}
 \toprule
-Dataset & OPENER-Sup AMI & \zsind{} AMI \\
+Model & CoNLL-2003 & CrossNER-Music & FabNER \\
 \midrule
-CoNLL-2003     & $71.7 \pm 1.5$ ~[$68.9$, $74.6$] & $66.1 \pm 1.4$ ~[$63.5$, $69.0$] \\
-CrossNER-Music & $72.4 \pm 0.9$ ~[$70.6$, $74.2$] & $55.5 \pm 0.9$ ~[$53.8$, $57.3$] \\
-FabNER         & $59.8 \pm 0.9$ ~[$57.9$, $61.6$] & $36.2 \pm 0.7$ ~[$34.7$, $37.5$] \\
+\zsind{}   & $66.1 \pm 1.4$ ~[$63.5$, $69.0$] & $55.5 \pm 0.9$ ~[$53.8$, $57.3$] & $36.2 \pm 0.7$ ~[$34.7$, $37.5$] \\
+OPENER-Sup & $71.7 \pm 1.5$ ~[$68.9$, $74.6$] & $72.4 \pm 0.9$ ~[$70.6$, $74.2$] & $59.8 \pm 0.9$ ~[$57.9$, $61.6$] \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -179,6 +178,7 @@ A per-domain analysis of these results, the detection bottleneck and the learned
 \label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{l*{13}{c}c}
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
@@ -206,6 +206,7 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 \rowcolor{hlred} OPENER-Sup & 40.3$_{\pm0.2}$ & 48.7$_{\pm1.3}$ & 55.2$_{\pm0.8}$ & 49.1$_{\pm1.4}$ & 51.8$_{\pm1.7}$ & 24.8$_{\pm0.2}$ & \textbf{34.1$_{\pm0.9}$} & \textbf{37.8$_{\pm0.2}$} & \textbf{29.8$_{\pm0.5}$} & \textbf{35.9$_{\pm0.5}$} & 46.1$_{\pm2.1}^\dagger$ & 33.8$_{\pm0.1}$ & 34.0$_{\pm0.3}$ & \textbf{40.1$_{\pm0.5}$} \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 \begin{figure}[H]
 \centering
@@ -395,7 +396,7 @@ OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & 2
 \small
 \begin{tabular}{lrrrrr}
 \toprule
-Model & Params & AMI & p50 (ms) & Energy (Wh) & CO\textsubscript{2} (g) \\
+Model & Params & AMI\,$\uparrow$ & p50 (ms)\,$\downarrow$ & Energy (Wh)\,$\downarrow$ & CO\textsubscript{2} (g)\,$\downarrow$ \\
 \midrule
 \multicolumn{6}{l}{\emph{Zero-shot (no target labels)}} \\
 GLiNER-S  & 50M  & 36.5 & 21 & 0.31 & 0.02 \\
@@ -433,7 +434,7 @@ OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-\begin{axis}[metricbar, title={AMI ($\uparrow$)}, ymin=0, ymax=45, ytick={0,15,30,45}]
+\begin{axis}[metricbar, title={AMI ($\uparrow$)}, ymin=24, ymax=42, ytick={24,28,32,36,40}]
 \addplot[ybar,bar shift=0pt,fill=figsky,draw=figsky!65!black] coordinates {(1,36.5)};
 \addplot[ybar,bar shift=0pt,fill=figcyan!85!black,draw=figcyan!55!black] coordinates {(2,37.1)};
 \addplot[ybar,bar shift=0pt,fill=blue!60!black,draw=blue!40!black] coordinates {(3,38.9)};
@@ -443,7 +444,7 @@ OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 \addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,33.8)};
 \addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,39.5)};
 \addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,40.1)};
-\draw[densely dotted, semithick, black!55] (axis cs:8.5,0) -- (axis cs:8.5,45);
+\draw[densely dotted, semithick, black!55] (axis cs:8.5,24) -- (axis cs:8.5,42);
 \end{axis}
 \end{tikzpicture}\hfill
 \begin{tikzpicture}
@@ -505,7 +506,7 @@ Second, on specialised schemas with opaque, abbreviation-like labels (FabNER, Bi
 \paragraph{Detection is the bottleneck, worst on specialised domains}
 Contrasting typing on gold mentions with the end-to-end scores isolates the cost of detection.
 For OPENER-Sup, the mean drop from gold to end-to-end is $22.2$ AMI, but it is far from uniform: it averages $18.8$ on the encyclopedic CrossNER domains against $29.9$ on the specialised schemas (BioNLP, MIT-Restaurant, MIT-Movie, FabNER), peaking at $33.3$ on BioNLP.
-The typing head is strong everywhere (gold AMI above $50$ on $11$ of $13$ sets). What caps end-to-end quality is the open-world detector's recall on cryptic, domain-specific surface forms, which confirms detection, not typing, as the dominant bottleneck.
+The typing head is strong everywhere (gold AMI above $50$ on $11$ of $13$ sets). What caps end-to-end quality is the open-world detector's recall on cryptic, domain-specific surface forms, which confirms detection, not typing, as the dominant bottleneck. The clearest next step for this method is therefore to build and train a stronger mention detector, which we expect to raise the end-to-end scores drastically.
 
 \paragraph{What remains hard}
 The residual typing errors are dominated by confusions between fine-grained, lexically close types \emph{within} a domain rather than across domains.
@@ -550,7 +551,7 @@ To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OP
 \small
 \begin{tabular}{lccrrrr}
 \toprule
-Configuration & AMI & F\textsubscript{1} & Fit\,(ms) & p50\,(ms) & En.\,(Wh) & CO\textsubscript{2}\,(g) \\
+Configuration & AMI\,$\uparrow$ & F\textsubscript{1}\,$\uparrow$ & Fit\,(ms)\,$\downarrow$ & p50\,(ms)\,$\downarrow$ & En.\,(Wh)\,$\downarrow$ & CO\textsubscript{2}\,(g)\,$\downarrow$ \\
 \midrule
 \multicolumn{7}{l}{\emph{Mention detector} (each row: that detector \,$\rightarrow$\, OPENER embedder $+$ typing head)} \\
 \quad GLiNER-S                       & 37.7 & 28.8 & 0.0 & 51 & 0.73 & 0.04 \\
@@ -594,6 +595,7 @@ Configuration & AMI & F\textsubscript{1} & Fit\,(ms) & p50\,(ms) & En.\,(Wh) & C
 \label{tab:et-gold}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{l*{13}{c}c}
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
@@ -612,6 +614,7 @@ OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52
 \rowcolor{hlred} OPENER-Sup & \textbf{57.6$_{\pm0.9}$} & \textbf{66.0$_{\pm2.0}$} & \textbf{72.3$_{\pm1.5}$} & \textbf{73.6$_{\pm1.8}$} & \textbf{69.4$_{\pm2.2}$} & \textbf{38.8$_{\pm1.0}$} & \textbf{63.2$_{\pm2.0}$} & \textbf{67.7$_{\pm1.9}$} & \textbf{57.1$_{\pm2.0}$} & \textbf{69.2$_{\pm1.8}$} & 73.3$_{\pm1.6}^\dagger$ & \textbf{49.8$_{\pm0.6}$} & \textbf{51.5$_{\pm0.2}$} & \textbf{62.3$_{\pm1.0}$} \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 % (per-dataset end-to-end line chart is placed next to tab:main as fig:main)
 

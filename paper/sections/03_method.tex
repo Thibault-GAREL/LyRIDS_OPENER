@@ -161,7 +161,7 @@ Second, a \emph{detector fusion} reuses a signal the prototype head otherwise di
 \begin{equation}
 s_t(i)=\cos(e_i,p_t)+\beta\,g_i\,\mathbb{1}\!\left[t=\ell_{\text{GLiNER}}(i)\right],\qquad \hat y_i=\arg\max_t s_t(i),
 \end{equation}
-where $s_t(i)$ is the fused score of assigning type $t$ to mention $m_i$, $\cos(e_i,p_t)$ is the prototype similarity above, $g_i\in[0,1]$ is GLiNER's own confidence for the type $\ell_{\text{GLiNER}}(i)$ it predicted, and $\mathbb{1}[\cdot]$ is the indicator function, equal to $1$ when $t$ is exactly that predicted type and $0$ otherwise. The fusion weight $\beta{=}0.05$ is deliberately small, so the detector only nudges the arg-max, and the assigned type $\hat y_i$ is the highest-scoring one.
+where $s_t(i)$ is the fused score of assigning type $t$ to mention $m_i$, $\cos(e_i,p_t)$ is the prototype similarity above, $g_i\in[0,1]$ is GLiNER's own confidence for the type $\ell_{\text{GLiNER}}(i)$ it predicted, and $\mathbb{1}[\cdot]$ is the indicator function, equal to $1$ when $t$ is exactly that predicted type and $0$ otherwise. The fusion weight $\beta{=}0.05$ was found by a small empirical sweep and is deliberately kept low, so the detector only nudges the arg-max, and the assigned type $\hat y_i$ is the highest-scoring one.
 The refined, fused head is \zstr, the selected zero-shot operating point: it reaches $39.5$ AMI end-to-end (mean over three retraining seeds), ahead of every compared zero-shot system, while using no target labels (\autoref{sec:exp:results}).
 A per-class Gaussian mixture \cite{reynolds2009gmm} is reported only as a typing ablation (\autoref{tab:ablation}).
 
@@ -182,4 +182,4 @@ Quality is AMI \cite{vinh2010ami} (with macro-$F_1$ and accuracy), latency is th
 %   code + configurations : https://github.com/Thibault-GAREL/LyRIDS_OPENER
 %   OPENER-ZS embedder    : https://huggingface.co/Thibault-GAREL/opener-zs
 %   OPENER-Sup embedder   : https://huggingface.co/Thibault-GAREL/opener-sup
-The code and the per-experiment configurations are released at \textcolor{red}{\texttt{...}}, and the fine-tuned embedders of OPENER-ZS and OPENER-Sup are available at \textcolor{red}{\texttt{...}} and \textcolor{red}{\texttt{...}}, respectively.
+The code and the per-experiment configurations are released in GitHub at \textcolor{red}{\texttt{...}}, and the fine-tuned embedders of OPENER-ZS and OPENER-Sup are available in Hugging Face at \textcolor{red}{\texttt{...}} and \textcolor{red}{\texttt{...}}, respectively.
