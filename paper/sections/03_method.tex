@@ -124,7 +124,7 @@ where $e_i \in \mathbb{R}^{D}$ is the in-context embedding of mention $m_i$, $e_
 \label{sec:method:contrastive}
 Still, the frozen embedding is only weakly discriminative for entity types ($25.8$ AMI, \autoref{tab:ablation}), so we sharpen its geometry with \emph{contrastive fine-tuning}, in two stages, while keeping the backbone otherwise intact.
 
-\paragraph{Stage 1 -- contrastive}
+\paragraph{Stage 1: contrastive}
 We fine-tune the embedder with a Triplet Margin Loss $\mathcal{L}$ \cite{schroff2015facenet} (using sentence-transformers \cite{reimers2019sbert}), with margin $\alpha = 1$, on the CoNLL-2003 \cite{tjongkimsang2003conll} training spans. We use CoNLL-2003 because it is the most diverse of our datasets (\autoref{tab:datasets}). Since the embedder is only lightly fine-tuned on it, we exclude CoNLL-2003 from the reported average, so as not to bias the results in our favour, following the same protocol as OWNER.
 A triplet $(a,p,n)$ takes an anchor span $a$, a positive $p$ of the \emph{same} type, and a negative $n$ of a \emph{different} type, with at most two triplets per anchor.
 Writing $\alpha$ for the margin, each triplet contributes
@@ -135,12 +135,12 @@ which pulls same-type spans together and pushes different-type spans apart, i.e.
 Training runs for $3$ epochs with batch size $16$, learning rate $2\times10^{-5}$ and $100$ warmup steps.
 This single step lifts typing-on-gold AMI from $25.8$ to $54.0$. The UMAP projection in \autoref{fig:umap} shows how Stage 1 reshapes the embedding space.
 
-\paragraph{Stage 2 -- error-driven hard-negative mining}
+\paragraph{Stage 2: error-driven hard-negative mining}
 We then mine the model's own confusions. We defer this to Stage 2, after the Stage-1 warm-up, to avoid overfitting to these hard cases.
 On each target training split, we run a cross-validated typing pass (so no test label is ever seen) and collect the type pairs that are most often confused, such as \emph{writer}/\emph{person}, \emph{album}/\emph{band} and \emph{country}/\emph{location}.
 For each such error, we form a \emph{hard} triplet whose anchor is the mistyped span (true type $L$), whose positive is another span of $L$, and whose negative is a span of the confused type $C$.
 Hard triplets are mixed with correctly-typed (easy) triplets for diversity, targeting a $65\%$ hard fraction, and the Stage-1 embedder is fine-tuned further with the same optimiser settings. This ratio must be controlled carefully to preserve generalisation.
-The selected run mines $8000$ triplets over $3$ epochs and reaches $62.5$ AMI at the released seed ($+8.5$ over Stage~1, better on $12$ of $13$ sets); retraining the full two-stage recipe under three seeds yields $62.3 \pm 1.0$ (\autoref{sec:exp:protocol}).
+The selected run mines $8000$ triplets over $3$ epochs and reaches $62.5$ AMI at the released seed ($+8.5$ over Stage~1, better on $12$ of $13$ sets). Retraining the full two-stage recipe under three seeds yields $62.3 \pm 1.0$ (\autoref{sec:exp:protocol}).
 This embedder is shared unchanged by every typing head below. The UMAP projection in \autoref{fig:umap} also reveals the additional effect of Stage 2 on the embedding space.
 
 \subsection*{3. Entity Typing}
