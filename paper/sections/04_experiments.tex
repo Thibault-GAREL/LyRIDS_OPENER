@@ -49,7 +49,7 @@ We evaluate on \textbf{13 evaluation sets} that span news, social media, spoken 
 CrossNER \cite{liu2021crossner} contributes five domain-specific sets, evaluated separately (artificial intelligence, literature, music, politics, science).
 The remaining eight are CoNLL-2003 \cite{tjongkimsang2003conll}, WNUT-17 \cite{derczynski2017wnut}, the MIT-Restaurant and MIT-Movie spoken-query corpora \cite{liu2013asgard}, FabNER \cite{kumar2022fabner}, the BioNLP/JNLPBA-2004 biomedical task \cite{kim2004jnlpba}, and the GUM \cite{zeldes2017gum} and GENTLE \cite{aoyama2023gentle} multi-genre corpora.
 Label granularity ranges from four coarse types in CoNLL-2003 to twelve fine-grained categories in FabNER, including opaque domain acronyms.
-Two datasets used by \cite{genest2025owner}, GENIA \cite{kim2003genia} and i2b2, are license-gated and therefore not re-measured here; BioNLP/JNLPBA-2004 serves as our biomedical proxy.
+Two datasets used by OWNER \cite{genest2025owner}, GENIA \cite{kim2003genia} and i2b2, are license-gated and therefore not re-measured here; BioNLP/JNLPBA-2004 serves as our biomedical proxy.
 To homogenise evaluation cost across systems, we cap each test split at $1000$ sentences (the full split is used when it is smaller).
 
 \subsection{Baselines}
@@ -88,7 +88,7 @@ We compare OPENER against representative open-world systems, all run end-to-end 
 
 \subsection{Metrics}
 \label{sec:exp:metrics}
-Our primary metric is the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between predicted and gold type assignments, following \cite{genest2025owner}, complemented by macro-averaged $F_1$ and accuracy.
+Our primary metric is the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between predicted and gold type assignments, following OWNER \cite{genest2025owner}, complemented by macro-averaged $F_1$ and accuracy.
 Because open-world predictions need not share the gold label vocabulary, AMI is computed over the aligned set of mentions, which makes it well suited to comparing dynamically named types.
 Beyond quality, we report two efficiency axes: inference \emph{speed}, as the median (p50) latency per sentence, and \emph{energy}, as kilowatt-hours and grams of CO\textsubscript{2}eq per run.
 
