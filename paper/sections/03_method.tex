@@ -4,11 +4,12 @@
 \subsection{Problem Formulation}
 \label{sec:method:problem}
 Given a sentence, an open-world NER system must return a set of typed mentions whose type inventory is \emph{not} fixed at training time.
-Formally, a sentence $s$ yields candidate mentions $\mathcal{M}(s)=\{m_i\}$, an embedder $f_\theta$ maps each mention \emph{in context} to a vector and a typing head assigns it a type,
+Formally, from a sentence $s$, a mention detector produces the set of candidate mentions $\mathcal{M}(s)=\{m_i\}$. Each mention $m_i$ is then passed, together with its sentence $s$, to an embedder $f_\theta$ that maps it \emph{in context} to a $D$-dimensional representation vector $e_i$. Finally, a typing head assigns $m_i$ a predicted type $\hat y_i$ drawn from the type inventory $\mathcal{T}$,
 \begin{equation}
 e_i = f_\theta(s, m_i)\in\mathbb{R}^{D},\qquad \hat y_i\in\mathcal{T},
 \end{equation}
-where the inventory $\mathcal{T}$ is unknown at training time.
+where the type inventory $\mathcal{T}$ is unknown at training time.
+
 We adopt the same evaluation protocol as OWNER \cite{genest2025owner}.
 To keep the end-to-end score honest, detection errors must be penalised rather than quietly ignored. We align predicted and gold mentions by their exact character offsets, so a prediction is a match only when it covers exactly the same span as a gold mention. Any mention left unmatched is then a detection error of one of two kinds. A gold mention that no prediction matches is a \emph{false negative} (a missed entity, for example the detector finds ``Marie Curie'' but misses ``radium'' in ``Marie Curie discovered radium''). A predicted mention that matches no gold entity is a \emph{false positive} (a spurious span, for example the detector wrongly proposes ``discovered'' as an entity). Each unmatched mention receives its own distinct sentinel type, so that these errors count as mismatches when computing the AMI instead of being ignored.
 
@@ -16,7 +17,7 @@ Type-assignment quality is then measured by the Adjusted Mutual Information (AMI
 \begin{equation}
 \mathrm{AMI}(U,V)=\frac{\mathrm{MI}(U,V)-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]}{\tfrac12\!\left[H(U)+H(V)\right]-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]},
 \end{equation}
-where $\mathrm{MI}$ is mutual information, $H$ entropy, and the denominator uses the arithmetic-mean normalisation (the scikit-learn default). AMI does not require the two label vocabularies to coincide.
+where $\mathrm{MI}$ is the mutual information and $H$ the entropy, and the denominator uses the arithmetic-mean normalisation (the scikit-learn default). Intuitively, mutual information is a core quantity of Shannon's information theory \cite{shannon1948}: it measures how much knowing a mention's predicted type reduces the uncertainty about its true (gold) type, and it is zero exactly when the two partitions are statistically independent (the prediction tells us nothing about the truth). The \emph{adjusted} form further subtracts the agreement expected by chance, so a random typing scores close to $0$ whatever the number of types, while a perfect one scores $1$. A key advantage in the open-world setting is that AMI does not require the two label vocabularies to coincide, since the predicted type names need not match the gold ones.
 
 We report two protocols that are never mixed in the same comparison: \emph{typing-on-gold}, where the typing component is applied to gold spans and detection is bypassed, and \emph{end-to-end}, where mentions come from the detector and the sentinels above are active.
 

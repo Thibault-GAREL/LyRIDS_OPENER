@@ -35,8 +35,9 @@ Classement des papiers par rôle dans le projet Opener. **Correspondance 1:1 : 6
 | GLiNER | `zaratiana2024gliner` | Mention detector (S/M/L). Aussi baseline. |
 | Nomic Embed | `nussbaum2024nomic` | Embedder (TMLR **2025**). |
 | Matryoshka Representation Learning | `kusupati2022matryoshka` | Troncature de dimension. |
-| Quantifying the Carbon Emissions (CodeCarbon) | `lacoste2019codecarbon` | Mesure énergie. |
+| Quantifying the Carbon Emissions (CodeCarbon) | `luccioni2019quantifying` | Mesure énergie. |
 | Information Theoretic Measures (AMI) | `vinh2010ami` | **Métrique principale**. |
+| A Mathematical Theory of Communication (Shannon) | `shannon1948` | Fondation de l'information mutuelle (AMI). |
 | LIBLINEAR | `fan2008liblinear` | Solveur derrière LinearSVC. |
 | Scikit-learn | `pedregosa2011scikit` | LinearSVC / GMM / AMI. |
 | Sentence-BERT | `reimers2019sbert` | Lib sentence-transformers (run/fine-tune Nomic). |
