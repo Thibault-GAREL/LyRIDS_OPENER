@@ -11,7 +11,7 @@ We review each in turn and state how OPENER differs.
 
 \subsection{Closed-set and Span-based NER}
 \label{sec:related:closed}
-Traditional NER is cast as supervised sequence labeling over a fixed inventory of entity types, typically with a pretrained encoder followed by a token- or span-level classifier.
+Traditional NER is cast as supervised sequence labeling over a fixed inventory of entity types, typically with a pretrained encoder followed by a token or span-level classifier.
 Early neural taggers replaced hand-made features with recurrent encoders over a CRF layer: the BiLSTM-CRF \cite{lample2016ner} paired character and word-level representations, and the BiLSTM-CNN-CRF \cite{ma2016end} added a character-level CNN to obtain a fully end-to-end sequence labeler.
 The pretrained encoder paradigm subsequently increased in-domain accuracy further, fine-tuning a bidirectional transformer such as BERT \cite{devlin2019bert} with a lightweight classification head.
 Beyond flat tagging, span-based formulations enumerate candidate spans and classify them directly, which simplifies the handling of nested and discontinuous entities \cite{nguyen2023span}: biaffine NER \cite{yu2020biaffine} scores every span with a biaffine layer borrowed from dependency parsing, while an MRC framework \cite{li2020mrc} recasts typing as machine reading comprehension, querying the sentence with a natural-language description of each type, a use of label semantics our zero-shot head also exploits.

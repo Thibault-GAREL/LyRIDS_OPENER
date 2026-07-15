@@ -82,7 +82,7 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
 \end{tikzpicture}%
 }%
 }}
-\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (Nomic, contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head (the only target-fitted component) has two operating points: the \emph{zero-shot} \textbf{\zstr} ($\bigstar$, selected) and \textbf{OPENER-Sup} (\emph{supervised}, the upper bound). All upstream components are ready-to-use.}
+\caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (Nomic, contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head (the only target-fitted component) has two operating points: the \emph{zero-shot} \zstr ($\bigstar$, selected) and OPENER-Sup (\emph{supervised}, the upper bound). All upstream components are ready-to-use.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -162,11 +162,10 @@ s_t(i)=\cos(e_i,p_t)+\beta\,g_i\,\mathbb{1}\!\left[t=\ell_{\text{GLiNER}}(i)\rig
 \end{equation}
 where $s_t(i)$ is the fused score of assigning type $t$ to mention $m_i$, $\cos(e_i,p_t)$ is the prototype similarity above, $g_i\in[0,1]$ is GLiNER's own confidence for the type $\ell_{\text{GLiNER}}(i)$ it predicted, and $\mathbb{1}[\cdot]$ is the indicator function, equal to $1$ when $t$ is exactly that predicted type and $0$ otherwise. The fusion weight $\beta{=}0.05$ was found by a small empirical sweep and is deliberately kept low, so the detector only nudges the arg-max, and the assigned type $\hat y_i$ is the highest-scoring one.
 The refined, fused head is \zstr, the selected zero-shot operating point: it reaches $39.5$ AMI end-to-end (mean over three retraining seeds), ahead of every compared zero-shot system, while using no target labels (\autoref{sec:exp:results}).
-A per-class Gaussian mixture \cite{reynolds2009gmm} is reported only as a typing ablation (\autoref{tab:ablation}).
 
 \paragraph{Supervised probe (OPENER-Sup)}
 When a domain's entity classes are fixed and labelled, the typing head can instead be a balanced linear classifier (LinearSVC with the LIBLINEAR solver \cite{fan2008liblinear}) fitted one-vs-rest on the target's training labels.
-For each type $c$ it minimises a squared-hinge objective with balanced class weights,
+For each type $c$, it minimises a squared-hinge objective with balanced class weights,
 \begin{equation}
 \min_{w_c,b_c}\;\tfrac12\lVert w_c\rVert_2^2+C\sum_i \omega_{y_i}\,\max\!\big(0,\,1-z_{ic}(w_c^{\top} e_i+b_c)\big)^2,\quad \omega_c=\frac{n}{|\mathcal{T}|\,n_c},
 \end{equation}
