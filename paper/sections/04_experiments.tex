@@ -8,23 +8,24 @@
 
 \begin{table}[H]
 \centering
-\caption{The 13 evaluation sets and their gold entity types. ``Test'' is the number of test sentences used (capped at 1000). Each type is followed by its share (\%) of the test mentions, listed by decreasing frequency (types are the dataset's original labels).}
+\caption{The 13 evaluation sets and their gold entity types.}
 \label{tab:datasets}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
+\begin{threeparttable}
 \begin{tabular}{@{}lllr>{\raggedright\arraybackslash}p{0.40\linewidth}@{}}
 \toprule
 Dataset & Abbr. & Domain & Test & Entity types (share \%) \\
 \midrule
-CrossNER-AI & AI & Encyclopedic (AI) & 430 & task 12, field 11, product 11, metrics 11, misc 10, algorithm 10, researcher 9, organisation 8, conference 5, person 4, programlang 3, country 2, location 2, university 2 \\
+CrossNER-AI & AI & encyclopaedic (AI) & 430 & task 12, field 11, product 11, metrics 11, misc 10, algorithm 10, researcher 9, organisation 8, conference 5, person 4, programlang 3, country 2, location 2, university 2 \\
 \addlinespace
-CrossNER-Literature & Lit & Encyclopedic (literature) & 416 & writer 25, book 18, misc 11, literarygenre 9, person 8, award 6, poem 5, organisation 5, country 4, location 4, magazine 3, event 2 \\
+CrossNER-Literature & Lit & encyclopaedic (literature) & 416 & writer 25, book 18, misc 11, literarygenre 9, person 8, award 6, poem 5, organisation 5, country 4, location 4, magazine 3, event 2 \\
 \addlinespace
-CrossNER-Music & Mus & Encyclopedic (music) & 465 & musicalartist 15, musicgenre 15, band 14, location 10, album 10, award 8, song 7, organisation 6, misc 5, country 5, person 2, event 2, musicalinstrument 1 \\
+CrossNER-Music & Mus & encyclopaedic (music) & 465 & musicalartist 15, musicgenre 15, band 14, location 10, album 10, award 8, song 7, organisation 6, misc 5, country 5, person 2, event 2, musicalinstrument 1 \\
 \addlinespace
-CrossNER-Politics & Pol & Encyclopedic (politics) & 651 & politicalparty 23, location 14, organisation 12, politician 12, election 10, country 10, person 8, misc 6, event 5 \\
+CrossNER-Politics & Pol & encyclopaedic (politics) & 651 & politicalparty 23, location 14, organisation 12, politician 12, election 10, country 10, person 8, misc 6, event 5 \\
 \addlinespace
-CrossNER-Science & Sci & Encyclopedic (science) & 543 & misc 17, scientist 15, astronomicalobject 11, organisation 9, person 7, academicjournal 6, location 6, chemicalcompound 5, protein 5, award 5, university 4, chemicalelement 3, enzyme 3, discipline 2, event 1, country 1, theory 1 \\
+CrossNER-Science & Sci & encyclopaedic (science) & 543 & misc 17, scientist 15, astronomicalobject 11, organisation 9, person 7, academicjournal 6, location 6, chemicalcompound 5, protein 5, award 5, university 4, chemicalelement 3, enzyme 3, discipline 2, event 1, country 1, theory 1 \\
 \addlinespace
 WNUT-17 & WNUT & Social media & 689 & person 40, group 15, location 14, creative-work 13, product 12, corporation 6 \\
 \addlinespace
@@ -43,9 +44,14 @@ GUM & GUM & Multi-genre & 1000 & abstract 38, person 17, event 12, place 10, obj
 GENTLE & GEN & Multi-genre (challenge) & 1000 & abstract 55, person 10, event 9, time 8, object 7, place 5, organization 4, animal 1, substance 1, plant $<$1 \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item ``Test'' is the number of test sentences used (capped at 1000). Each type is followed by its share (\%) of the test mentions, listed by decreasing frequency (types are the dataset's original labels).
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
-We evaluate on \textbf{13 evaluation sets} that span news, social media, spoken queries, encyclopedic text, biomedical abstracts and manufacturing literature, following the dataset selection of OWNER \cite{genest2025owner}.
+We evaluate on 13 evaluation sets that span news, social media, spoken queries, encyclopaedic text, biomedical abstracts and manufacturing literature, following the dataset selection of OWNER \cite{genest2025owner}.
 CrossNER \cite{liu2021crossner} contributes five domain-specific sets, evaluated separately (artificial intelligence, literature, music, politics, science).
 The remaining eight are CoNLL-2003 \cite{tjongkimsang2003conll}, WNUT-17 \cite{derczynski2017wnut}, the MIT-Restaurant and MIT-Movie spoken-query corpora \cite{liu2013asgard}, FabNER \cite{kumar2022fabner}, the BioNLP/JNLPBA-2004 biomedical task \cite{kim2004jnlpba}, and the GUM \cite{zeldes2017gum} and GENTLE \cite{aoyama2023gentle} multi-genre corpora.
 Label granularity ranges from four coarse types in CoNLL-2003 to twelve fine-grained categories in FabNER, including opaque domain acronyms.
@@ -57,10 +63,11 @@ To homogenise evaluation cost across systems, we cap each test split at $1000$ s
 
 \begin{table}[H]
 \centering
-\caption{Backbones and size of the re-measured baselines and OPENER, in the spirit of OWNER \cite{genest2025owner}. ``Type'' is the transformer family. ``vs OPENER'' is the total parameter count relative to OPENER's end-to-end pipeline ($467$M $=$ GLiNER-L $330$M detector $+$ Nomic $137$M embedder). $^\dagger$\,OWNER reports $110$M for its BERT typing encoder alone. We count detection $+$ typing for parity with OPENER.}
+\caption{Backbones and size of the re-measured baselines and OPENER, in the spirit of OWNER \cite{genest2025owner}.}
 \label{tab:baselines}
 \footnotesize
 \setlength{\tabcolsep}{4.5pt}
+\begin{threeparttable}
 \begin{tabular}{@{}llllrr@{}}
 \toprule
 Model & Backbone & Type & Version & Params & vs OPENER \\
@@ -69,21 +76,27 @@ GLiNER-S & DeBERTaV3 & Encoder & deberta-v3-small & 50M & 0.1$\times$ \\
 GLiNER-M & DeBERTaV3 & Encoder & deberta-v3-base & 200M & 0.4$\times$ \\
 GLiNER-L & DeBERTaV3 & Encoder & deberta-v3-large & 330M & 0.7$\times$ \\
 GNER & T5 & Enc.--Dec. & t5-base & 220M & 0.5$\times$ \\
-OWNER$^\dagger$ & DeBERTaV3+BERT & Encoder & deberta-v3 + bert-base & 294M & 0.6$\times$ \\
+OWNER\tnote{$\dagger$} & DeBERTaV3+BERT & Encoder & deberta-v3 + bert-base & 294M & 0.6$\times$ \\
 Qwen2.5-1.5B & Qwen2.5 & Decoder & qwen2.5-1.5b-instruct & 1.5B & 3.2$\times$ \\
 \midrule
-\textbf{OPENER} (ours) & DeBERTaV3+Nomic & Encoder & deberta-v3-large + nomic-v1.5 & 467M & 1.0$\times$ \\
+\rowcolor{hlorange} \textbf{OPENER} (ours) & DeBERTaV3+Nomic & Encoder & deberta-v3-large + nomic-v1.5 & 467M & 1.0$\times$ \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item ``Type'' is the transformer family. ``vs OPENER'' is the total parameter count relative to OPENER's end-to-end pipeline ($467$M $=$ GLiNER-L $330$M detector $+$ Nomic $137$M embedder).
+\item[$\dagger$] OWNER reports $110$M for its BERT typing encoder alone. We count detection $+$ typing for parity with OPENER.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
-We compare OPENER against representative open-world systems, all run end-to-end on the same splits and scored with the same protocol (\autoref{sec:exp:protocol}). \autoref{tab:baselines} summarises their backbones and sizes.
+We compare OPENER with representative open-world systems, all run end-to-end on the same splits and scored with the same protocol (\autoref{sec:exp:protocol}). \autoref{tab:baselines} summarises their backbones and sizes.
 \begin{itemize}
 \item \textbf{GLiNER} \cite{zaratiana2024gliner}: an open-world span classifier that scores every candidate span against the supplied type names in a single forward pass on a DeBERTaV3 encoder \cite{he2023debertav3}. It is a strong and fast detector, but its predicted types are limited to the names given as queries. We run all three sizes (S/M/L) to trace a size/efficiency trade-off.
 \item \textbf{GNER} \cite{ding2024gner}: a generative tagger built on T5 \cite{raffel2020t5} that regenerates the sentence with inline type tags. It is accurate, but its autoregressive decoding makes inference markedly slower than the encoder-based detectors. We run the T5-base checkpoint.
 \item \textbf{OWNER} \cite{genest2025owner}: our closest baseline, a DeBERTaV3 detector with a BERT typing encoder \cite{devlin2019bert} refined by contrastive learning, whose mentions are then grouped into dynamically named types by a plain unsupervised $k$-means. This keeps it fully label-free, but it re-encodes and re-clusters every mention at inference time, which is costly. Executed in its original environment.
-\item \textbf{Qwen2.5-1.5B-Instruct} \cite{qwen2025}: the only generative LLM that fits our $6$\,GB GPU, run in 4-bit NF4 \cite{dettmers2023qlora} and prompted for JSON-formatted entities. Even at this small size, its autoregressive decoding makes it the slowest and most energy-hungry system we measure, showing that generative extraction stays costly regardless of model size.
-\item \textbf{Large LLM systems}: UniversalNER \cite{zhou2024universalner}, GoLLIE \cite{sainz2024gollie} and ChatIE \cite{wei2024chatie} reach strong accuracy, but rely on $7$B-parameter backbones \cite{touvron2023llama} whose compute and energy cost is far higher and which exceed our hardware even under 4-bit quantization. We report the figures published by their authors rather than re-measuring them, and omit them from \autoref{tab:baselines}.
+\item \textbf{Qwen2.5-1.5B-Instruct} \cite{qwen2025}: the only generative LLM that fits our $6$\,GB GPU, runs in 4-bit NF4 \cite{dettmers2023qlora} and prompted for JSON-formatted entities. Even at this small size, its autoregressive decoding makes it the slowest and most energy-hungry system we measure, showing that generative extraction remains costly regardless of model size.
+\item \textbf{Large LLM systems}: UniversalNER \cite{zhou2024universalner}, GoLLIE \cite{sainz2024gollie} and ChatIE \cite{wei2024chatie} reach strong accuracy but rely on $7$B-parameter backbones \cite{touvron2023llama} whose compute and energy cost is far higher and which exceed our hardware even under 4-bit quantisation. We report the figures published by their authors rather than re-measuring them and omit them from \autoref{tab:baselines}.
 \end{itemize}
 
 \subsection{Metrics}
@@ -94,31 +107,32 @@ Beyond quality, we report two efficiency axes: inference \emph{speed}, as the me
 
 \subsection{Evaluation Protocol}
 \label{sec:exp:protocol}
-Predicted and gold mentions are aligned by exact character offsets, and any unmatched mention receives a distinct sentinel label so that detection errors are penalised rather than ignored, following the sentinel-based scoring detailed in \autoref{sec:method:problem}.
+The predicted and gold mentions are aligned by exact character offsets, and any unmatched mention receives a distinct sentinel label so that detection errors are penalised rather than ignored, following the sentinel-based scoring detailed in \autoref{sec:method:problem}.
 We distinguish two protocols that must not be mixed in the same comparison.
 In the \emph{typing-on-gold} protocol, the entity-typing component is applied to gold mention spans, which measures typing quality in isolation under perfect detection.
-In the \emph{end-to-end} protocol, mentions are produced by the detector and the sentinel labels above are active, which is the setting comparable to the baselines.
+In the \emph{end-to-end} protocol, the detector produces mentions and the sentinel labels above are active, which is a setting comparable to the baselines.
 OPENER's embedder \emph{training} is stochastic (triplet sampling and optimisation), so we retrain the complete embedder (contrastive Stage~1, then hard-negative mining Stage~2) under three random seeds ($7$, $42$, $123$) and re-evaluate every OPENER operating point on the full benchmark with each resulting embedder.
-Every OPENER cell in the result tables therefore reports the mean\,$\pm$\,standard deviation over the three seeds. Seed $42$ is the released model.
+Therefore, every OPENER cell in the result tables reports the mean\,$\pm$\,standard deviation over the three seeds. Seed $42$ is the model released.
 The compared baselines are frozen pretrained checkpoints whose inference is deterministic, so re-running them under a different seed returns identical predictions and they are reported as single runs. OWNER, the only baseline that trains, is likewise reported from a single training run of its published protocol.
-We additionally quantify the test-set sampling uncertainty with a bootstrap on the released model (\autoref{tab:bootstrap}), a source of uncertainty orthogonal to the retraining seed.
+We also quantify the test-set sampling uncertainty with a bootstrap on the released model (\autoref{tab:bootstrap}), a source of uncertainty orthogonal to the retraining seed.
 
 \subsection{Experimental Settings}
 \label{sec:exp:impl}
 All experiments run on a single consumer-grade GPU with $6$\,GB of VRAM (CUDA~12.1, PyTorch~2.5.1 \cite{paszke2019pytorch}).
-We use the HuggingFace Transformers library \cite{wolf2020transformers} for the baselines, sentence-transformers \cite{reimers2019sbert} for the Matryoshka embedder \cite{nussbaum2024nomic, kusupati2022matryoshka}, and scikit-learn \cite{pedregosa2011scikit} for the linear classifier, whose solver is LIBLINEAR \cite{fan2008liblinear}.
+We use the HuggingFace Transformers library \cite{wolf2020transformers} for baselines, sentence-transformers \cite{reimers2019sbert} for the Matryoshka embedder \cite{nussbaum2024nomic, kusupati2022matryoshka}, and scikit-learn \cite{pedregosa2011scikit} for the linear classifier, whose solver is LIBLINEAR \cite{fan2008liblinear}.
 Latency is measured with two warmup passes followed by timed passes with GPU synchronisation, reporting p50, p95 and p99 per sentence.
 Energy is measured with CodeCarbon \cite{luccioni2019quantifying} in offline mode using the French grid carbon intensity. When hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
 All systems are measured on the same machine. The consumer GPU is subject to \emph{thermal throttling} (it lowers its clock frequency under sustained load to stay within its temperature limit), so per-sentence latency and per-run energy carry roughly $\pm15\%$ run-to-run variance. We therefore read the per-system averages as indicative and do not over-interpret individual per-dataset cells. A controlled-temperature re-measurement of all systems in a single session is left to future work.
 The quality metrics, in contrast, are fully deterministic: with the fixed seed and the released model, no stage of the OPENER pipeline is stochastic at inference, so its AMI and $F_1$ reproduce exactly across re-runs (we verified identical CrossNER scores on an independent re-run), and only latency and energy fluctuate.
-Because inference is deterministic, the only remaining source of uncertainty in the quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals in \autoref{tab:bootstrap}. The intervals are narrow ($\pm 1$ to $1.5$ AMI) and their point estimates coincide with the released model's full-test-set scores (given in the caption of \autoref{tab:bootstrap}), indicating that the reported figures are stable rather than fragile, seed-specific artefacts.
-\autoref{tab:hyperparams} collects the full OPENER configuration used throughout. The embedder is retrained under each of the three seeds ($7$, $42$, $123$) while every other component is fixed.
+Because inference is deterministic, the only remaining source of uncertainty in quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets, we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals in \autoref{tab:bootstrap}. The intervals are narrow ($\pm 1$ to $1.5$ AMI) and their point estimates coincide with the released model's full-test-set scores (given in the caption of \autoref{tab:bootstrap}), indicating that the reported figures are stable rather than fragile seed-specific artefacts.
+\autoref{tab:hyperparams} collects the complete OPENER configuration used throughout. The embedder is retrained under each of the three seeds ($7$, $42$, $123$) while every other component is fixed.
 
 \begin{table}[t]
 \centering
-\caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets, for OPENER-Sup and the inductive zero-shot head \zsind{} (the transductive refinement is excluded, as it adapts to the resampled test distribution). Cells report typing-on-gold AMI ($\uparrow$) as bootstrap mean $\pm$ std with the $95\%$ percentile CI ($K{=}1000$ resamples of the gold mentions). Point estimates on the full test set are $71.5 / 71.8 / 59.2$ (Sup) and $65.9 / 55.2 / 35.6$ (\zsind), matching the bootstrap means. Intervals of $\pm 1$ to $1.5$ AMI indicate stable scores.}
+\caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets.}
 \label{tab:bootstrap}
 \small
+\begin{threeparttable}
 \begin{tabular}{lccc}
 \toprule
 Model & CoNLL-2003 & CrossNER-Music & FabNER \\
@@ -127,13 +141,19 @@ Model & CoNLL-2003 & CrossNER-Music & FabNER \\
 OPENER-Sup & $71.7 \pm 1.5$ ~[$68.9$, $74.6$] & $72.4 \pm 0.9$ ~[$70.6$, $74.2$] & $59.8 \pm 0.9$ ~[$57.9$, $61.6$] \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item For OPENER-Sup and the inductive zero-shot head \zsind{} (the transductive refinement is excluded, as it adapts to the resampled test distribution). Cells report typing-on-gold AMI ($\uparrow$) as bootstrap mean $\pm$ std with the $95\%$ percentile CI ($K{=}1000$ resamples of the gold mentions). Point estimates on the full test set are $71.5 / 71.8 / 59.2$ (Sup) and $65.9 / 55.2 / 35.6$ (\zsind), matching the bootstrap means. Intervals of $\pm 1$ to $1.5$ AMI indicate stable scores.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \begin{table}[t]
 \centering
-\caption{OPENER configuration. The detector and embedder are ready-to-use. The contrastive and hard-mining stages produce the shared embedder. The typing head is fitted (supervised) or label-free (zero-shot).}
+\caption{OPENER configuration.}
 \label{tab:hyperparams}
 \small
+\begin{threeparttable}
 \begin{tabular}{ll}
 \toprule
 Component & Setting \\
@@ -150,6 +170,11 @@ Zero-shot typing   & label-name prototype $+$ transductive $+$ fusion ($\beta{=}
 Random seeds       & $7$ / $42$ / $123$ (full embedder retraining per seed; $42$ = released) \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item The detector and embedder are ready-to-use. The contrastive and hard-mining stages produce the shared embedder. The typing head is fitted (supervised) or label-free (zero-shot).
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \subsection{Main Results}
@@ -174,10 +199,11 @@ A per-domain analysis of these results, the detection bottleneck and the learned
 
 \begin{table}[H]
 \centering
-\caption{Open-world NER, end-to-end. AMI ($\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}. Bold marks the best value per column across all systems. Systems are grouped by supervision (\emph{zero-shot} vs the \emph{supervised} OPENER-Sup). OPENER rows report mean\,$\pm$\,std over the three embedder-retraining seeds (\autoref{sec:exp:protocol}). The baselines are frozen checkpoints with deterministic inference (single run). $^\dagger$\,CoNLL-2003 is in-domain for OWNER (training source) and OPENER (contrastive source) and is not bolded as a transfer result. $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample (indicative, not bolded). Typing-on-gold is reported in \autoref{tab:et-gold}.}
+\caption{Open-world NER, end-to-end. AMI ($\times 100$, $\uparrow$).}
 \label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
+\begin{threeparttable}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l*{13}{c}c}
 \toprule
@@ -207,6 +233,13 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 \bottomrule
 \end{tabular}
 }
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item Abbreviations follow \autoref{tab:datasets}. Bold marks the best value per column across all systems. Systems are grouped by supervision (\emph{zero-shot} vs the \emph{supervised} OPENER-Sup). OPENER rows report mean\,$\pm$\,std over the three embedder-retraining seeds (\autoref{sec:exp:protocol}). The baselines are frozen checkpoints with deterministic inference (single run). Typing-on-gold is reported in \autoref{tab:et-gold}.
+\item[$\dagger$] CoNLL-2003 is in-domain for OWNER (training source) and OPENER (contrastive source) and is not bolded as a transfer result.
+\item[$\ddagger$] Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample (indicative, not bolded).
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 \begin{figure}[H]
 \centering
@@ -254,10 +287,11 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 
 \begin{table}[H]
 \centering
-\caption{Median per-sentence latency (ms, $\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}, best per column in bold. $^\S$\,OWNER exposes no per-sentence call: its figure is an amortised wall-clock mean (its $88$-min training is excluded). $^\dagger$\,CoNLL is OWNER's in-domain source, measured by a separate inference-only run. $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.}
+\caption{Median per-sentence latency (ms, $\downarrow$), end-to-end.}
 \label{tab:latency}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
+\begin{threeparttable}
 \begin{tabular}{l*{13}{c}c}
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
@@ -280,6 +314,14 @@ OWNER$^\S$ & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 & 558 & 719$^\d
 \rowcolor{hlred} OPENER-Sup & 222 & 271 & 293 & 159 & 132 & 100 & 92 & 98 & 104 & 108 & 89 & 100 & 94 & 143 \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item Abbreviations follow \autoref{tab:datasets}, best per column in bold.
+\item[$\S$] OWNER exposes no per-sentence call: its figure is an amortised wall-clock mean (its $88$-min training is excluded).
+\item[$\dagger$] CoNLL is OWNER's in-domain source, measured by a separate inference-only run.
+\item[$\ddagger$] Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 \begin{figure}[H]
 \centering
@@ -321,10 +363,11 @@ OWNER$^\S$ & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 & 558 & 719$^\d
 
 \begin{table}[H]
 \centering
-\caption{Energy consumption per run (Wh, $\downarrow$), end-to-end. Abbreviations follow \autoref{tab:datasets}. Best per column in bold. $^\S$\,OWNER is measured at inference only (its one-time $88$-min CoNLL-2003 training is amortised, not charged per run). $^\dagger$\,CoNLL is its in-domain training source, measured by a separate inference-only run. $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.}
+\caption{Energy consumption per run (Wh, $\downarrow$), end-to-end.}
 \label{tab:energy}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
+\begin{threeparttable}
 \begin{tabular}{l*{13}{c}c}
 \toprule
 Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & GUM & GEN & Avg \\
@@ -347,6 +390,14 @@ OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & 2
 \rowcolor{hlred} OPENER-Sup & 1.10 & 1.26 & 0.87 & 1.76 & 1.41 & 1.31 & 1.75 & 1.87 & 1.96 & 1.97 & 1.73 & 1.91 & 1.78 & 1.59 \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item Abbreviations follow \autoref{tab:datasets}. Best per column in bold.
+\item[$\S$] OWNER is measured at inference only (its one-time $88$-min CoNLL-2003 training is amortised, not charged per run).
+\item[$\dagger$] CoNLL is its in-domain training source, measured by a separate inference-only run.
+\item[$\ddagger$] Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 \begin{figure}[H]
 \centering
@@ -391,9 +442,10 @@ OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & 2
 
 \begin{table}[H]
 \centering
-\caption{Quality vs efficiency, $13$-set means. AMI ($\times 100$, $\uparrow$, OPENER rows: mean\,$\pm$\,std over three retraining seeds). P50 latency (ms), energy (Wh), carbon (gCO\textsubscript{2}eq) per run ($\downarrow$, measured on the released seed-$42$ run). Parameters (end-to-end OPENER $=$ GLiNER-L detector $330$M $+$ embedder $137$M $=$ $467$M, or $137$M on gold, OWNER $\approx$294M, GLiNER sizes from project notes). $^\S$\,OWNER's latency is an amortised wall-clock mean and its one-time $88$-min training is not charged per run (\autoref{tab:latency}). $^\ddagger$\,Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.}
+\caption{Quality vs efficiency, $13$-set means.}
 \label{tab:efficiency}
 \small
+\begin{threeparttable}
 \begin{tabular}{lrrrrr}
 \toprule
 Model & Params & AMI\,$\uparrow$ & p50 (ms)\,$\downarrow$ & Energy (Wh)\,$\downarrow$ & CO\textsubscript{2} (g)\,$\downarrow$ \\
@@ -415,6 +467,13 @@ OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 \rowcolor{hlred} OPENER-Sup & 467M & 40.1$_{\pm0.5}$ & 143 & 1.59 & 0.09 \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item AMI ($\times 100$, $\uparrow$, OPENER rows: mean\,$\pm$\,std over three retraining seeds). P50 latency (ms), energy (Wh), carbon (gCO\textsubscript{2}eq) per run ($\downarrow$, measured on the released seed-$42$ run). Parameters (end-to-end OPENER $=$ GLiNER-L detector $330$M $+$ embedder $137$M $=$ $467$M, or $137$M on gold, OWNER $\approx$294M, GLiNER sizes from project notes).
+\item[$\S$] OWNER's latency is an amortised wall-clock mean and its one-time $88$-min training is not charged per run (\autoref{tab:latency}).
+\item[$\ddagger$] Qwen2.5-1.5B-Instruct (4-bit) is on a $150$-sentence subsample per set.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \pgfplotsset{
@@ -500,16 +559,16 @@ OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 
 \paragraph{Where OPENER wins, and why}
 Two domain patterns stand out across \autoref{tab:main} and \autoref{fig:main}.
-First, the detector-fusion gains of \zstr concentrate on the context-rich encyclopedic CrossNER domains ($+14.7$ AMI on Music, $+10.1$ on Science, $+8.8$ on Politics over the un-fused centroid), where the detector's own zero-shot label is most reliable and lifts OPENER-ZS to detector-level quality (e.g.\ Music $58.3$, edging GLiNER-L's $58.0$).
+First, the detector-fusion gains of \zstr concentrate on the context-rich encyclopaedic CrossNER domains ($+14.7$ AMI on Music, $+10.1$ on Science, $+8.8$ on Politics over the un-fused centroid), where the detector's own zero-shot label is most reliable and lifts OPENER-ZS to detector-level quality (e.g.\ Music $58.3$, edging GLiNER-L's $58.0$).
 Second, on specialised schemas with opaque, abbreviation-like labels (FabNER, BioNLP), OPENER's contrastive typing maps cryptic surface forms far better than OWNER's prompt-based naming: OPENER-Sup leads end-to-end ($29.8$ and $35.9$ AMI), and on gold mentions the gap widens sharply ($57.1$/$69.2$ versus OWNER's $31.9$/$29.2$, \autoref{tab:et-gold}).
 
 \paragraph{Detection is the bottleneck, worst on specialised domains}
 Contrasting typing on gold mentions with the end-to-end scores isolates the cost of detection.
-For OPENER-Sup, the mean drop from gold to end-to-end is $22.2$ AMI, but it is far from uniform: it averages $18.8$ on the encyclopedic CrossNER domains against $29.9$ on the specialised schemas (BioNLP, MIT-Restaurant, MIT-Movie, FabNER), peaking at $33.3$ on BioNLP.
+For OPENER-Sup, the mean drop from gold to end-to-end is $22.2$ AMI, but it is far from uniform: it averages $18.8$ on the encyclopaedic CrossNER domains against $29.9$ on the specialised schemas (BioNLP, MIT-Restaurant, MIT-Movie, FabNER), peaking at $33.3$ on BioNLP.
 The typing head is strong everywhere (gold AMI above $50$ on $11$ of $13$ sets). What caps end-to-end quality is the open-world detector's recall on cryptic, domain-specific surface forms, which confirms detection, not typing, as the dominant bottleneck. The clearest next step for this method is therefore to build and train a stronger mention detector, which we expect to raise the end-to-end scores drastically.
 
 \paragraph{What remains hard}
-The residual typing errors are dominated by confusions between fine-grained, lexically close types \emph{within} a domain rather than across domains.
+The residual typing errors are dominated by confusions between fine-grained, lexically close types within a domain rather than across domains.
 The most frequent type confusions are DNA vs.\ protein (BioNLP), the FabNER process labels CONPRI vs.\ MATE/PRO/MANP, and the Movie attributes TITLE vs.\ GENRE/RATING: precisely the opaque schemas of \autoref{tab:datasets} where even the surrounding context barely disambiguates the type.
 
 \paragraph{Contrastive learning in action}
@@ -531,24 +590,53 @@ The type geometry learned on CoNLL thus transfers to an unseen domain, which is 
 \subsection{Ablations}
 \label{sec:exp:ablations}
 We justify each architectural choice with a one-factor-at-a-time search.
-Starting from the default pipeline, we vary a single component while holding the others fixed, and keep the setting with the highest mean AMI.
+Starting from the default pipeline, we vary a single component while holding the others fixed and keep the setting with the highest mean AMI.
 Among embedder variants, an error-driven \emph{hard-negative mining} pass, fine-tuning the contrastive embedder on the entity pairs it most often confuses (e.g.\ \emph{writer}/\emph{person}, \emph{album}/\emph{band}, \emph{country}/\emph{location}), mixed with correctly-typed mentions for diversity, raises typing-on-gold AMI from $54.0$ to $60.1$. Scaling the mined triplets ($3000\!\to\!8000$) and epochs ($2\!\to\!3$) lifts it further to $62.5$ ($+8.5$ over the contrastive embedder, better on $12$ of $13$ sets), our selected configuration.
 \autoref{tab:ablation} reports this search. The protocol comparison between typing-on-gold and end-to-end is discussed alongside the main results.
 The remaining axes confirm the rest of the pipeline: among frozen ready-to-use base encoders, Nomic v1.5 is the most discriminative for entity typing ($25.8$ AMI, ahead of e5-base $25.3$, mxbai $24.4$, MPNet $24.1$ and BGE $23.6$) and is selected (the heaviest candidate, mxbai-large, is moreover $\sim$8$\times$ slower per sentence for no quality gain). Even so, frozen embeddings are only weakly discriminative, so the contrastive step is what makes the space usable ($+28.2$). The detector, which only proposes spans, re-typed by the OPENER head, trades quality for cost (GLiNER-S\,$\to$\,L: $37.7\!\to\!40.2$ AMI at $51\!\to\!143$\,ms end-to-end), and OPENER's typing on GLiNER-L's spans ($40.2$) even beats GLiNER-L's own typing ($38.9$, \autoref{tab:main}). A closed-set NER detector (BERT- or RoBERTa-NER, CoNLL-trained) used in its place collapses to $\sim$0 recall outside PER/ORG/LOC/MISC (MIT, FabNER, BioNLP), dragging macro-$F_1$ to $17.9$/$24.6$ (vs $30.5$) and confirming that open-world detection is required. And for typing a balanced linear SVM edges out a per-class GMM and logistic regression ($62.5$ vs $56.1$ vs $55.6$).
 Replacing the supervised typing head with a label-name nearest-centroid removes target supervision entirely, at a cost of $18.1$ AMI ($62.5\!\to\!44.4$). This base variant, \zsind, stays on par with the zero-shot OWNER baseline ($43.2$ vs $43.0$ over the three seeds, \autoref{tab:et-gold}) while fitting in $293$\,ms instead of $2.2$\,s, making it the frugal choice when no target labels are available.
 A label-free \emph{transductive} refinement of the prototypes, spherical k-means seeded by the label names and run once on the unlabelled test mentions, recovers $7.0$ AMI on gold mentions ($44.4\!\to\!51.4$, \autoref{tab:ablation}) and $2.6$ end-to-end at the released seed ($34.2\!\to\!36.8$, above OWNER's $34.3$), widening \zstr's margin over OWNER while still using no target labels. This is a transductive rather than inductive setting, as it exploits the unlabelled test distribution.
-We further probed whether the zero-shot head could be improved by aligning entity mentions and label \emph{names} in a shared space, trained on the large label vocabulary of Pile-NER \cite{zhou2024universalner} ($\approx$4.6k types) with an entity$\leftrightarrow$label-name contrastive objective (\autoref{tab:zs-embedder}).
-This produces a \emph{strictly} domain-agnostic embedder (unlike the selected hard-mining embedder, it never sees any target-side data), yet it does not improve mean AMI ($42.2$ vs $44.4$): the Pile-NER vocabulary lifts macro-$F_1$ ($+3.8$) and helps encyclopedic domains (CrossNER-Politics $+14.2$, -Science $+8.6$) but hurts specialised schemas (MIT-Restaurant $-15.9$, FabNER $-11.8$, BioNLP $-11.8$).
-A second label-name hard-mining pass degrades it further ($39.7$ AMI): Pile-NER's GPT-generated types include many near-synonyms (e.g.\ \emph{person}/\emph{per}, \emph{location}/\emph{loc}), so mining ``confusions'' between them manufactures negatives that pull apart labels that should stay close.
+We further investigated whether the zero-shot head could be improved by aligning entity mentions and label names in a shared space, trained on the large label vocabulary of Pile-NER \cite{zhou2024universalner} ($\approx$4.6k types) with an entity$\leftrightarrow$label-name contrastive objective (\autoref{tab:zs-embedder}).
+This produces a strictly domain-agnostic embedder (unlike the selected hard-mining embedder, it never sees any target-side data), yet it does not improve mean AMI ($42.2$ vs $44.4$): the Pile-NER vocabulary lifts macro-$F_1$ ($+3.8$) and helps encyclopaedic domains (CrossNER-Politics $+14.2$, -Science $+8.6$) but hurts specialised schemas (MIT-Restaurant $-15.9$, FabNER $-11.8$, BioNLP $-11.8$).
+A second label-name hard-mining pass further degrades it ($39.7$ AMI): Pile-NER's GPT-generated types include many near-synonyms (e.g.\ \emph{person}/\emph{per}, \emph{location}/\emph{loc}), so mining ``confusions'' between them manufactures negatives that pull apart labels that should stay close.
 We therefore retain the target-tuned hard-mining embedder for OPENER-ZS and report the Pile-NER variants as a negative ablation.
 A separate efficiency axis emerges in the \emph{training} cost (\autoref{tab:ablation}, Fit): per-sentence inference is governed by the detector alone (truncating the Matryoshka dimension or swapping the classifier leaves it unchanged), whereas fitting the typing head is $7\times$ cheaper at dimension $64$ than at $768$ (for only a $4.6$-point AMI drop, $62.5\!\to\!57.9$) and $4.5\times$ cheaper for balanced logistic regression than for the linear SVM, a speed/quality knob orthogonal to inference.
+
+\autoref{fig:matryoshka} plots typing-on-gold quality against the Matryoshka dimension $d$. Quality degrades smoothly as $d$ shrinks, with clearly diminishing returns rather than a cliff: $d{=}256$ already reaches $61.2$ AMI (within $1.3$ of the full $62.5$) and the curve flattens above it. Truncation therefore trades a little quality for a large cut in the typing-head fit cost, and, crucially, this confirms that the Matryoshka structure \emph{survives} our contrastive fine-tuning: the embedder can still be truncated and renormalised, exposing a graceful cost/quality knob.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.92\linewidth, height=5cm,
+  xlabel={Matryoshka dimension $d$ (log spacing)},
+  ylabel={Typing-on-gold ($\times100$)},
+  symbolic x coords={64,128,256,512,768},
+  xtick=data,
+  ymin=56, ymax=73,
+  ymajorgrids, grid style={gray!18},
+  tick label style={font=\scriptsize},
+  label style={font=\small},
+  legend style={font=\scriptsize, draw=none, at={(0.98,0.03)}, anchor=south east},
+]
+\addplot[figsky, thick, mark=*] coordinates {(64,57.9) (128,59.9) (256,61.2) (512,62.0) (768,62.5)};
+\addlegendentry{AMI}
+\addplot[figviolet, thick, densely dashed, mark=square*] coordinates {(64,67.7) (128,69.7) (256,70.6) (512,71.2) (768,71.8)};
+\addlegendentry{macro-$F_1$}
+\end{axis}
+\end{tikzpicture}
+\caption{Typing-on-gold quality vs the Matryoshka truncation dimension $d$ (\autoref{tab:ablation}, dimension axis; released seed, $13$-set means, log-spaced $d$). Both AMI and macro-$F_1$ degrade smoothly with diminishing returns and flatten above $d{=}256$, showing that truncation is a graceful cost/quality knob and that the Matryoshka structure survives the contrastive fine-tuning.}
+\label{fig:matryoshka}
+\end{figure}
+
 To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
 
 \begin{table}[tbp]
 \centering
-\caption{OPENER architecture search: one component is varied at a time around the default pipeline (\textbf{bold}). AMI and macro-$F_1$ ($\times100$, $\uparrow$). Fit\,(ms) is the typing-head training time. Per-row latency, energy and carbon ($\downarrow$). All ablation rows use the released seed ($42$). On the \emph{mention-detector} axis, each row is OPENER's \emph{end-to-end} AMI with that detector, it only proposes spans, re-typed by the OPENER head (unlike the standalone systems of \autoref{tab:main}). The $^\ast$\,embedder, $^\ddagger$\,typing and $^\S$\,dimension axes are typing-on-gold over the $13$ sets ($^\S$ truncates the Matryoshka vector after encoding). $^\P$\,marks the zero-shot nearest-centroid head (no target labels, its Fit is the one-off prototype-embedding cost). Latency/energy is the deployed end-to-end cost on the MD axis and the constant embedder-plus-typing cost elsewhere. Per-axis findings are analysed in \autoref{sec:exp:ablations}.}
+\caption{OPENER architecture search: one component is varied at a time around the default pipeline (\textbf{bold}).}
 \label{tab:ablation}
 \small
+\begin{threeparttable}
 \begin{tabular}{lccrrrr}
 \toprule
 Configuration & AMI\,$\uparrow$ & F\textsubscript{1}\,$\uparrow$ & Fit\,(ms)\,$\downarrow$ & p50\,(ms)\,$\downarrow$ & En.\,(Wh)\,$\downarrow$ & CO\textsubscript{2}\,(g)\,$\downarrow$ \\
@@ -587,14 +675,22 @@ Configuration & AMI\,$\uparrow$ & F\textsubscript{1}\,$\uparrow$ & Fit\,(ms)\,$\
 \quad \quad + transductive refine$^\P$ & 51.4 & 48.5 & 293 & 42 & 0.63 & 0.04 \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item AMI and macro-$F_1$ ($\times100$, $\uparrow$). Fit\,(ms) is the typing-head training time. Per-row latency, energy and carbon ($\downarrow$). All ablation rows use the released seed ($42$). On the \emph{mention-detector} axis, each row is OPENER's \emph{end-to-end} AMI with that detector, it only proposes spans, re-typed by the OPENER head (unlike the standalone systems of \autoref{tab:main}). Latency/energy is the deployed end-to-end cost on the MD axis and the constant embedder-plus-typing cost elsewhere. Per-axis findings are analysed in \autoref{sec:exp:ablations}.
+\item[$\ast\,\ddagger\,\S$] The embedder, typing and dimension axes are typing-on-gold over the $13$ sets ($^\S$ truncates the Matryoshka vector after encoding).
+\item[$\P$] Marks the zero-shot nearest-centroid head (no target labels, its Fit is the one-off prototype-embedding cost).
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \begin{table}[tbp]
 \centering
-\caption{Entity typing on gold mentions (detection bypassed): OPENER vs OWNER (AMI $\times 100$, $\uparrow$). Abbreviations follow \autoref{tab:datasets}. Bold marks the best value per column. Systems are grouped by supervision. OPENER rows report mean\,$\pm$\,std over the three embedder-retraining seeds (\autoref{sec:exp:protocol}). OWNER is a single training run. Here \zstr is the transductively-refined prototype head (the detector fusion of \autoref{tab:main} is end-to-end-only, inactive without a detector). \zsind is the un-refined nearest centroid. OPENER-Sup is the supervised upper bound. $^\dagger$\,CoNLL-2003 is in-domain for OWNER (training source) and OPENER (contrastive source) and is not bolded.}
+\caption{Entity typing on gold mentions (detection bypassed): OPENER vs OWNER (AMI $\times 100$, $\uparrow$).}
 \label{tab:et-gold}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
+\begin{threeparttable}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l*{13}{c}c}
 \toprule
@@ -615,14 +711,21 @@ OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52
 \bottomrule
 \end{tabular}
 }
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item Abbreviations follow \autoref{tab:datasets}. Bold marks the best value per column. Systems are grouped by supervision. OPENER rows report mean\,$\pm$\,std over the three embedder-retraining seeds (\autoref{sec:exp:protocol}). OWNER is a single training run. Here \zstr is the transductively-refined prototype head (the detector fusion of \autoref{tab:main} is end-to-end-only, inactive without a detector). \zsind is the un-refined nearest centroid. OPENER-Sup is the supervised upper bound.
+\item[$\dagger$] CoNLL-2003 is in-domain for OWNER (training source) and OPENER (contrastive source) and is not bolded.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 % (per-dataset end-to-end line chart is placed next to tab:main as fig:main)
 
 \begin{table}[tbp]
 \centering
-\caption{Zero-shot typing: effect of the contrastive embedder on \zsind (typing-on-gold, $13$-set means at the released seed ($42$). The nearest label-name centroid head is fixed, only the embedder changes). AMI, macro-$F_1$, accuracy ($\times100$, $\uparrow$). Best per column in bold. The selected hard-negative-mining embedder (target-tuned) is compared with Pile-NER \cite{zhou2024universalner} variants that are strictly domain-agnostic (never see target data). We report Pile-NER as a negative ablation (\autoref{sec:exp:ablations}).}
+\caption{Zero-shot typing: effect of the contrastive embedder on \zsind (typing-on-gold, $13$-set means at the released seed ($42$)).}
 \label{tab:zs-embedder}
 \small
+\begin{threeparttable}
 \begin{tabular}{llccc}
 \toprule
 Embedder & Training data & AMI & F\textsubscript{1} & Acc \\
@@ -632,6 +735,11 @@ Pile-NER (entity$\leftrightarrow$label) & Pile-NER only & 42.2 & \textbf{50.6} &
 \quad + label-name hard mining & Pile-NER only & 39.7 & 41.4 & 44.7 \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item The nearest label-name centroid head is fixed, only the embedder changes. AMI, macro-$F_1$, accuracy ($\times100$, $\uparrow$). Best per column in bold. The selected hard-negative-mining embedder (target-tuned) is compared with Pile-NER \cite{zhou2024universalner} variants that are strictly domain-agnostic (never see target data). We report Pile-NER as a negative ablation (\autoref{sec:exp:ablations}).
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 %       --       RAW per-dataset AMI x100 (OPENER-ZS gold), order AI..GEN, preserved 2026-06-14       --
 % hard_big (selected) : 41.4 61.4 55.2 50.7 58.0 33.0 42.6 18.4 35.6 54.1 65.9 31.1 30.2 | 44.4
@@ -646,4 +754,4 @@ Pile-NER (entity$\leftrightarrow$label) & Pile-NER only & 42.2 & \textbf{50.6} &
 
 
 
-{red}{\texttt{Attention bien mettre la conclusion que le matryoshka vector déscente de façon linéaire, et que la taille du vecteur est un compromis entre coût et qualité. il faut donc dire que malgré notre entrainement contrastif, l'embedder n'a pas perdu sa cacité de Matryoshka.}}
+% (note FR remplacée par le paragraphe Matryoshka + Fig. matryoshka dans l'analyse des ablations)

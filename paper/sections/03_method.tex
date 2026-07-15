@@ -8,12 +8,12 @@ Formally, from a sentence $s$, a mention detector produces the set of candidate 
 \begin{equation}
 e_i = f_\theta(s, m_i)\in\mathbb{R}^{D},\qquad \hat y_i\in\mathcal{T},
 \end{equation}
-where the type inventory $\mathcal{T}$ is unknown at training time.
+where the type inventory $\mathcal{T}$ is unknown at the training time.
 
 We adopt the same evaluation protocol as OWNER \cite{genest2025owner}.
-To keep the end-to-end score honest, detection errors must be penalised rather than quietly ignored. We align predicted and gold mentions by their exact character offsets, so a prediction is a match only when it covers exactly the same span as a gold mention. Any mention left unmatched is then a detection error of one of two kinds. A gold mention that no prediction matches is a \emph{false negative} (a missed entity, for example the detector finds ``Marie Curie'' but misses ``radium'' in ``Marie Curie discovered radium''). A predicted mention that matches no gold entity is a \emph{false positive} (a spurious span, for example the detector wrongly proposes ``discovered'' as an entity). Each unmatched mention receives its own distinct sentinel type, so that these errors count as mismatches when computing the AMI instead of being ignored.
+To keep the end-to-end score honest, detection errors must be penalised rather than quietly ignored. We align predicted and gold mentions by their exact character offsets, so a prediction is a match only when it covers exactly the same span as a gold mention. Any mention left unmatched is then a detection error of one of two kinds. A gold mention that no prediction matches is a \emph{false negative} (a missed entity, for example, the detector finds ``Marie Curie'' but misses ``radium'' in ``Marie Curie discovered radium''). A predicted mention that matches no gold entity is a \emph{false positive} (a spurious span, for example, the detector wrongly proposes ``discovered'' as an entity). Each unmatched mention receives its own distinct sentinel type, so that these errors count as mismatches when computing the AMI instead of being ignored.
 
-Type-assignment quality is then measured by the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between the gold type partition $U$ and the predicted partition $V$ over the aligned mentions,
+Type-assignment quality is then measured by Adjusted Mutual Information (AMI) \cite{vinh2010ami} between the gold type partition $U$ and the predicted partition $V$ over the aligned mentions,
 \begin{equation}
 \mathrm{AMI}(U,V)=\frac{\mathrm{MI}(U,V)-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]}{\tfrac12\!\left[H(U)+H(V)\right]-\mathbb{E}\!\left[\mathrm{MI}(U,V)\right]},
 \end{equation}
@@ -88,19 +88,18 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
 
 OPENER is a three-stage pipeline, Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type (\autoref{fig:pipeline}), assembled from ready-to-use components so that no encoder is trained from scratch.
 Three principles guide the design.
+\begin{itemize}
+\item A pretrained detector and a pretrained sentence embedder are reused as-is.
+\item A light contrastive fine-tuning, refined by error-driven hard-negative mining, turns the general-purpose embedding into one that is discriminative for entity \emph{types}.
+\item The embedder is Matryoshka-truncatable, exposing a compute/quality knob.
+\end{itemize}
+Only the typing head is fitted on target-side material, and it comes in two forms: a zero-shot form, OPENER-ZS, that uses no target labels at typing time and OPENER-Sup, a supervised linear probe that is the strongest configuration but requires target labels.
 
-(I)~A pretrained detector and a pretrained sentence embedder are reused as-is.
+% \bigskip
 
-(II)~A light contrastive fine-tuning, refined by error-driven hard-negative mining, turns the general-purpose embedding into one that is discriminative for entity \emph{types}.
-
-(III)~The embedder is Matryoshka-truncatable, exposing a compute/quality knob.
-Only the typing head is fitted on target-side material, and it comes in two forms: a zero-shot form, \textbf{OPENER-ZS}, that uses no target labels at typing time and \textbf{OPENER-Sup}, a supervised linear probe that is the strongest configuration but requires target labels.
-
-\bigskip
-
-\begin{center}
-\emph{Throughout this section, \autoref{fig:pipeline} can be read alongside the text.}
-\end{center}
+% \begin{center}
+% \emph{Throughout this section, \autoref{fig:pipeline} can be read alongside the text.}
+% \end{center}
 
 \subsection*{1. Mention Detection}
 \label{sec:method:detect}
@@ -182,4 +181,4 @@ Quality is AMI \cite{vinh2010ami} (with macro-$F_1$ and accuracy), latency is th
 %   code + configurations : https://github.com/Thibault-GAREL/LyRIDS_OPENER
 %   OPENER-ZS embedder    : https://huggingface.co/Thibault-GAREL/opener-zs
 %   OPENER-Sup embedder   : https://huggingface.co/Thibault-GAREL/opener-sup
-The code and the per-experiment configurations are released in GitHub at \textcolor{red}{\texttt{...}}, and the fine-tuned embedders of OPENER-ZS and OPENER-Sup are available in Hugging Face at \textcolor{red}{\texttt{...}} and \textcolor{red}{\texttt{...}}, respectively.
+The code and the per-experiment configurations are available on GitHub at [ANONYMIZED FOR REVIEW], and the fine-tuned embedders of OPENER-ZS and OPENER-Sup are available on Hugging Face at [ANONYMIZED FOR REVIEW], respectively.

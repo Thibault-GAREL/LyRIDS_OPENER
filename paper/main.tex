@@ -21,6 +21,7 @@
 \usepackage{colortbl}      % \rowcolor for table highlighting
 \definecolor{hlyellow}{rgb}{1,0.93,0.5}  % highlighter yellow  -> OPENER-ZS (selected zero-shot)
 \definecolor{hlred}{HTML}{FECACA}        % highlighter red (matches architecture) -> OPENER-Sup (supervised)
+\definecolor{hlorange}{HTML}{FFEDD5}     % highlighter orange -> plain OPENER (full pipeline)
 \usepackage{tikz}          % Fig. 1 architecture diagram
 \usetikzlibrary{arrows.meta, positioning, calc, fit, backgrounds}
 \usepackage{pgfplots}      % Fig. 2 per-dataset line chart
@@ -40,6 +41,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{url}
 \usepackage{booktabs}      % nicer tables
+\usepackage{threeparttable} % short caption + explanatory notes below the table
 \usepackage{array}         % >{...} column prefixes + p{} wrapping cells (tab:datasets)
 \usepackage{placeins}      % \FloatBarrier: keep floats within their section
 \usepackage{float}         % [H] specifier: pin floats exactly where declared
@@ -48,7 +50,7 @@
   colorlinks = true,
   linkcolor  = black,
   citecolor  = black,
-  urlcolor   = blue,
+  urlcolor   = black,
   pdfborder  = {0 0 0}
 }
 

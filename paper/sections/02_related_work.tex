@@ -12,8 +12,8 @@ We review each in turn and state how OPENER differs.
 \subsection{Closed-set and Span-based NER}
 \label{sec:related:closed}
 Traditional NER is cast as supervised sequence labeling over a fixed inventory of entity types, typically with a pretrained encoder followed by a token- or span-level classifier.
-Early neural taggers replaced hand-crafted features with recurrent encoders over a CRF layer: the BiLSTM-CRF \cite{lample2016ner} paired character- and word-level representations, and the BiLSTM-CNN-CRF \cite{ma2016end} added a character-level CNN to obtain a fully end-to-end sequence labeler.
-The pretrained-encoder paradigm subsequently raised in-domain accuracy further, fine-tuning a bidirectional transformer such as BERT \cite{devlin2019bert} with a lightweight classification head.
+Early neural taggers replaced hand-made features with recurrent encoders over a CRF layer: the BiLSTM-CRF \cite{lample2016ner} paired character and word-level representations, and the BiLSTM-CNN-CRF \cite{ma2016end} added a character-level CNN to obtain a fully end-to-end sequence labeler.
+The pretrained encoder paradigm subsequently increased in-domain accuracy further, fine-tuning a bidirectional transformer such as BERT \cite{devlin2019bert} with a lightweight classification head.
 Beyond flat tagging, span-based formulations enumerate candidate spans and classify them directly, which simplifies the handling of nested and discontinuous entities \cite{nguyen2023span}: biaffine NER \cite{yu2020biaffine} scores every span with a biaffine layer borrowed from dependency parsing, while an MRC framework \cite{li2020mrc} recasts typing as machine reading comprehension, querying the sentence with a natural-language description of each type, a use of label semantics our zero-shot head also exploits.
 These models reach high accuracy on in-domain benchmarks such as CoNLL-2003 \cite{tjongkimsang2003conll}, as documented in a comprehensive survey of deep learning for NER \cite{li2022survey}, but their label set is frozen at training time.
 Adding a new entity type requires re-annotating data and retraining the model, which is the central limitation that open-world NER seeks to remove.
@@ -23,10 +23,10 @@ Adding a new entity type requires re-annotating data and retraining the model, w
 Open-world NER aims to recognise entity types that were not fixed at training time.
 GLiNER \cite{zaratiana2024gliner} treats the candidate type names as queries to a bidirectional encoder, a DeBERTaV3 backbone \cite{he2023debertav3}, and scores every span against them in a single forward pass, \emph{via a span-type similarity matrix}, offering a fast alternative to autoregressive tagging.
 GNER \cite{ding2024gner} instead casts NER as text generation with a sequence-to-sequence model \cite{raffel2020t5}: it regenerates the input sentence with inline type tags (e.g. ``\texttt{Marie Curie(person) discovered radium(chemical)}''), and shows that explicitly modeling the negative, non-entity tokens in this output sharpens type boundaries.
-Closest to our work, OWNER \cite{genest2025owner} is an unsupervised open-world pipeline that decouples mention detection from entity typing: it embeds detected mentions with an encoder refined by contrastive learning and then clusters them into dynamically named types.
+Close to our work, OWNER \cite{genest2025owner} is an unsupervised open-world pipeline that decouples mention detection from entity typing: it embeds detected mentions with an encoder refined by contrastive learning and then clusters them into dynamically named types.
 Zero-shot typing has also been driven by the semantics of the type names themselves: one line of work leverages natural-language type \emph{descriptions} \cite{aly2021zeroshot} so that classes unseen at training time can still be recognised, a premise our label-name prototypes share.
 Progress in the low-resource regime is in turn anchored by dedicated benchmarks, notably Few-NERD \cite{ding2021fewnerd}, a large human-annotated dataset organised as a two-level hierarchy of $8$ coarse and $66$ fine-grained types.
-Other approaches prompt a general-purpose large language model to perform extraction directly, as in ChatIE \cite{wei2024chatie}, or focus on recovering entities that detectors tend to miss \cite{cai2025handling}.
+Other approaches require a general-purpose large language model to perform extraction directly, as in ChatIE \cite{wei2024chatie}, or focus on recovering entities that detectors tend to miss \cite{cai2025handling}.
 OPENER adopts the decoupled detect-then-type view of OWNER, but replaces the trained encoder and the unsupervised clustering with a pretrained, Matryoshka-truncatable embedding space and a balanced linear classifier, so that no encoder is trained from scratch.
 
 \subsection{LLM-based and Few-shot NER}
@@ -34,16 +34,16 @@ OPENER adopts the decoupled detect-then-type view of OWNER, but replaces the tra
 A complementary line distils or instruction-tunes large language models for open NER.
 UniversalNER \cite{zhou2024universalner} distils a chat model into a smaller LLaMA-based student \cite{touvron2023llama} over tens of thousands of entity types, while GoLLIE \cite{sainz2024gollie} conditions a code language model on annotation guidelines to follow unseen schemas.
 Few-shot methods reduce supervision further through prompt optimization \cite{tang2024fsponer}, knowledge-graph-guided contrastive learning \cite{zhang2024kcl}, or token-level contrastive objectives such as CONTaiNER \cite{das2022container}.
-These methods are accurate but rest on models with billions of parameters, whose inference cost, latency and energy use are substantial, and which may not even fit on commodity hardware.
-At the small end of this family, however, a quantized instruction-tuned model does fit a commodity GPU: as a concrete, runnable reference point we include Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, prompted to return entities as JSON, and report where it lands relative to the dedicated open-world systems (\autoref{sec:exp:results}).
+These methods are accurate but rest on models with billions of parameters, whose inference cost, latency, and energy use are substantial, and which may not even fit on commodity hardware.
+At the small end of this family, however, a quantized instruction-tuned model does fit a commodity GPU: as a concrete, runnable reference point, we include Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, prompted to return entities as JSON, and report where it lands relative to the dedicated open-world systems (\autoref{sec:exp:results}).
 This cost is precisely what motivates the lightweight design and the energy-aware evaluation of OPENER.
 
 \subsection{Entity Representations and Contrastive Learning}
 \label{sec:related:repr}
 OPENER relies on a pretrained sentence embedder rather than a task-specific encoder.
 Nomic Embed \cite{nussbaum2024nomic} provides an open, long-context model trained with the Matryoshka objective \cite{kusupati2022matryoshka}, whose representations can be truncated to lower dimensions without retraining, trading quality for compute.
-Such embedders build on the Sentence-BERT line of work \cite{reimers2019sbert}, and we sharpen the entity-type geometry with a triplet margin objective in the spirit of FaceNet \cite{schroff2015facenet}.
-Refining a contrastive objective by mining and re-weighting hard negatives is a recurring recipe, as in GCSE \cite{lai2025gcse}, which down-weights false hard negatives with a Gaussian decay, close in spirit to our error-driven hard-negative mining.
+Such embedders are based on the Sentence-BERT line of work \cite{reimers2019sbert}, and we sharpen entity-type geometry with a triplet margin objective in the spirit of FaceNet \cite{schroff2015facenet}.
+Refine a contrastive objective by mining and re-weighting hard negatives is a recurring recipe, as in GCSE \cite{lai2025gcse}, which down-weights false hard negatives with a Gaussian decay, close in spirit to our error-driven hard-negative mining.
 The choice of base encoder is made empirically: we compare several strong open sentence encoders (E5 \cite{wang2022e5}, BGE \cite{xiao2024cpack}, MPNet \cite{song2020mpnet} and mxbai \cite{li2024aoe}) on entity typing under a common protocol (\autoref{tab:ablation}). Nomic v1.5 \cite{nussbaum2024nomic} edges them out while additionally offering native Matryoshka truncation, so we adopt it as the base and fine-tune it.
 Embedding labels and entities in a shared space \cite{wang2018joint}, modeling entity types with Gaussian components \cite{zhang2025contrastivegaussian}, generating synthetic entity-bearing text for augmentation \cite{hu2023entity}, and using mixtures to augment training data \cite{abbahaddou2025gmmgnn} are recurring ideas in low-resource NER, all grounded in classical Gaussian mixture models fitted by expectation-maximization \cite{reynolds2009gmm, dempster1977em}.
 Unlike methods that train a dedicated encoder, OPENER takes transfer learning in its purest form: it keeps a general-purpose pretrained space largely frozen and only applies a light contrastive fine-tuning, testing whether such a representation is already discriminative enough for entity typing.
@@ -52,11 +52,11 @@ Unlike methods that train a dedicated encoder, OPENER takes transfer learning in
 \label{sec:related:green}
 A growing body of work argues that efficiency should be reported alongside accuracy.
 Prior work has quantified the financial and environmental cost of training NLP models \cite{strubell2019energy}, promoted efficiency as a first-class evaluation criterion under the \emph{Green AI} agenda \cite{schwartz2020greenai}, and analysed the carbon footprint of machine-learning training and how to reduce it \cite{patterson2022carbon}.
-Complementary efforts argue for the systematic reporting of energy and carbon and provide a framework to track them per run \cite{henderson2020systematic}, and take a whole-lifecycle, system-level view of AI's environmental footprint across data, algorithms and hardware \cite{wu2022sustainable}.
+Complementary efforts argue for the systematic reporting of energy and carbon and provide a framework to track them per run \cite{henderson2020systematic}, and take a whole-lifecycle, system-level view of AI's environmental footprint across data, algorithms, and hardware \cite{wu2022sustainable}.
 Most relevant to deployment, a study of \emph{inference}-time cost \cite{luccioni2024power} finds general-purpose generative models to be orders of magnitude more expensive per query than task-specific ones, precisely the gap a lightweight pipeline like ours seeks to close.
 Tools such as CodeCarbon \cite{luccioni2019quantifying} make per-run energy and carbon estimates practical.
-Open-world NER systems, however, are still compared almost exclusively on quality.
-OPENER instead reports a three-axis comparison of quality, measured by Adjusted Mutual Information \cite{vinh2010ami}, inference speed, and energy, placing the frugality of each method on an equal footing with its accuracy.
+However, open-world NER systems are still compared almost exclusively on quality.
+Instead, OPENER reports a three-axis comparison of quality, measured by Adjusted Mutual Information \cite{vinh2010ami}, inference speed, and energy, placing the frugality of each method on an equal footing with its accuracy.
 
-In summary, existing open-world NER methods either train a dedicated encoder \cite{genest2025owner} or query costly large language models \cite{zhou2024universalner, sainz2024gollie}, and they are compared on accuracy alone.
+In summary, existing open-world NER methods either train a dedicated encoder \cite{genest2025owner} or query costly large language models \cite{zhou2024universalner, sainz2024gollie}, and are compared on accuracy alone.
 OPENER fills both gaps: it reuses pretrained components with only a light contrastive step and a balanced linear classifier, and it is evaluated jointly on quality, speed and energy.
