@@ -1,0 +1,24 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented OPENER, an open-world NER pipeline assembled entirely from ready-to-use components, a frozen detector, a pretrained Matryoshka embedder sharpened by a light contrastive fine-tuning with error-driven hard-negative mining, and a swappable typing head, with no encoder trained from scratch.
+The modular design is part of the result rather than an implementation detail. Because the three stages are independently swappable, we could search the architecture one axis at a time (\autoref{tab:ablation}) and select every component on measured evidence instead of by assumption, and the same modularity keeps the embedder's Matryoshka structure usable as a compute/quality knob even after our contrastive fine-tuning (\autoref{fig:matryoshka}).
+
+Both operating points of the typing head perform strongly, at opposite ends of the supervision axis.
+Our zero-shot head OPENER-ZS, label-name prototypes refined transductively and fused with the detector's own predictions, needs no target labels at typing time and is still the best of the compared zero-shot systems end-to-end ($39.5$ AMI, all AMI scores being reported $\times 100$ as in the tables), ahead of GLiNER-L, GNER, Qwen2.5 and OWNER, at one to two orders of magnitude lower energy than the trained-encoder and generative baselines.
+When a domain's entity classes are fixed and labelled, a balanced linear probe, OPENER-Sup, goes further. On gold mentions, the contrastive space is highly discriminative, and OPENER-Sup is the most accurate system in our benchmark, leading on all $13$ sets and surpassing a zero-shot transfer of OWNER ($62.3$ vs $43.0$ AMI). It also attains the best end-to-end AMI of the compared systems ($40.1$ AMI*100).
+
+Both results rest on a benchmark that is itself a contribution: $13$ open-world NER datasets on which quality, per-sentence latency and energy are reported jointly, typing-on-gold is kept separate from end-to-end, and the supervision asymmetry between systems is stated rather than hidden. Every OPENER number is averaged over three full embedder-retraining seeds.
+
+Two findings carry beyond the specific system.
+First, an open-world typing head need not train its own encoder: a general-purpose embedding, once sharpened by a light contrastive step, is already discriminative enough to type entities, and the cost that does matter is fitting the cheap typing head, not the embedder.
+Second, the three-axis evaluation locates the open-world bottleneck in \emph{detection} rather than typing: typing on gold mentions reaches $62.3$ AMI but end-to-end scores drop to $40.1$ as detector recall falls on specialised domains. So, improving the detector, not the typing head, is the clearest axis for future gains. The evaluation also exposes efficiency gaps that an accuracy-only comparison would hide.
+
+The approach has clear limits.
+End-to-end quality is capped by detector recall on specialised domains, the shared bottleneck, not by the typing head.
+Supervised typing needs target-domain labels, and while OPENER-ZS removes them at typing time it depends on the quality of the label names and, in its transductive form, on access to the unlabelled test mentions. The inductive zero-shot head is correspondingly weaker.
+Finally, our experiments run on deliberately modest hardware: a single consumer GPU with $6$\,GB of VRAM, subject to thermal throttling.
+This is the very setting that makes OPENER deployable, but it also bounded our experimental budget: despite an already broad benchmark ($13$ datasets, three axes and extensive ablations), we cap each test split at $1000$ sentences.
+The quality scores themselves are nonetheless well characterised: retraining the full embedder under three seeds leaves the benchmark means nearly unchanged (std of $0.1$ to $1.3$ AMI on the thirteen-set means, \autoref{sec:exp:protocol}), inference is deterministic at a fixed seed, and a test-set bootstrap confirms per-dataset stability (bootstrap std of at most $1.5$ AMI, \autoref{tab:bootstrap}). Only latency and energy fluctuate ($\pm 15\%$) and are therefore read as averages rather than precise points.
+
+Future work includes improving mention detection on specialised domains to lift the end-to-end ceiling, an inductive zero-shot head that does not rely on the test distribution, and extending the decoupled detect-then-type design beyond NER to entity linking and relation extraction.

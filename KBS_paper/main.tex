@@ -1,0 +1,120 @@
+% =====================================================================
+% OPENER: Open Partitioning Embedding for Named Entity Recognition
+% Submission to Knowledge-Based Systems (Elsevier) - single anonymized review
+%
+% Format: elsarticle, [review] option = 12pt, single column, double line
+% spacing (matches the KBS "double line spaced manuscript pages" guideline).
+% Compilation: pdflatex main && bibtex main && pdflatex main && pdflatex main
+% Class and bibliography style are bundled locally (elsarticle.cls,
+% elsarticle-num.bst) so the build is identical on Overleaf.
+% =====================================================================
+
+\documentclass[review,12pt]{elsarticle}
+
+% --- Core packages ---
+% NOTE: do NOT load the `cite' package here: elsarticle loads natbib,
+% and the two conflict. \cite{a,b} works natively with natbib.
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\graphicspath{{assets/}{../assets/}}  % look for figures in KBS_paper/assets and repo-root assets
+\usepackage{adjustbox}     % max width=\textwidth: shrink wide tables to the elsarticle text width
+\usepackage{textcomp}
+\usepackage{xcolor}
+% KBS Guide for Authors: "Avoid vertical rules and shading within table
+% cells" -> no colortbl / \rowcolor here (unlike the IEEE version).
+% The colors below are still used by the TikZ architecture figure (Fig. 1).
+\definecolor{hlyellow}{rgb}{1,0.93,0.5}  % highlighter yellow  -> OPENER-ZS (selected zero-shot)
+\definecolor{hlred}{HTML}{FECACA}        % highlighter red (matches architecture) -> OPENER-Sup (supervised)
+\definecolor{hlorange}{HTML}{FFEDD5}     % highlighter orange -> plain OPENER (full pipeline)
+\usepackage{tikz}          % Fig. 1 architecture diagram
+\usetikzlibrary{arrows.meta, positioning, calc, fit, backgrounds}
+\usepackage{pgfplots}      % per-dataset line chart
+\pgfplotsset{compat=1.18}
+% --- figure palette (matches the repository architecture diagram) ---
+\definecolor{figamber}{HTML}{F59E0B}
+\definecolor{figcyan}{HTML}{06B6D4}
+\definecolor{figsky}{HTML}{0EA5E9}
+\definecolor{figviolet}{HTML}{8B5CF6}
+\definecolor{figgold}{HTML}{EAB308}
+\definecolor{figgreen}{HTML}{10B981}
+\definecolor{figpink}{HTML}{EC4899}
+\definecolor{figred}{HTML}{DC2626}
+
+% --- Additional packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xurl}          % like url, but lets long URLs break anywhere (no overfull margins)
+% The [review] option stretches the baseline to 1.5 for the manuscript text.
+% Keep floats (tables, figures, captions) single-spaced so tall tables still
+% fit on one page: reset the stretch inside each float group.
+\usepackage{etoolbox}
+\AtBeginEnvironment{table}{\def\baselinestretch{1}\normalsize}
+\AtBeginEnvironment{figure}{\def\baselinestretch{1}\normalsize}
+\usepackage{booktabs}      % nicer tables (no vertical rules, per KBS guide)
+\usepackage{threeparttable} % short caption + explanatory notes below the table
+\usepackage{array}         % >{...} column prefixes + p{} wrapping cells (tab:datasets)
+\usepackage{placeins}      % \FloatBarrier: keep floats within their section
+\usepackage{float}         % [H] specifier: pin floats exactly where declared
+\usepackage{hyperref}      % clickable links/cross-refs
+% elsarticle.cls forces blue link colors in an \AtBeginDocument hook, which
+% would override a plain \hypersetup here. Registering ours afterwards wins.
+\AtBeginDocument{\hypersetup{
+  colorlinks = true,
+  linkcolor  = black,
+  citecolor  = black,
+  urlcolor   = black,
+  pdfborder  = {0 0 0}
+}}
+
+% =====================================================================
+% --- OPENER-ZS operating points: inductive (base) vs transductive (selected) ---
+\newcommand{\zstr}{OPENER-ZS\textsubscript{trans}}
+\newcommand{\zsind}{OPENER-ZS\textsubscript{ind}}
+
+% Footer line: "Preprint submitted to Knowledge-Based Systems"
+\journal{Knowledge-Based Systems}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{OPENER: Open Partitioning Embedding for Named Entity Recognition}
+
+% --- Single anonymized review (single-blind): real author info required ---
+\author[lyrids]{Thibault Garel\corref{cor1}}
+\ead{garel.thibault14@gmail.com}
+\cortext[cor1]{Corresponding author.}
+
+\affiliation[lyrids]{organization={LyRIDS, ECE Paris},
+  addressline={10 Rue Sextius Michel},
+  city={Paris},
+  postcode={75015},
+  country={France}}
+
+% --- Abstract (KBS limit: 250 words max, self-contained, no references) ---
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+% --- Keywords (KBS: 1 to 7, avoid "and"/"of" constructions) ---
+\begin{keyword}
+Named entity recognition \sep Open-world NER \sep Transfer learning \sep Zero-shot learning \sep Contrastive learning \sep Energy efficiency \sep Frugal AI
+\end{keyword}
+
+\end{frontmatter}
+
+% --- Body sections (one file per section for ease of editing) ---
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_method}
+\input{sections/04_experiments}
+\input{sections/05_conclusion}
+
+% --- Elsevier-required closing sections (before the reference list) ---
+\input{sections/06_declarations}
+
+% --- Bibliography (managed via references.bib, formatted with elsarticle-num.bst) ---
+\bibliographystyle{elsarticle-num}
+\bibliography{references}
+
+\end{document}

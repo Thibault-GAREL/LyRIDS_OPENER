@@ -1,0 +1,17 @@
+% Abstract KBS (2026-07-16): condensed from the IEEE version (~450 words)
+% to fit the Elsevier/KBS hard limit of 250 words. Same headline numbers:
+% means over 3 retraining seeds (7/42/123): 62.3 gold (sup.), 39.5 e2e
+% (ZS fusion), 40.1 e2e (sup.), 1.7 Wh (seed-42 run). No references,
+% no non-standard abbreviations (KBS abstract rules).
+Named Entity Recognition (NER) rarely operates over a static, predefined set of entity classes in real-world applications.
+Open-world NER therefore asks systems to assign entity types that were not fixed at training time.
+Recent systems either train a dedicated encoder or prompt billion-parameter language models, and are compared almost exclusively on accuracy, ignoring compute and energy cost.
+We present OPENER, an open-world NER pipeline assembled from ready-to-use components: a frozen mention detector, a Matryoshka-truncatable sentence embedder sharpened by a light contrastive fine-tuning with error-driven hard-negative mining, and a swappable typing head, so that no encoder is trained from scratch.
+The typing head comes in two forms.
+OPENER-ZS is zero-shot: it types each mention against label-name prototypes and needs no target labels.
+OPENER-Sup fits a lightweight supervised probe when a domain's entity classes are fixed and labelled.
+We benchmark OPENER against GLiNER, GNER, OWNER and a 4-bit Qwen2.5-1.5B language model on 13 datasets along three axes: quality (Adjusted Mutual Information, AMI), median per-sentence latency, and energy consumption.
+Averaged over three embedder-retraining seeds, OPENER-ZS is the most accurate zero-shot system end-to-end ($39.5$ AMI, ahead of GLiNER-L's $38.9$ and OWNER's $34.3$) while staying frugal: $1.7$\,Wh and roughly $180$\,ms per sentence, versus $14.3$\,Wh and $616$\,ms for OWNER.
+OPENER-Sup is the most accurate system overall ($40.1$ AMI).
+On gold mentions, typing alone reaches $62.3$ AMI, pinning the open-world bottleneck on mention detection.
+We release the code, configurations, fine-tuned embedders, and full benchmark.

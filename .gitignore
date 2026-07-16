@@ -86,3 +86,16 @@ paper/sections/*.aux
 # Scratch render PNGs at paper/ root (real figures live in assets/)
 paper/*.png
 paper/.tmp/
+# LaTeX build artifacts (KBS_paper)
+KBS_paper/*.aux
+KBS_paper/*.log
+KBS_paper/*.out
+KBS_paper/*.bbl
+KBS_paper/*.blg
+KBS_paper/*.toc
+KBS_paper/*.spl
+KBS_paper/*.synctex.gz
+KBS_paper/sections/*.aux
+# Scratch render PNGs at KBS_paper/ root (real figures live in assets/)
+KBS_paper/*.png
+KBS_paper/.tmp/

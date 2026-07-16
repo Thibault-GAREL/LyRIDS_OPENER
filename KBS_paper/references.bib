@@ -1,0 +1,680 @@
+% =====================================================================
+% references.bib — bibliography for Opener paper
+% LyRIDS Symposium 2026 submission
+% =====================================================================
+%
+% Citation style: IEEEtran (numeric, sorted by appearance).
+% Use \cite{key} in the .tex files to reference an entry below.
+%
+% NOTES:
+%   - BibTeX is NOT LaTeX. The percent-sign starts a comment only OUTSIDE
+%     of any entry block. Never put a percent-sign line INSIDE a curly-brace
+%     entry body — BibTeX will fail to parse the rest of the entry.
+%   - Also: never type the "at-sign + word" pattern in a comment, even on a
+%     percent-sign line. BibTeX scans the whole file for that pattern and
+%     will try to parse it as an entry.
+%   - Titles: protect capitalization of acronyms or proper nouns with curly
+%     braces, e.g. NER, EM, GLiNER wrapped in braces — otherwise IEEE style
+%     will lowercase them.
+% =====================================================================
+
+
+% ---------------------------------------------------------------------
+% Mention detection (used by Opener)
+% ---------------------------------------------------------------------
+
+@inproceedings{zaratiana2024gliner,
+  title     = {{GLiNER}: Generalist Model for Named Entity Recognition using Bidirectional Transformer},
+  author    = {Zaratiana, Urchade and Tomeh, Nadi and Holat, Pierre and Charnois, Thierry},
+  booktitle = {Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies ({NAACL-HLT}), Volume 1: Long Papers},
+  pages     = {5364--5376},
+  year      = {2024},
+  publisher = {Association for Computational Linguistics}
+}
+
+
+% ---------------------------------------------------------------------
+% Matryoshka and embedding-based representations
+% ---------------------------------------------------------------------
+
+@inproceedings{kusupati2022matryoshka,
+  title     = {Matryoshka Representation Learning},
+  author    = {Kusupati, Aditya and Bhatt, Gantavya and Rege, Aniket and Wallingford, Matthew and Sinha, Aditya and Ramanujan, Vivek and Howard-Snyder, William and Chen, Kaifeng and Kakade, Sham and Jain, Prateek and Farhadi, Ali},
+  booktitle = {Advances in Neural Information Processing Systems 35 ({NeurIPS} 2022)},
+  year      = {2022}
+}
+
+% Note: this paper describes nomic-embed-text-v1. We use the v1.5 release in
+% practice (same architecture, retrained with Matryoshka objective for
+% truncatable dimensions). No separate paper for v1.5 — this is the canonical
+% technical reference.
+@article{nussbaum2024nomic,
+  title   = {Nomic Embed: Training a Reproducible Long Context Text Embedder},
+  author  = {Nussbaum, Zach and Morris, John X. and Duderstadt, Brandon and Mulyar, Andriy},
+  journal = {Transactions on Machine Learning Research ({TMLR})},
+  year    = {2025},
+  note    = {Published in {TMLR} 02/2025. OpenReview: \url{https://openreview.net/forum?id=IPmzyQSiQE}}
+}
+
+@inproceedings{wang2018joint,
+  title     = {Joint Embedding of Words and Labels for Text Classification},
+  author    = {Wang, Guoyin and Li, Chunyuan and Wang, Wenlin and Zhang, Yizhe and Shen, Dinghan and Zhang, Xinyuan and Henao, Ricardo and Carin, Lawrence},
+  booktitle = {Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics ({ACL})},
+  pages     = {2321--2331},
+  year      = {2018}
+}
+
+
+% ---------------------------------------------------------------------
+% Few-shot, zero-shot, and domain-specific NER
+% ---------------------------------------------------------------------
+
+@inproceedings{tang2024fsponer,
+  title     = {{FsPONER}: Few-Shot Prompt Optimization for Named Entity Recognition in Domain-Specific Scenarios},
+  author    = {Tang, Yongjian and Hasan, Rakebul and Runkler, Thomas},
+  booktitle = {Proceedings of the 27th European Conference on Artificial Intelligence ({ECAI})},
+  publisher = {IOS Press},
+  year      = {2024},
+  doi       = {10.3233/FAIA240936}
+}
+
+@inproceedings{zhang2024kcl,
+  title     = {{KCL}: Few-shot Named Entity Recognition with Knowledge Graph and Contrastive Learning},
+  author    = {Zhang, Shan and Cao, Bin and Fan, Jing},
+  booktitle = {Proceedings of the 2024 Joint International Conference on Computational Linguistics, Language Resources and Evaluation ({LREC-COLING})},
+  pages     = {9681--9692},
+  year      = {2024},
+  publisher = {{ELRA} Language Resource Association}
+}
+
+@inproceedings{nguyen2023span,
+  title     = {Span-based Named Entity Recognition by Generating and Compressing Information},
+  author    = {Nguyen, Nhung T. H. and Miwa, Makoto and Ananiadou, Sophia},
+  booktitle = {Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics ({EACL})},
+  pages     = {1984--1996},
+  year      = {2023}
+}
+
+@article{zhang2025contrastivegaussian,
+  title   = {Contrastive Learning with {Gaussian} Embeddings and Self-Attention for Few-Shot Named Entity Recognition},
+  author  = {Zhang, Yihao and Chen, Wei and Ma, Lei},
+  journal = {Applied Sciences},
+  volume  = {15},
+  number  = {21},
+  pages   = {11819},
+  year    = {2025},
+  doi     = {10.3390/app152111819}
+}
+
+@inproceedings{cai2025handling,
+  title     = {Handling Missing Entities in Zero-Shot Named Entity Recognition: Integrated Recall and Retrieval Augmentation},
+  author    = {Cai, Ruichu and Lu, Junhao and Chen, Zhongjie and Xu, Boyan and Hao, Zhifeng},
+  booktitle = {Proceedings of the 2025 Conference of the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Language Technologies ({NAACL})},
+  pages     = {10790--10802},
+  year      = {2025}
+}
+
+
+% ---------------------------------------------------------------------
+% Open-world / unsupervised NER  (KEY prior work — cited in 3rd person
+% for double-blind anonymity)
+% ---------------------------------------------------------------------
+
+% IMPORTANT: cite this in the third person ("Genest et al. [X] propose ...")
+% rather than "our previous work" — double-blind requirement.
+@article{genest2025owner,
+  title   = {{OWNER}: Toward Unsupervised Open-World Named Entity Recognition},
+  author  = {Genest, Pierre-Yves and Portier, Pierre-Edouard and Egyed-Zsigmond, El{\H{o}}d and Lovisetto, Martino},
+  journal = {{IEEE} Access},
+  volume  = {13},
+  pages   = {50077--50105},
+  year    = {2025},
+  doi     = {10.1109/ACCESS.2025.3552122}
+}
+
+
+% ---------------------------------------------------------------------
+% Data augmentation for NER
+% ---------------------------------------------------------------------
+
+@inproceedings{hu2023entity,
+  title     = {Entity-to-Text based Data Augmentation for various Named Entity Recognition Tasks},
+  author    = {Hu, Xuming and Jiang, Yong and Liu, Aiwei and Huang, Zhongqiang and Xie, Pengjun and Huang, Fei and Wen, Lijie and Yu, Philip S.},
+  booktitle = {Findings of the Association for Computational Linguistics: {ACL} 2023},
+  pages     = {9072--9087},
+  year      = {2023}
+}
+
+
+% ---------------------------------------------------------------------
+% Gaussian Mixture Models — foundational + applications in ML
+% ---------------------------------------------------------------------
+
+% Retitled at publication: ICML 2025 (PMLR vol. 267). arXiv preprint was
+% "Gaussian Mixture Models Based Augmentation Enhances GNN Generalization" (2411.08638).
+@inproceedings{abbahaddou2025gmmgnn,
+  title     = {Graph Neural Network Generalization With {Gaussian} Mixture Model Based Augmentation},
+  author    = {Abbahaddou, Yassine and Malliaros, Fragkiskos D. and Lutzeyer, Johannes F. and Aboussalah, Amine Mohamed and Vazirgiannis, Michalis},
+  booktitle = {Proceedings of the 42nd International Conference on Machine Learning ({ICML})},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {267},
+  pages     = {102--125},
+  year      = {2025},
+  publisher = {PMLR}
+}
+
+@incollection{reynolds2009gmm,
+  title     = {{Gaussian} Mixture Models},
+  author    = {Reynolds, Douglas A.},
+  booktitle = {Encyclopedia of Biometrics},
+  editor    = {Li, Stan Z. and Jain, Anil K.},
+  pages     = {659--663},
+  publisher = {Springer US},
+  year      = {2009},
+  doi       = {10.1007/978-0-387-73003-5_196}
+}
+
+@article{dempster1977em,
+  title   = {Maximum Likelihood from Incomplete Data via the {EM} Algorithm},
+  author  = {Dempster, Arthur P. and Laird, Nan M. and Rubin, Donald B.},
+  journal = {Journal of the Royal Statistical Society: Series B (Methodological)},
+  volume  = {39},
+  number  = {1},
+  pages   = {1--22},
+  year    = {1977}
+}
+
+
+% ---------------------------------------------------------------------
+% Energy / carbon footprint measurement (used for the frugality axis)
+% ---------------------------------------------------------------------
+
+% Verified against the PDF in paper_used/01_technology_used/ (Quantifying the Carbon Emissions.pdf).
+% This is the canonical reference for the CodeCarbon tool we use to measure kWh / gCO2eq.
+% Published at the NeurIPS 2019 "Tackling Climate Change with ML" workshop.
+@inproceedings{luccioni2019quantifying,
+  title     = {Quantifying the Carbon Emissions of Machine Learning},
+  author    = {Luccioni, Sasha and Schmidt, Victor and Lacoste, Alexandre and Dandres, Thomas},
+  booktitle = {NeurIPS 2019 Workshop on Tackling Climate Change with Machine Learning},
+  url       = {https://www.climatechange.ai/papers/neurips2019/22},
+  year      = {2019}
+}
+
+
+% =====================================================================
+% Tools, metrics and methods USED in the pipeline
+% (all verified 2026-06-10 against the PDFs in paper_used/).
+% =====================================================================
+
+% Main evaluation metric (AMI). JMLR 11 (2010) 2837-2854 (printed on title page).
+@article{vinh2010ami,
+  title   = {Information Theoretic Measures for Clusterings Comparison: Variants, Properties, Normalization and Correction for Chance},
+  author  = {Vinh, Nguyen Xuan and Epps, Julien and Bailey, James},
+  journal = {Journal of Machine Learning Research},
+  volume  = {11},
+  pages   = {2837--2854},
+  year    = {2010}
+}
+
+% Foundational reference for information theory (mutual information, entropy)
+% underlying the AMI metric. Bell System Technical Journal 27 (1948).
+@article{shannon1948,
+  title   = {A Mathematical Theory of Communication},
+  author  = {Shannon, Claude E.},
+  journal = {The Bell System Technical Journal},
+  volume  = {27},
+  number  = {3},
+  pages   = {379--423},
+  year    = {1948}
+}
+
+% Solver behind scikit-learn's LinearSVC. JMLR 9 (2008) 1871-1874 (printed).
+@article{fan2008liblinear,
+  title   = {{LIBLINEAR}: A Library for Large Linear Classification},
+  author  = {Fan, Rong-En and Chang, Kai-Wei and Hsieh, Cho-Jui and Wang, Xiang-Rui and Lin, Chih-Jen},
+  journal = {Journal of Machine Learning Research},
+  volume  = {9},
+  pages   = {1871--1874},
+  year    = {2008}
+}
+
+% Origin of the triplet margin loss used for the contrastive fine-tuning.
+@inproceedings{schroff2015facenet,
+  title     = {{FaceNet}: A Unified Embedding for Face Recognition and Clustering},
+  author    = {Schroff, Florian and Kalenichenko, Dmitry and Philbin, James},
+  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition ({CVPR})},
+  pages     = {815--823},
+  year      = {2015}
+}
+
+% Sentence-Transformers library (used to run / fine-tune Nomic). arXiv:1908.10084.
+@inproceedings{reimers2019sbert,
+  title     = {Sentence-{BERT}: Sentence Embeddings using Siamese {BERT}-Networks},
+  author    = {Reimers, Nils and Gurevych, Iryna},
+  booktitle = {Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing ({EMNLP})},
+  pages     = {3982--3992},
+  year      = {2019}
+}
+
+% scikit-learn (LinearSVC, GMM, AMI). JMLR 12 (2011) 2825-2830 (printed).
+@article{pedregosa2011scikit,
+  title   = {Scikit-learn: Machine Learning in {Python}},
+  author  = {Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and Michel, Vincent and Thirion, Bertrand and Grisel, Olivier and Blondel, Mathieu and Prettenhofer, Peter and Weiss, Ron and Dubourg, Vincent and Vanderplas, Jake and Passos, Alexandre and Cournapeau, David and Brucher, Matthieu and Perrot, Matthieu and Duchesnay, {\'E}douard},
+  journal = {Journal of Machine Learning Research},
+  volume  = {12},
+  pages   = {2825--2830},
+  year    = {2011}
+}
+
+% HuggingFace Transformers library. arXiv:1910.03771, EMNLP 2020 system demos.
+@inproceedings{wolf2020transformers,
+  title     = {Transformers: State-of-the-Art Natural Language Processing},
+  author    = {Wolf, Thomas and Debut, Lysandre and Sanh, Victor and Chaumond, Julien and Delangue, Clement and Moi, Anthony and Cistac, Pierric and Rault, Tim and Louf, R{\'e}mi and Funtowicz, Morgan and Davison, Joe and Shleifer, Sam and von Platen, Patrick and Ma, Clara and Jernite, Yacine and Plu, Julien and Xu, Canwen and Le Scao, Teven and Gugger, Sylvain and Drame, Mariama and Lhoest, Quentin and Rush, Alexander M.},
+  booktitle = {Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations ({EMNLP})},
+  pages     = {38--45},
+  year      = {2020}
+}
+
+% PyTorch. NeurIPS 2019 (printed on title page).
+@inproceedings{paszke2019pytorch,
+  title     = {{PyTorch}: An Imperative Style, High-Performance Deep Learning Library},
+  author    = {Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer, Adam and Bradbury, James and Chanan, Gregory and Killeen, Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga, Luca and Desmaison, Alban and K{\"o}pf, Andreas and Yang, Edward and DeVito, Zachary and Raison, Martin and Tejani, Alykhan and Chilamkurthy, Sasank and Steiner, Benoit and Fang, Lu and Bai, Junjie and Chintala, Soumith},
+  booktitle = {Advances in Neural Information Processing Systems 32 ({NeurIPS})},
+  year      = {2019}
+}
+
+
+% =====================================================================
+% Backbone architectures of the models we compare / quantize
+% (verified 2026-06-10 against the PDFs in paper_used/).
+% =====================================================================
+
+% DeBERTaV3: backbone of GLiNER. "Published as a conference paper at ICLR 2023".
+@inproceedings{he2023debertav3,
+  title     = {{DeBERTaV3}: Improving {DeBERTa} using {ELECTRA}-Style Pre-Training with Gradient-Disentangled Embedding Sharing},
+  author    = {He, Pengcheng and Gao, Jianfeng and Chen, Weizhu},
+  booktitle = {The Eleventh International Conference on Learning Representations ({ICLR})},
+  year      = {2023}
+}
+
+% T5: backbone of GNER. JMLR 21 (2020) 1-67 (printed).
+@article{raffel2020t5,
+  title   = {Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer},
+  author  = {Raffel, Colin and Shazeer, Noam and Roberts, Adam and Lee, Katherine and Narang, Sharan and Matena, Michael and Zhou, Yanqi and Li, Wei and Liu, Peter J.},
+  journal = {Journal of Machine Learning Research},
+  volume  = {21},
+  pages   = {1--67},
+  year    = {2020}
+}
+
+% LLaMA: backbone of the 7B baselines (GNER-LLaMA, UniNER, GoLLIE). arXiv:2302.13971.
+@article{touvron2023llama,
+  title   = {{LLaMA}: Open and Efficient Foundation Language Models},
+  author  = {Touvron, Hugo and Lavril, Thibaut and Izacard, Gautier and Martinet, Xavier and Lachaux, Marie-Anne and Lacroix, Timoth{\'e}e and Rozi{\`e}re, Baptiste and Goyal, Naman and Hambro, Eric and Azhar, Faisal and Rodriguez, Aurelien and Joulin, Armand and Grave, Edouard and Lample, Guillaume},
+  journal = {arXiv preprint arXiv:2302.13971},
+  year    = {2023}
+}
+
+% NOTE: verifier l'ID arXiv de Qwen2.5 (2412.15115) sur le PDF avant soumission.
+@article{qwen2025,
+  title   = {{Qwen2.5} Technical Report},
+  author  = {{Qwen Team}},
+  journal = {arXiv preprint arXiv:2412.15115},
+  year    = {2025}
+}
+
+% NER closed-set utilises comme detecteur (axe MD de tab:ablation) : backbones.
+% NOTE: pas encore de PDF dans paper_used/ -- a verifier (IDs arXiv standards).
+@inproceedings{devlin2019bert,
+  title     = {{BERT}: Pre-training of Deep Bidirectional Transformers for Language Understanding},
+  author    = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  booktitle = {Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics ({NAACL})},
+  pages     = {4171--4186},
+  year      = {2019}
+}
+
+@article{liu2019roberta,
+  title   = {{RoBERTa}: A Robustly Optimized {BERT} Pretraining Approach},
+  author  = {Liu, Yinhan and Ott, Myle and Goyal, Naman and Du, Jingfei and Joshi, Mandar and Chen, Danqi and Levy, Omer and Lewis, Mike and Zettlemoyer, Luke and Stoyanov, Veselin},
+  journal = {arXiv preprint arXiv:1907.11692},
+  year    = {2019}
+}
+
+% Encoders compares dans tab:ablation. Verifies sur les PDF de paper/paper_used/.
+@article{wang2022e5,
+  title   = {Text Embeddings by Weakly-Supervised Contrastive Pre-training},
+  author  = {Wang, Liang and Yang, Nan and Huang, Xiaolong and Jiao, Binxing and Yang, Linjun and Jiang, Daxin and Majumder, Rangan and Wei, Furu},
+  journal = {arXiv preprint arXiv:2212.03533},
+  year    = {2022}
+}
+
+@inproceedings{xiao2024cpack,
+  title     = {{C-Pack}: Packed Resources For General Chinese Embeddings},
+  author    = {Xiao, Shitao and Liu, Zheng and Zhang, Peitian and Muennighoff, Niklas and Lian, Defu and Nie, Jian-Yun},
+  booktitle = {Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR)},
+  pages     = {641--649},
+  year      = {2024}
+}
+
+@inproceedings{song2020mpnet,
+  title     = {{MPNet}: Masked and Permuted Pre-training for Language Understanding},
+  author    = {Song, Kaitao and Tan, Xu and Qin, Tao and Lu, Jianfeng and Liu, Tie-Yan},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2020}
+}
+
+% mxbai-embed-large-v1 est entraine avec l'objectif AnglE/AoE (Li & Li, ACL 2024).
+@inproceedings{li2024aoe,
+  title     = {{AoE}: Angle-optimized Embeddings for Semantic Textual Similarity},
+  author    = {Li, Xianming and Li, Jing},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (ACL)},
+  pages     = {1825--1839},
+  year      = {2024}
+}
+
+% QLoRA: source of the 4-bit NormalFloat (NF4) quantization used by bitsandbytes
+% for the int4 baselines. NOTE: we use NF4 inference quantization only, NOT the
+% QLoRA (LoRA) fine-tuning method. arXiv:2305.14314.
+@inproceedings{dettmers2023qlora,
+  title     = {{QLoRA}: Efficient Finetuning of Quantized {LLMs}},
+  author    = {Dettmers, Tim and Pagnoni, Artidoro and Holtzman, Ari and Zettlemoyer, Luke},
+  booktitle = {Advances in Neural Information Processing Systems 36 ({NeurIPS})},
+  year      = {2023},
+  publisher = {Curran Associates, Inc.}
+}
+
+
+% ---------------------------------------------------------------------
+% Few-shot NER via contrastive learning (close to Opener's approach)
+% ---------------------------------------------------------------------
+
+% GCSE: Gaussian-decayed contrastive learning with hard negatives for sentence
+% embeddings. Close in spirit to our error-driven hard-negative mining. ACL 2025.
+@inproceedings{lai2025gcse,
+  title     = {Enhancing Unsupervised Sentence Embeddings via Knowledge-Driven Data Augmentation and {Gaussian}-Decayed Contrastive Learning},
+  author    = {Lai, Peichao and Zhang, Zhengfeng and Zhang, Wentao and Fu, Fangcheng and Cui, Bin},
+  booktitle = {Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics ({ACL}), Volume 1: Long Papers},
+  pages     = {4919--4940},
+  year      = {2025},
+  publisher = {Association for Computational Linguistics}
+}
+
+% Verified 2026-06-10 against paper_used/00_inspiration/ (arXiv:2109.07589, ACL 2022).
+@inproceedings{das2022container,
+  title     = {{CONTaiNER}: Few-Shot Named Entity Recognition via Contrastive Learning},
+  author    = {Das, Sarkar Snigdha Sarathi and Katiyar, Arzoo and Passonneau, Rebecca J. and Zhang, Rui},
+  booktitle = {Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics ({ACL})},
+  pages     = {6338--6353},
+  year      = {2022}
+}
+
+
+% =====================================================================
+% Datasets (cite the ORIGINAL paper). Verified 2026-06-10 against the
+% PDFs in paper_used/03_datasets/.
+% =====================================================================
+
+% CoNLL-2003. arXiv:cs/0306050, CoNLL 2003.
+@inproceedings{tjongkimsang2003conll,
+  title     = {Introduction to the {CoNLL}-2003 Shared Task: Language-Independent Named Entity Recognition},
+  author    = {Tjong Kim Sang, Erik F. and De Meulder, Fien},
+  booktitle = {Proceedings of the Seventh Conference on Natural Language Learning ({CoNLL})},
+  pages     = {142--147},
+  year      = {2003}
+}
+
+% CrossNER. arXiv:2012.04373, AAAI 2021.
+@inproceedings{liu2021crossner,
+  title     = {{CrossNER}: Evaluating Cross-Domain Named Entity Recognition},
+  author    = {Liu, Zihan and Xu, Yan and Yu, Tiezheng and Dai, Wenliang and Ji, Ziwei and Cahyawijaya, Samuel and Madotto, Andrea and Fung, Pascale},
+  booktitle = {Proceedings of the {AAAI} Conference on Artificial Intelligence},
+  volume    = {35},
+  number    = {15},
+  pages     = {13452--13460},
+  year      = {2021}
+}
+
+% WNUT-17. W-NUT 2017, pp. 140-147 (printed on title page).
+@inproceedings{derczynski2017wnut,
+  title     = {Results of the {WNUT2017} Shared Task on Novel and Emerging Entity Recognition},
+  author    = {Derczynski, Leon and Nichols, Eric and van Erp, Marieke and Limsopatham, Nut},
+  booktitle = {Proceedings of the 3rd Workshop on Noisy User-generated Text ({W-NUT})},
+  pages     = {140--147},
+  year      = {2017}
+}
+
+% MIT-Restaurant and MIT-Movie corpora originate from the Asgard system. ICASSP 2013.
+@inproceedings{liu2013asgard,
+  title     = {{Asgard}: A Portable Architecture for Multilingual Dialogue Systems},
+  author    = {Liu, Jingjing and Pasupat, Panupong and Cyphers, Scott and Glass, James},
+  booktitle = {Proceedings of the {IEEE} International Conference on Acoustics, Speech and Signal Processing ({ICASSP})},
+  pages     = {8386--8390},
+  year      = {2013}
+}
+
+% GENIA corpus. Bioinformatics 19, Suppl. 1 (2003), pp. i180-i182 (printed).
+@article{kim2003genia,
+  title   = {{GENIA} Corpus---A Semantically Annotated Corpus for Bio-Textmining},
+  author  = {Kim, Jin-Dong and Ohta, Tomoko and Tateisi, Yuka and Tsujii, Jun'ichi},
+  journal = {Bioinformatics},
+  volume  = {19},
+  number  = {Suppl. 1},
+  pages   = {i180--i182},
+  year    = {2003}
+}
+
+% GUM corpus. Published in Language Resources and Evaluation 51(3) (confirmed via OWNER bib).
+@article{zeldes2017gum,
+  title   = {The {GUM} Corpus: Creating Multilayer Resources in the Classroom},
+  author  = {Zeldes, Amir},
+  journal = {Language Resources and Evaluation},
+  volume  = {51},
+  number  = {3},
+  pages   = {581--612},
+  year    = {2017}
+}
+
+% GENTLE. LAW-XVII 2023. arXiv:2306.01966.
+@inproceedings{aoyama2023gentle,
+  title     = {{GENTLE}: A Genre-Diverse Multilayer Challenge Set for English {NLP} and Linguistic Evaluation},
+  author    = {Aoyama, Tatsuya and Behzad, Shabnam and Gessler, Luke and Levine, Lauren and Lin, Jessica and Liu, Yang Janet and Peng, Siyao and Zhu, Yilun and Zeldes, Amir},
+  booktitle = {Proceedings of the 17th Linguistic Annotation Workshop ({LAW-XVII})},
+  pages     = {166--178},
+  year      = {2023}
+}
+
+% FabNER. Journal of Intelligent Manufacturing 33(8):2393-2407, 2022. DOI 10.1007/s10845-021-01807-x.
+@article{kumar2022fabner,
+  title   = {{FabNER}: Information Extraction from Manufacturing Process Science Domain Literature Using Named Entity Recognition},
+  author  = {Kumar, Aman and Starly, Binil},
+  journal = {Journal of Intelligent Manufacturing},
+  volume  = {33},
+  number  = {8},
+  pages   = {2393--2407},
+  year    = {2022}
+}
+
+% BioNLP-2004 / JNLPBA shared task (our biomedical benchmark, proxy for GENIA).
+% Verified 2026-06-10. JNLPBA/BioNLP workshop at COLING 2004, pp. 70-75.
+@inproceedings{kim2004jnlpba,
+  title     = {Introduction to the Bio-Entity Recognition Task at {JNLPBA}},
+  author    = {Kim, Jin-Dong and Ohta, Tomoko and Tsuruoka, Yoshimasa and Tateisi, Yuka and Collier, Nigel},
+  booktitle = {Proceedings of the International Joint Workshop on Natural Language Processing in Biomedicine and its Applications ({NLPBA/BioNLP})},
+  pages     = {70--75},
+  year      = {2004}
+}
+
+
+% =====================================================================
+% Open-world / LLM-based NER baselines (compared against Opener).
+% Verified 2026-06-10 against the PDFs in paper_used/02_baselines/.
+% =====================================================================
+
+% UniversalNER. "Published as a conference paper at ICLR 2024". arXiv:2308.03279.
+@inproceedings{zhou2024universalner,
+  title     = {{UniversalNER}: Targeted Distillation from Large Language Models for Open Named Entity Recognition},
+  author    = {Zhou, Wenxuan and Zhang, Sheng and Gu, Yu and Chen, Muhao and Poon, Hoifung},
+  booktitle = {The Twelfth International Conference on Learning Representations ({ICLR})},
+  year      = {2024}
+}
+
+% GoLLIE. "Published as a conference paper at ICLR 2024". arXiv:2310.03668.
+@inproceedings{sainz2024gollie,
+  title     = {{GoLLIE}: Annotation Guidelines Improve Zero-Shot Information-Extraction},
+  author    = {Sainz, Oscar and Garc{\'i}a-Ferrero, Iker and Agerri, Rodrigo and Lopez de Lacalle, Oier and Rigau, German and Agirre, Eneko},
+  booktitle = {The Twelfth International Conference on Learning Representations ({ICLR})},
+  year      = {2024}
+}
+
+% ChatIE. arXiv:2302.10205 (no formal venue on title page).
+@article{wei2024chatie,
+  title   = {{ChatIE}: Zero-Shot Information Extraction via Chatting with {ChatGPT}},
+  author  = {Wei, Xiang and Cui, Xingyu and Cheng, Ning and Wang, Xiaobin and Zhang, Xin and Huang, Shen and Xie, Pengjun and Xu, Jinan and Chen, Yufeng and Zhang, Meishan and Jiang, Yong and Han, Wenjuan},
+  journal = {arXiv preprint arXiv:2302.10205},
+  year    = {2023}
+}
+
+% GNER. Authors corrected from the actual PDF (OWNER's bib listed wrong authors!).
+% Verified 2026-06-10: Findings of ACL 2024, pp. 3461-3475 (printed). arXiv:2402.16602.
+@inproceedings{ding2024gner,
+  title     = {Rethinking Negative Instances for Generative Named Entity Recognition},
+  author    = {Ding, Yuyang and Li, Juntao and Wang, Pinzheng and Tang, Zecheng and Yan, Bowen and Zhang, Min},
+  booktitle = {Findings of the Association for Computational Linguistics: {ACL} 2024},
+  pages     = {3461--3475},
+  year      = {2024}
+}
+
+
+% =====================================================================
+% Green AI / energy footprint (motivation for the frugality axis).
+% Verified 2026-06-10 against the PDFs in paper_used/04_energy_green_ai/.
+% =====================================================================
+
+% Green AI. PDF is arXiv:1907.10597; published in CACM 63(12):54-63, 2020.
+@article{schwartz2020greenai,
+  title   = {Green {AI}},
+  author  = {Schwartz, Roy and Dodge, Jesse and Smith, Noah A. and Etzioni, Oren},
+  journal = {Communications of the {ACM}},
+  volume  = {63},
+  number  = {12},
+  pages   = {54--63},
+  year    = {2020}
+}
+
+% Energy and Policy Considerations for Deep Learning in NLP. ACL 2019. arXiv:1906.02243.
+@inproceedings{strubell2019energy,
+  title     = {Energy and Policy Considerations for Deep Learning in {NLP}},
+  author    = {Strubell, Emma and Ganesh, Ananya and McCallum, Andrew},
+  booktitle = {Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics ({ACL})},
+  pages     = {3645--3650},
+  year      = {2019}
+}
+
+% Carbon footprint of ML training. IEEE Computer 55(7), 2022. arXiv:2204.05149.
+@article{patterson2022carbon,
+  title   = {The Carbon Footprint of Machine Learning Training Will Plateau, Then Shrink},
+  author  = {Patterson, David and Gonzalez, Joseph and H{\"o}lzle, Urs and Le, Quoc and Liang, Chen and Munguia, Lluis-Miquel and Rothchild, Daniel and So, David and Texier, Maud and Dean, Jeff},
+  journal = {Computer},
+  volume  = {55},
+  number  = {7},
+  pages   = {18--28},
+  year    = {2022}
+}
+
+
+% =====================================================================
+% Classic / span-based NER and an open-world & green-AI extension.
+% Verified 2026-06-20 against the PDFs in paper_used/ (title page read).
+% =====================================================================
+
+% BiLSTM-CRF + Stack-LSTM. NAACL-HLT 2016, pp. 260-270. arXiv:1603.01360.
+@inproceedings{lample2016ner,
+  title     = {Neural Architectures for Named Entity Recognition},
+  author    = {Lample, Guillaume and Ballesteros, Miguel and Subramanian, Sandeep and Kawakami, Kazuya and Dyer, Chris},
+  booktitle = {Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies ({NAACL-HLT})},
+  pages     = {260--270},
+  year      = {2016}
+}
+
+% BiLSTM-CNNs-CRF. ACL 2016, pp. 1064-1074.
+@inproceedings{ma2016end,
+  title     = {End-to-end Sequence Labeling via Bi-directional {LSTM}-{CNNs}-{CRF}},
+  author    = {Ma, Xuezhe and Hovy, Eduard},
+  booktitle = {Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics ({ACL})},
+  pages     = {1064--1074},
+  year      = {2016}
+}
+
+% Biaffine NER (flat + nested). ACL 2020, pp. 6470-6476.
+@inproceedings{yu2020biaffine,
+  title     = {Named Entity Recognition as Dependency Parsing},
+  author    = {Yu, Juntao and Bohnet, Bernd and Poesio, Massimo},
+  booktitle = {Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics ({ACL})},
+  pages     = {6470--6476},
+  year      = {2020}
+}
+
+% MRC framework for NER. ACL 2020, pp. 5849-5859.
+@inproceedings{li2020mrc,
+  title     = {A Unified {MRC} Framework for Named Entity Recognition},
+  author    = {Li, Xiaoya and Feng, Jingrong and Meng, Yuxian and Han, Qinghong and Wu, Fei and Li, Jiwei},
+  booktitle = {Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics ({ACL})},
+  pages     = {5849--5859},
+  year      = {2020}
+}
+
+% Survey on deep learning for NER. IEEE TKDE vol.34(1), 2022 (accepted 2020). arXiv:1812.09449.
+@article{li2022survey,
+  title   = {A Survey on Deep Learning for Named Entity Recognition},
+  author  = {Li, Jing and Sun, Aixin and Han, Jianglei and Li, Chenliang},
+  journal = {IEEE Transactions on Knowledge and Data Engineering},
+  volume  = {34},
+  number  = {1},
+  pages   = {50--70},
+  year    = {2022}
+}
+
+% Zero-shot NERC via type descriptions. ACL-IJCNLP 2021, pp. 1516-1528.
+@inproceedings{aly2021zeroshot,
+  title     = {Leveraging Type Descriptions for Zero-shot Named Entity Recognition and Classification},
+  author    = {Aly, Rami and Vlachos, Andreas and McDonald, Ryan},
+  booktitle = {Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing ({ACL-IJCNLP})},
+  pages     = {1516--1528},
+  year      = {2021}
+}
+
+% Few-NERD few-shot NER dataset (8 coarse / 66 fine types). ACL-IJCNLP 2021, pp. 3198-3213.
+@inproceedings{ding2021fewnerd,
+  title     = {{Few-NERD}: A Few-shot Named Entity Recognition Dataset},
+  author    = {Ding, Ning and Xu, Guangwei and Chen, Yulin and Wang, Xiaobin and Han, Xu and Xie, Pengjun and Zheng, Hai-Tao and Liu, Zhiyuan},
+  booktitle = {Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing ({ACL-IJCNLP})},
+  pages     = {3198--3213},
+  year      = {2021}
+}
+
+% Inference-time energy/carbon of ML systems. FAccT 2024. arXiv:2311.16863.
+@inproceedings{luccioni2024power,
+  title     = {Power Hungry Processing: Watts Driving the Cost of {AI} Deployment?},
+  author    = {Luccioni, Alexandra Sasha and Jernite, Yacine and Strubell, Emma},
+  booktitle = {Proceedings of the 2024 ACM Conference on Fairness, Accountability, and Transparency ({FAccT})},
+  pages     = {85--99},
+  year      = {2024}
+}
+
+% Systematic energy/carbon reporting framework. JMLR 21 (2020) 1-44. arXiv:2002.05651.
+@article{henderson2020systematic,
+  title   = {Towards the Systematic Reporting of the Energy and Carbon Footprints of Machine Learning},
+  author  = {Henderson, Peter and Hu, Jieru and Romoff, Joshua and Brunskill, Emma and Jurafsky, Dan and Pineau, Joelle},
+  journal = {Journal of Machine Learning Research},
+  volume  = {21},
+  pages   = {1--44},
+  year    = {2020}
+}
+
+% Sustainable AI (data/algorithms/hardware lifecycle). MLSys 2022. arXiv:2111.00364.
+@inproceedings{wu2022sustainable,
+  title     = {Sustainable {AI}: Environmental Implications, Challenges and Opportunities},
+  author    = {Wu, Carole-Jean and Raghavendra, Ramya and Gupta, Udit and Acun, Bilge and Ardalani, Newsha and Maeng, Kiwan and Chang, Gloria and Aga, Fiona and Huang, Jinshi and Bai, Charles and others},
+  booktitle = {Proceedings of Machine Learning and Systems ({MLSys})},
+  year      = {2022}
+}
