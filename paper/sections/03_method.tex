@@ -8,7 +8,7 @@ Formally, from a sentence $s$, a mention detector produces the set of candidate 
 \begin{equation}
 e_i = f_\theta(s, m_i)\in\mathbb{R}^{D},\qquad \hat y_i\in\mathcal{T},
 \end{equation}
-where the type inventory $\mathcal{T}$ is unknown at the training time.
+where the type inventory $\mathcal{T}$ is unknown at training time.
 
 We adopt the same evaluation protocol as OWNER \cite{genest2025owner}.
 To keep the end-to-end score honest, detection errors must be penalised rather than quietly ignored. We align predicted and gold mentions by their exact character offsets, so a prediction is a match only when it covers exactly the same span as a gold mention. Any mention left unmatched is then a detection error of one of two kinds. A gold mention that no prediction matches is a \emph{false negative} (a missed entity, for example, the detector finds ``Marie Curie'' but misses ``radium'' in ``Marie Curie discovered radium''). A predicted mention that matches no gold entity is a \emph{false positive} (a spurious span, for example, the detector wrongly proposes ``discovered'' as an entity). Each unmatched mention receives its own distinct sentinel type, so that these errors count as mismatches when computing the AMI instead of being ignored.
@@ -105,7 +105,7 @@ Only the typing head is fitted on target-side material, and it comes in two form
 \label{sec:method:detect}
 Mention detection is delegated to GLiNER \cite{zaratiana2024gliner}, a frozen, ready-to-use detector that scores every span against the candidate type names in a single forward pass.
 Decoupling detection from typing lets each component be chosen and measured independently, and it lets the typing head operate on any span proposer.
-We use GLiNER-L by default to have the best AMI score. The small and medium variants trace a size/efficiency trade-off (See the \autoref{tab:ablation} to have all the tests we have done to select the best Mention Detector).
+We use GLiNER-L by default, as it yields the best AMI. The small and medium variants trace a size/efficiency trade-off (see \autoref{tab:ablation} for the full detector comparison).
 As shown in \autoref{sec:exp:results}, the detector is the shared end-to-end bottleneck: its recall on specialised domains, not the typing head, caps end-to-end quality.
 
 \subsection*{2. Entity Embedding}
@@ -113,7 +113,7 @@ As shown in \autoref{sec:exp:results}, the detector is the shared end-to-end bot
 \setcounter{paragraph}{0}
 Detected spans are embedded with Nomic Embed v1.5 \cite{nussbaum2024nomic}, a sentence embedder trained with the Matryoshka objective \cite{kusupati2022matryoshka}, whose representation can be truncated to a lower dimension and renormalised without retraining.
 Each mention is embedded \emph{in context} rather than in isolation: the span is presented together with its surrounding sentence, so that polysemous surface forms (e.g.\ Apple as a company versus a fruit) are disambiguated.
-This yields a vector $e_i \in \mathbb{R}^{D}$ with $D$ truncatable in $\{768,512,256,128,64\}$. We keep the full $D{=}768$ to have the best AMI score (See the \autoref{tab:ablation} to have all the tests we have done to select the best dimension).
+This yields a vector $e_i \in \mathbb{R}^{D}$ with $D$ truncatable in $\{768,512,256,128,64\}$. We keep the full $D{=}768$, which yields the best AMI (see \autoref{tab:ablation} for the full dimension sweep).
 Truncation keeps only the first $d$ coordinates of the embedding ($d \le D$) and rescales them back to unit length,
 \begin{equation}
 e_i^{(d)} = e_{i,1:d}\,\big/\,\lVert e_{i,1:d}\rVert_2 ,
@@ -124,7 +124,7 @@ where $e_i \in \mathbb{R}^{D}$ is the in-context embedding of mention $m_i$, $e_
 Still, the frozen embedding is only weakly discriminative for entity types ($25.8$ AMI, \autoref{tab:ablation}), so we sharpen its geometry with \emph{contrastive fine-tuning}, in two stages, while keeping the backbone otherwise intact.
 
 \paragraph{Stage 1: contrastive}
-We fine-tune the embedder with a Triplet Margin Loss $\mathcal{L}$ \cite{schroff2015facenet} (using sentence-transformers \cite{reimers2019sbert}), with margin $\alpha = 1$, on the CoNLL-2003 \cite{tjongkimsang2003conll} training spans. We use CoNLL-2003 because it is the most diverse of our datasets (\autoref{tab:datasets}). Since the embedder is only lightly fine-tuned on it, we exclude CoNLL-2003 from the reported average, so as not to bias the results in our favour, following the same protocol as OWNER.
+We fine-tune the embedder with a Triplet Margin Loss $\mathcal{L}$ \cite{schroff2015facenet} (using sentence-transformers \cite{reimers2019sbert}), with margin $\alpha = 1$, on the CoNLL-2003 \cite{tjongkimsang2003conll} training spans. We use CoNLL-2003 because its generic, domain-neutral label set makes it the standard source domain of our benchmark (\autoref{tab:datasets}). Since the embedder is only lightly fine-tuned on it, we exclude CoNLL-2003 from the reported average, so as not to bias the results in our favour, following the same protocol as OWNER.
 A triplet $(a,p,n)$ takes an anchor span $a$, a positive $p$ of the \emph{same} type, and a negative $n$ of a \emph{different} type, with at most two triplets per anchor.
 Writing $\alpha$ for the margin, each triplet contributes
 \begin{equation}
@@ -139,7 +139,7 @@ We then mine the model's own confusions. We defer this to Stage 2, after the Sta
 On each target training split, we run a cross-validated typing pass (so no test label is ever seen) and collect the type pairs that are most often confused, such as \emph{writer}/\emph{person}, \emph{album}/\emph{band} and \emph{country}/\emph{location}.
 For each such error, we form a \emph{hard} triplet whose anchor is the mistyped span (true type $L$), whose positive is another span of $L$, and whose negative is a span of the confused type $C$.
 Hard triplets are mixed with correctly-typed (easy) triplets for diversity, targeting a $65\%$ hard fraction, and the Stage-1 embedder is fine-tuned further with the same optimiser settings. This ratio must be controlled carefully to preserve generalisation.
-The selected run mines $8000$ triplets over $3$ epochs and reaches $62.5$ AMI at the released seed ($+8.5$ over Stage~1, better on $12$ of $13$ sets). Retraining the full two-stage recipe under three seeds yields $62.3 \pm 1.0$ (\autoref{sec:exp:protocol}).
+The selected run mines $8000$ triplets over $3$ epochs and reaches $62.5$ AMI at the released seed ($+8.5$ over Stage~1, improving on $12$ of the $13$ sets). Retraining the full two-stage recipe under three seeds yields $62.3 \pm 1.0$ (\autoref{sec:exp:protocol}).
 This embedder is shared unchanged by every typing head below. The UMAP projection in \autoref{fig:umap} also reveals the additional effect of Stage 2 on the embedding space.
 
 \subsection*{3. Entity Typing}
