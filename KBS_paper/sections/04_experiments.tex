@@ -85,7 +85,7 @@ GNER & T5 & Enc.--Dec. & t5-base & 220M & 0.5$\times$ \\
 OWNER\tnote{$\dagger$} & DeBERTaV3+BERT & Encoder & deberta-v3 + bert-base & 294M & 0.6$\times$ \\
 Qwen2.5-1.5B & Qwen2.5 & Decoder & qwen2.5-1.5b-instruct & 1.5B & 3.2$\times$ \\
 \midrule
-\textbf{OPENER} (ours) & DeBERTaV3+Nomic & Encoder & deberta-v3-large + nomic-v1.5 & 467M & 1.0$\times$ \\
+\rowcolor{hlorange} \textbf{OPENER} (ours) & DeBERTaV3+Nomic & Encoder & deberta-v3-large + nomic-v1.5 & 467M & 1.0$\times$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
@@ -231,7 +231,7 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 % "fusion beta=0" (inductif pur du run fusion), coherent seed a seed ; l'ancien run
 % separe opener_zs_e2e (seed 42 : 31.6 43.8 41.7 ... | 34.2) est conserve ici.
 \zsind & 29.7$_{\pm2.2}$ & 41.6$_{\pm2.3}$ & 43.6$_{\pm0.3}$ & 40.4$_{\pm0.7}$ & 42.5$_{\pm0.6}$ & 21.9$_{\pm1.3}$ & 28.0$_{\pm1.9}$ & 32.8$_{\pm0.9}$ & 27.6$_{\pm0.1}$ & 26.2$_{\pm1.4}$ & 43.5$_{\pm1.6}^\dagger$ & 30.8$_{\pm1.4}$ & 30.1$_{\pm1.0}$ & 33.8$_{\pm0.7}$ \\
-\zstr & 39.4$_{\pm2.1}$ & 48.7$_{\pm0.7}$ & \textbf{58.3$_{\pm0.3}$} & 49.2$_{\pm0.9}$ & 52.6$_{\pm0.2}$ & 28.8$_{\pm1.0}$ & 31.2$_{\pm0.2}$ & 36.0$_{\pm0.6}$ & 28.1$_{\pm0.3}$ & 34.7$_{\pm0.9}$ & 43.7$_{\pm1.1}^\dagger$ & 32.0$_{\pm0.7}$ & 30.7$_{\pm0.3}$ & 39.5$_{\pm0.1}$ \\
+\rowcolor{hlyellow} \zstr & 39.4$_{\pm2.1}$ & 48.7$_{\pm0.7}$ & \textbf{58.3$_{\pm0.3}$} & 49.2$_{\pm0.9}$ & 52.6$_{\pm0.2}$ & 28.8$_{\pm1.0}$ & 31.2$_{\pm0.2}$ & 36.0$_{\pm0.6}$ & 28.1$_{\pm0.3}$ & 34.7$_{\pm0.9}$ & 43.7$_{\pm1.1}^\dagger$ & 32.0$_{\pm0.7}$ & 30.7$_{\pm0.3}$ & 39.5$_{\pm0.1}$ \\
 %       --       MOVED to architecture search (\autoref{tab:ablation}); preserved e2e per-dataset:
 % OPENER-ZS (transd.) & 33.7 & 48.9 & 53.7 & 45.3 & 45.9 & 24.2 & 30.4 & 34.7 & 27.9 & 27.9 & 44.4$^\dagger$ & 31.0 & 30.8 & 36.8 \\
 \addlinespace
@@ -240,7 +240,7 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 % OPENER & 39.1 & 39.3 & 49.2 & 44.2 & 47.8 & 24.8 & 30.6 & 36.7 & \textbf{28.3} & 31.4 & 39.4 & 32.5 & 32.5 & 36.6 \\
 %       --       end preserved       --
 % hard-mining 3k tr./2 ep. e2e (recorded in project notes): 41.0 47.0 53.3 48.3 50.0 24.0 33.1 37.3 30.1 33.5 45.6 33.2 33.9 | 39.2
-OPENER-Sup & 40.3$_{\pm0.2}$ & 48.7$_{\pm1.3}$ & 55.2$_{\pm0.8}$ & 49.1$_{\pm1.4}$ & 51.8$_{\pm1.7}$ & 24.8$_{\pm0.2}$ & \textbf{34.1$_{\pm0.9}$} & \textbf{37.8$_{\pm0.2}$} & \textbf{29.8$_{\pm0.5}$} & \textbf{35.9$_{\pm0.5}$} & 46.1$_{\pm2.1}^\dagger$ & 33.8$_{\pm0.1}$ & 34.0$_{\pm0.3}$ & \textbf{40.1$_{\pm0.5}$} \\
+\rowcolor{hlred} OPENER-Sup & 40.3$_{\pm0.2}$ & 48.7$_{\pm1.3}$ & 55.2$_{\pm0.8}$ & 49.1$_{\pm1.4}$ & 51.8$_{\pm1.7}$ & 24.8$_{\pm0.2}$ & \textbf{34.1$_{\pm0.9}$} & \textbf{37.8$_{\pm0.2}$} & \textbf{29.8$_{\pm0.5}$} & \textbf{35.9$_{\pm0.5}$} & 46.1$_{\pm2.1}^\dagger$ & 33.8$_{\pm0.1}$ & 34.0$_{\pm0.3}$ & \textbf{40.1$_{\pm0.5}$} \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
@@ -316,14 +316,14 @@ GNER & 3431 & 5408 & 7461 & 6472 & 7110 & 2906 & 1610 & 3344 & 4310 & 5034 & 291
 Qwen2.5-1.5B$^\ddagger$ & 4857 & 6757 & 9396 & 7700 & 8261 & 3553 & 2142 & 5014 & 2921 & 4737 & 2260 & 4265 & 3806 & 5051 \\
 OWNER$^\S$ & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 & 558 & 719$^\dagger$ & 759 & 626 & 616 \\
 \zsind & 109 & 135 & 156 & 172 & 175 & 136 & 127 & 137 & 133 & 136 & 117 & 127 & 124 & 137 \\
-\zstr & 218 & 254 & 291 & 277 & 289 & 185 & 173 & 205 & 84 & 98 & 92 & 104 & 97 & 182 \\
+\rowcolor{hlyellow} \zstr & 218 & 254 & 291 & 277 & 289 & 185 & 173 & 205 & 84 & 98 & 92 & 104 & 97 & 182 \\
 % MOVED to architecture search (\autoref{tab:ablation}); preserved e2e per-dataset:
 % OPENER-ZS (transd.) & 104 & 130 & 149 & 158 & 186 & 186 & 217 & 233 & 194 & 132 & 75 & 95 & 98 & 151 \\
 \addlinespace
 \multicolumn{15}{l}{\emph{Supervised (target labels)}} \\
 % PRESERVED pre-hard-mining OPENER latency (contrastive, 2026-06-09):
 % OPENER & 105 & 519 & 247 & 153 & 227 & 103 & 97 & 111 & 96 & 119 & 100 & 104 & 101 & 160 \\
-OPENER-Sup & 222 & 271 & 293 & 159 & 132 & 100 & 92 & 98 & 104 & 108 & 89 & 100 & 94 & 143 \\
+\rowcolor{hlred} OPENER-Sup & 222 & 271 & 293 & 159 & 132 & 100 & 92 & 98 & 104 & 108 & 89 & 100 & 94 & 143 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
@@ -394,14 +394,14 @@ GNER & 17.13 & 24.28 & 39.75 & 50.88 & 44.76 & 20.60 & 17.02 & 37.17 & 49.11 & 6
 Qwen2.5-1.5B$^\ddagger$ & 12.7 & 15.1 & 17.5 & 18.4 & 18.0 & 7.9 & 4.6 & 9.5 & 7.0 & 11.1 & 7.3 & 10.2 & 9.5 & 11.4 \\
 OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & 22.0$^\dagger$ & 23.2 & 19.1 & 14.3 \\
 \zsind & 0.95 & 1.06 & 1.37 & 1.97 & 1.69 & 1.52 & 2.07 & 2.28 & 2.15 & 2.30 & 2.10 & 2.33 & 2.26 & 1.85 \\
-\zstr & 1.14 & 1.23 & 1.58 & 2.08 & 1.82 & 1.41 & 1.82 & 2.23 & 1.62 & 1.87 & 1.63 & 1.90 & 1.79 & 1.70 \\
+\rowcolor{hlyellow} \zstr & 1.14 & 1.23 & 1.58 & 2.08 & 1.82 & 1.41 & 1.82 & 2.23 & 1.62 & 1.87 & 1.63 & 1.90 & 1.79 & 1.70 \\
 % MOVED to architecture search (\autoref{tab:ablation}); preserved e2e per-dataset:
 % OPENER-ZS (transd.) & 0.97 & 1.04 & 1.36 & 1.89 & 2.04 & 2.15 & 3.15 & 2.68 & 2.08 & 1.97 & 1.48 & 1.85 & 1.90 & 1.89 \\
 \addlinespace
 \multicolumn{15}{l}{\emph{Supervised (target labels)}} \\
 % PRESERVED pre-hard-mining OPENER energy (had a CodeCarbon glitch on Mus=22.76; avg inflated to 3.39):
 % OPENER & 0.86 & 2.16 & 22.76 & 1.89 & 2.21 & 1.27 & 1.66 & 2.06 & 1.66 & 2.08 & 1.70 & 1.93 & 1.82 & 3.39 \\
-OPENER-Sup & 1.10 & 1.26 & 0.87 & 1.76 & 1.41 & 1.31 & 1.75 & 1.87 & 1.96 & 1.97 & 1.73 & 1.91 & 1.78 & 1.59 \\
+\rowcolor{hlred} OPENER-Sup & 1.10 & 1.26 & 0.87 & 1.76 & 1.41 & 1.31 & 1.75 & 1.87 & 1.96 & 1.97 & 1.73 & 1.91 & 1.78 & 1.59 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
@@ -474,13 +474,13 @@ GNER      & 220M & 37.9 & 4226 & 36.51 & 2.05 \\
 Qwen2.5-1.5B (4-bit)$^\ddagger$ & 1.5B & 26.1 & 5051 & 11.4 & 0.60 \\
 OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 \zsind & 467M & 33.8$_{\pm0.7}$ & 137 & 1.85 & 0.10 \\
-\zstr & 467M & 39.5$_{\pm0.1}$ & 182 & 1.70 & 0.10 \\
+\rowcolor{hlyellow} \zstr & 467M & 39.5$_{\pm0.1}$ & 182 & 1.70 & 0.10 \\
 % MOVED to architecture search (\autoref{tab:ablation}); preserved:
 % OPENER-ZS (transd.) & 467M & 36.8 & 151 & 1.89 & 0.11 \\
 \addlinespace
 \multicolumn{6}{l}{\emph{Supervised (target labels)}} \\
 % PRESERVED pre-hard-mining: OPENER & 467M & 36.6 & 160 & 3.39 & 0.19 \\ (energy inflated by a CodeCarbon glitch on Mus)
-OPENER-Sup & 467M & 40.1$_{\pm0.5}$ & 143 & 1.59 & 0.09 \\
+\rowcolor{hlred} OPENER-Sup & 467M & 40.1$_{\pm0.5}$ & 143 & 1.59 & 0.09 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
@@ -608,17 +608,15 @@ The type geometry learned on CoNLL thus transfers to an unseen domain, which is 
 
 \subsection{Ablations}
 \label{sec:exp:ablations}
-We justify each architectural choice with a one-factor-at-a-time search.
-Starting from the default pipeline, we vary a single component while holding the others fixed and keep the setting with the highest mean AMI.
+We justify each architectural choice with a one-factor-at-a-time search: starting from the default pipeline, we vary a single component, hold the others fixed, and keep the setting with the highest mean AMI.
 Among embedder variants, an error-driven \emph{hard-negative mining} pass, fine-tuning the contrastive embedder on the entity pairs it most often confuses (e.g.\ \emph{writer}/\emph{person}, \emph{album}/\emph{band}, \emph{country}/\emph{location}), mixed with correctly-typed mentions for diversity, raises typing-on-gold AMI from $54.0$ to $60.1$. Scaling the mined triplets ($3000\!\to\!8000$) and epochs ($2\!\to\!3$) lifts it further to $62.5$ ($+8.5$ over the contrastive embedder, better on $12$ of $13$ sets), our selected configuration.
-\autoref{tab:ablation} reports this search. The protocol comparison between typing-on-gold and end-to-end is discussed alongside the main results.
-The remaining axes confirm the rest of the pipeline: among frozen ready-to-use base encoders, Nomic v1.5 is the most discriminative for entity typing ($25.8$ AMI, ahead of e5-base $25.3$, mxbai $24.4$, MPNet $24.1$ and BGE $23.6$) and is selected (the heaviest candidate, mxbai-large, is moreover $\sim$8$\times$ slower per sentence for no quality gain). Even so, frozen embeddings are only weakly discriminative, so the contrastive step is what makes the space usable ($+28.2$). The detector, which only proposes spans, re-typed by the OPENER head, trades quality for cost (GLiNER-S\,$\to$\,L: $37.7\!\to\!40.2$ AMI at $51\!\to\!143$\,ms end-to-end), and OPENER's typing on GLiNER-L's spans ($40.2$) even beats GLiNER-L's own typing ($38.9$, \autoref{tab:main}). A closed-set NER detector (BERT or RoBERTa-NER, CoNLL-trained) used in its place collapses to $\sim$0 recall outside PER/ORG/LOC/MISC (MIT, FabNER, BioNLP), dragging macro-$F_1$ to $17.9$/$24.6$ (vs $30.5$) and confirming that open-world detection is required. And for typing a balanced linear SVM edges out a per-class GMM and logistic regression ($62.5$ vs $56.1$ vs $55.6$).
+\autoref{tab:ablation} reports this search.
+The remaining axes confirm the rest of the pipeline: among frozen ready-to-use base encoders, Nomic v1.5 is the most discriminative for entity typing ($25.8$ AMI, ahead of e5-base $25.3$, mxbai $24.4$, MPNet $24.1$ and BGE $23.6$) and is selected (the heaviest candidate, mxbai-large, is moreover $\sim$8$\times$ slower per sentence for no quality gain). Even so, frozen embeddings are only weakly discriminative, so the contrastive step is what makes the space usable ($+28.2$). The detector trades quality for cost (GLiNER-S\,$\to$\,L: $37.7\!\to\!40.2$ AMI at $51\!\to\!143$\,ms end-to-end), and OPENER's typing on GLiNER-L's spans ($40.2$) even beats GLiNER-L's own typing ($38.9$, \autoref{tab:main}). A closed-set NER detector (BERT or RoBERTa-NER, CoNLL-trained) used in its place collapses to $\sim$0 recall outside PER/ORG/LOC/MISC (MIT, FabNER, BioNLP), dragging macro-$F_1$ to $17.9$/$24.6$ (vs $30.5$) and confirming that open-world detection is required. And for typing a balanced linear SVM edges out a per-class GMM and logistic regression ($62.5$ vs $56.1$ vs $55.6$).
 Replacing the supervised typing head with a label-name nearest-centroid removes target supervision entirely, at a cost of $18.1$ AMI ($62.5\!\to\!44.4$). This base variant, \zsind, stays on par with the zero-shot OWNER baseline ($43.2$ vs $43.0$ over the three seeds, \autoref{tab:et-gold}) while fitting in $293$\,ms instead of $2.2$\,s, making it the frugal choice when no target labels are available.
 A label-free \emph{transductive} refinement of the prototypes, spherical k-means seeded by the label names and run once on the unlabelled test mentions, recovers $7.0$ AMI on gold mentions ($44.4\!\to\!51.4$, \autoref{tab:ablation}) and $2.6$ end-to-end at the released seed ($34.2\!\to\!36.8$, above OWNER's $34.3$), widening \zstr's margin over OWNER while still using no target labels. This is a transductive rather than inductive setting, as it exploits the unlabelled test distribution.
-We further investigated whether the zero-shot head could be improved by aligning entity mentions and label names in a shared space, trained on the large label vocabulary of Pile-NER \cite{zhou2024universalner} ($\approx$4.6k types) with an entity$\leftrightarrow$label-name contrastive objective (\autoref{tab:zs-embedder}).
-This produces a strictly domain-agnostic embedder (unlike the selected hard-mining embedder, it never sees any target-side data), yet it does not improve mean AMI ($42.2$ vs $44.4$): the Pile-NER vocabulary lifts macro-$F_1$ ($+3.8$) and helps encyclopaedic domains (CrossNER-Politics $+14.2$, -Science $+8.6$) but hurts specialised schemas (MIT-Restaurant $-15.9$, FabNER $-11.8$, BioNLP $-11.8$).
-A second label-name hard-mining pass further degrades it ($39.7$ AMI): Pile-NER's GPT-generated types include many near-synonyms (e.g.\ \emph{person}/\emph{per}, \emph{location}/\emph{loc}), so mining ``confusions'' between them manufactures negatives that pull apart labels that should stay close.
-Therefore, we retain the target-tuned hard-mining embedder for OPENER-ZS and report the Pile-NER variants as a negative ablation.
+We further probed whether the zero-shot head could be improved by aligning entity mentions and label names in a shared space, trained on the large label vocabulary of Pile-NER \cite{zhou2024universalner} ($\approx$4.6k types, \autoref{tab:zs-embedder}).
+Although strictly domain-agnostic, since it never sees any target-side data, it does not improve mean AMI ($42.2$ vs $44.4$), and a second label-name hard-mining pass degrades it further ($39.7$) because Pile-NER's GPT-generated types contain many near-synonyms (e.g.\ \emph{person}/\emph{per}, \emph{location}/\emph{loc}) whose mined ``confusions'' pull apart labels that should stay close.
+We therefore retain the target-tuned embedder for OPENER-ZS and report the Pile-NER variants as a negative ablation.
 A separate efficiency axis emerges in the \emph{training} cost (\autoref{tab:ablation}, Fit): per-sentence inference is governed by the detector alone (truncating the Matryoshka dimension or swapping the classifier leaves it unchanged), whereas fitting the typing head is $7\times$ cheaper at dimension $64$ than at $768$ (for only a $4.6$-point AMI drop, $62.5\!\to\!57.9$) and $4.5\times$ cheaper for balanced logistic regression than for the linear SVM, a speed/quality knob orthogonal to inference.
 
 \autoref{fig:matryoshka} plots typing-on-gold quality against the Matryoshka dimension $d$. Quality degrades smoothly as $d$ shrinks, with clearly diminishing returns rather than a cliff: $d{=}256$ already reaches $61.2$ AMI (within $1.3$ of the full $62.5$) and the curve flattens above it. Truncation therefore trades a little quality for a large cut in the typing-head fit cost, and, crucially, this confirms that the Matryoshka structure \emph{survives} our contrastive fine-tuning: the embedder can still be truncated and renormalised, exposing a graceful cost/quality knob.
@@ -649,8 +647,7 @@ A separate efficiency axis emerges in the \emph{training} cost (\autoref{tab:abl
 \end{figure}
 
 To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
-One cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie, with the largest seed variance of the table ($\pm 7.1$).
-We conjecture that the schema's attribute-like label names (e.g.\ PLOT, REVIEW, TRAILER) carry little lexical signal in a corpus where every mention is movie-related, which leaves the label-name prototypes poorly anchored and seed-sensitive. The transductive refinement of \zstr, which re-estimates the prototypes from the test mentions themselves, recovers most of this gap ($44.8$).
+One cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie, with the largest seed variance of the table ($\pm 7.1$), which we attribute to attribute-like label names (PLOT, REVIEW, TRAILER) carrying little lexical signal in a corpus where every mention is movie-related, leaving the prototypes poorly anchored. The transductive refinement of \zstr recovers most of this gap ($44.8$).
 The higher end-to-end value of \zsind on the same set ($32.8$, \autoref{tab:main}) does not contradict the gold score: the sentinel labels added by the end-to-end protocol reshape both partitions, so the two AMI values are not directly comparable.
 
 \begin{table}[tbp]
@@ -729,11 +726,11 @@ Model & AI & Lit & Mus & Pol & Sci & WNUT & Rest & Movie & Fab & Bio & CoNLL & G
 \multicolumn{15}{l}{\emph{Zero-shot (no target labels)}} \\
 OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52.5$^\dagger$ & 30.0 & 27.2 & 43.0 \\
 \zsind & 38.7$_{\pm3.6}$ & 57.7$_{\pm3.3}$ & 54.7$_{\pm1.7}$ & 57.4$_{\pm5.8}$ & 57.8$_{\pm1.6}$ & 31.3$_{\pm2.6}$ & 38.1$_{\pm4.6}$ & 16.1$_{\pm7.1}$ & 30.4$_{\pm5.1}$ & 51.1$_{\pm2.9}$ & 63.9$_{\pm3.0}^\dagger$ & 33.7$_{\pm3.8}$ & 31.0$_{\pm2.5}$ & 43.2$_{\pm1.3}$ \\
-\zstr & 46.1$_{\pm2.0}$ & 63.5$_{\pm2.3}$ & 67.0$_{\pm1.9}$ & 66.4$_{\pm1.2}$ & 59.6$_{\pm2.0}$ & 32.7$_{\pm2.8}$ & 47.3$_{\pm4.8}$ & 44.8$_{\pm1.1}$ & 33.9$_{\pm3.3}$ & 49.8$_{\pm0.3}$ & 70.7$_{\pm1.7}^\dagger$ & 41.5$_{\pm2.5}$ & 38.8$_{\pm1.6}$ & 50.9$_{\pm0.4}$ \\
+\rowcolor{hlyellow} \zstr & 46.1$_{\pm2.0}$ & 63.5$_{\pm2.3}$ & 67.0$_{\pm1.9}$ & 66.4$_{\pm1.2}$ & 59.6$_{\pm2.0}$ & 32.7$_{\pm2.8}$ & 47.3$_{\pm4.8}$ & 44.8$_{\pm1.1}$ & 33.9$_{\pm3.3}$ & 49.8$_{\pm0.3}$ & 70.7$_{\pm1.7}^\dagger$ & 41.5$_{\pm2.5}$ & 38.8$_{\pm1.6}$ & 50.9$_{\pm0.4}$ \\
 \addlinespace
 \multicolumn{15}{l}{\emph{Supervised (target labels)}} \\
 % hard-mining 3k tr./2 ep. (recorded in project notes): 57.3 64.7 71.1 72.5 67.2 40.1 59.5 61.1 50.7 64.7 70.6 48.6 53.1 | 60.1
-OPENER-Sup & \textbf{57.6$_{\pm0.9}$} & \textbf{66.0$_{\pm2.0}$} & \textbf{72.3$_{\pm1.5}$} & \textbf{73.6$_{\pm1.8}$} & \textbf{69.4$_{\pm2.2}$} & \textbf{38.8$_{\pm1.0}$} & \textbf{63.2$_{\pm2.0}$} & \textbf{67.7$_{\pm1.9}$} & \textbf{57.1$_{\pm2.0}$} & \textbf{69.2$_{\pm1.8}$} & 73.3$_{\pm1.6}^\dagger$ & \textbf{49.8$_{\pm0.6}$} & \textbf{51.5$_{\pm0.2}$} & \textbf{62.3$_{\pm1.0}$} \\
+\rowcolor{hlred} OPENER-Sup & \textbf{57.6$_{\pm0.9}$} & \textbf{66.0$_{\pm2.0}$} & \textbf{72.3$_{\pm1.5}$} & \textbf{73.6$_{\pm1.8}$} & \textbf{69.4$_{\pm2.2}$} & \textbf{38.8$_{\pm1.0}$} & \textbf{63.2$_{\pm2.0}$} & \textbf{67.7$_{\pm1.9}$} & \textbf{57.1$_{\pm2.0}$} & \textbf{69.2$_{\pm1.8}$} & 73.3$_{\pm1.6}^\dagger$ & \textbf{49.8$_{\pm0.6}$} & \textbf{51.5$_{\pm0.2}$} & \textbf{62.3$_{\pm1.0}$} \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]

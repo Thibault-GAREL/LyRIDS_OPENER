@@ -99,3 +99,4 @@ KBS_paper/sections/*.aux
 # Scratch render PNGs at KBS_paper/ root (real figures live in assets/)
 KBS_paper/*.png
 KBS_paper/.tmp/
+KBS_paper/Example of KDS paper.pdf
