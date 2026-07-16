@@ -113,7 +113,7 @@ As shown in \autoref{sec:exp:results}, the detector is the shared end-to-end bot
 \setcounter{paragraph}{0}
 Detected spans are embedded with Nomic Embed v1.5 \cite{nussbaum2024nomic}, a sentence embedder trained with the Matryoshka objective \cite{kusupati2022matryoshka}, whose representation can be truncated to a lower dimension and renormalised without retraining.
 Each mention is embedded \emph{in context} rather than in isolation: the span is presented together with its surrounding sentence, so that polysemous surface forms (e.g.\ Apple as a company versus a fruit) are disambiguated.
-This yields a vector $e_i \in \mathbb{R}^{D}$ with $D$ truncatable in $\{768,512,256,128,64\}$. We keep the full $D{=}768$, which yields the best AMI (see \autoref{tab:ablation} for the full dimension sweep).
+This yields a vector $e_i \in \mathbb{R}^{D}$ with $D$ truncatable in $\{768,512,256,128,64\}$. We keep the full $D{=}768$, which gives the best AMI (see \autoref{tab:ablation} for the full dimension sweep).
 Truncation keeps only the first $d$ coordinates of the embedding ($d \le D$) and rescales them back to unit length,
 \begin{equation}
 e_i^{(d)} = e_{i,1:d}\,\big/\,\lVert e_{i,1:d}\rVert_2 ,
