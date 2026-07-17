@@ -2,14 +2,16 @@
 % OPENER: Open Partitioning Embedding for Named Entity Recognition
 % Submission to Knowledge-Based Systems (Elsevier) - single anonymized review
 %
-% Format: elsarticle, [review] option = 12pt, single column, double line
-% spacing (matches the KBS "double line spaced manuscript pages" guideline).
+% Format: elsarticle [final,5p,twocolumn] = two-column journal layout
+% (author's preferred submission format, validated on preview_twocolumn.pdf).
+% All floats in the sections are starred (table*/figure*) so they span the
+% full text width in this layout.
 % Compilation: pdflatex main && bibtex main && pdflatex main && pdflatex main
 % Class and bibliography style are bundled locally (elsarticle.cls,
 % elsarticle-num.bst) so the build is identical on Overleaf.
 % =====================================================================
 
-\documentclass[review,12pt]{elsarticle}
+\documentclass[final,5p,twocolumn]{elsarticle}
 
 % --- Core packages ---
 % NOTE: do NOT load the `cite' package here: elsarticle loads natbib,
@@ -45,9 +47,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{xurl}          % like url, but lets long URLs break anywhere (no overfull margins)
-% The [review] option stretches the baseline to 1.5 for the manuscript text.
-% Keep floats (tables, figures, captions) single-spaced so tall tables still
-% fit on one page: reset the stretch inside each float group.
+% Harmless in the two-column [final] layout (stretch is already 1), kept so
+% the [review,12pt] double-spaced variant still builds correctly if restored.
 \usepackage{etoolbox}
 \AtBeginEnvironment{table}{\def\baselinestretch{1}\normalsize}
 \AtBeginEnvironment{figure}{\def\baselinestretch{1}\normalsize}
@@ -84,6 +85,10 @@
 % --- Single anonymized review (single-blind): real author info required ---
 \author[lyrids]{Thibault Garel\corref{cor1}}
 \ead{garel.thibault14@gmail.com}
+\author[lyrids]{Faiza Belbachir}
+\ead{fbelbachir@ece.fr}
+\author[lyrids]{Assia Soukane}
+\ead{assia.soukane@ece.fr}
 \cortext[cor1]{Corresponding author.}
 
 \affiliation[lyrids]{organization={LyRIDS, ECE Paris},

@@ -1,0 +1,90 @@
+% =====================================================================
+% Cover letter for the Knowledge-Based Systems (Elsevier) submission of
+% "OPENER: Open Partitioning Embedding for Named Entity Recognition".
+% Standalone one-page letter, compiled separately from the manuscript:
+%   pdflatex -interaction=nonstopmode cover_letter.tex
+% =====================================================================
+
+\documentclass[11pt]{article}
+\usepackage[a4paper, top=1.8cm, bottom=1.5cm, left=2.3cm, right=2.3cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{empty}
+\setlength{\parskip}{0.45em}
+\linespread{0.96}
+
+\begin{document}
+\enlargethispage{5\baselineskip}
+
+% --- Letterhead ---
+\noindent
+\begin{minipage}[t]{0.55\textwidth}
+\textbf{Thibault Garel}\\
+LyRIDS, ECE Paris\\
+10 Rue Sextius Michel\\
+75015 Paris, France\\
+\href{mailto:garel.thibault14@gmail.com}{garel.thibault14@gmail.com}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.35\textwidth}
+\raggedleft
+Paris, July 17, 2026
+\end{minipage}
+
+\vspace{1.2em}
+
+\noindent
+To the Editors of \textit{Knowledge-Based Systems}\\
+Elsevier
+
+\vspace{0.7em}
+
+\noindent
+\textbf{Subject: Submission of a full-length research article entitled ``OPENER: Open Partitioning Embedding for Named Entity Recognition''}
+
+\vspace{0.8em}
+
+Dear Editors,
+
+On behalf of all authors (Thibault Garel, Faiza Belbachir and Assia Soukane), I am pleased to submit the manuscript entitled \textit{``OPENER: Open Partitioning Embedding for Named Entity Recognition''} for consideration in \textit{Knowledge-Based Systems} as a full-length research paper.
+The manuscript addresses open-world Named Entity Recognition (NER), the setting in which systems must assign entity types that were not fixed at training time.
+This setting is the norm in real information extraction pipelines, yet current solutions either train a dedicated encoder for every new domain or prompt billion-parameter language models.
+Moreover, these systems are compared almost exclusively on accuracy, which hides their compute and energy cost and limits their adoption in practical, resource-constrained settings.
+
+The manuscript introduces OPENER, an open-world NER pipeline assembled from ready-to-use components: a frozen mention detector, a Matryoshka-truncatable sentence embedder sharpened by a light contrastive fine-tuning with error-driven hard-negative mining, and a swappable typing head, so that no encoder is trained from scratch.
+The typing head comes in two forms: OPENER-ZS types each mention against label-name prototypes and needs no target labels, while OPENER-Sup fits a lightweight supervised probe when the label set is fixed and annotated.
+We benchmark OPENER against GLiNER, GNER, OWNER and a 4-bit quantized language model on 13 datasets along three axes (typing quality, median latency, and measured energy consumption), with all OPENER results averaged over three retraining seeds.
+OPENER-ZS is the most accurate zero-shot system end-to-end (39.5 AMI, ahead of GLiNER-L at 38.9 and OWNER at 34.3) while consuming roughly eight times less energy than OWNER (1.7\,Wh versus 14.3\,Wh), and OPENER-Sup is the most accurate system overall (40.1 AMI).
+The contribution is new and important in two respects: it demonstrates that a lightly refined off-the-shelf embedding space is sufficient to type open-world entities without training any encoder from scratch, and it establishes a three-axis evaluation protocol that makes the practical cost of open-world NER explicit, isolating mention detection (rather than typing) as the main bottleneck.
+The code, the configurations and the fine-tuned embedders are publicly released for full reproducibility.
+
+We believe this work fits the editorial scope of \textit{Knowledge-Based Systems} particularly well.
+It contributes to machine learning methodology and algorithms (contrastive representation learning and prototype-based open-world classification), it offers the balanced coverage of theory and practical study that the journal encourages, and it directly serves the knowledge extraction components on which intelligent decision support and prediction systems are built.
+Its focus on frugal, deployable AI (the full pipeline runs on a consumer GPU) further matches this practical orientation.
+
+We confirm that this manuscript is original, that it has not been published previously, and that it is not under consideration for publication elsewhere.
+All authors have approved the submitted version and agree to its submission to \textit{Knowledge-Based Systems}.
+The work was designed, implemented and written by the corresponding author, Thibault Garel, under the supervision of Faiza Belbachir and Assia Soukane.
+All correspondence regarding this submission should be addressed to the corresponding author.
+We have no competing interests to declare, and this research received no specific grant from any funding agency.
+In accordance with Elsevier's policy, the use of a generative AI tool during the preparation of the manuscript is disclosed in the dedicated declaration section, and all datasets used are publicly available benchmarks.
+
+Thank you for your time and consideration.
+
+\vspace{0.9em}
+
+\noindent
+Sincerely,
+
+\vspace{0.4em}
+
+\noindent
+Thibault Garel (corresponding author, on behalf of all authors)\\
+LyRIDS, ECE Paris
+
+\end{document}

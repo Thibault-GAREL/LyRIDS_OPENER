@@ -6,7 +6,7 @@
 \subsection{Datasets}
 \label{sec:exp:datasets}
 
-\begin{table}[H]
+\begin{table*}[tp]
 \centering
 \caption{The 13 evaluation sets and their gold entity types.}
 \label{tab:datasets}
@@ -54,7 +54,7 @@ GENTLE & GEN & Multi-genre (challenge) & 1000 & abstract 55, person 10, event 9,
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
+\end{table*}
 
 We evaluate on 13 evaluation sets that span news, social media, spoken queries, encyclopaedic text, biomedical abstracts and manufacturing literature, following the dataset selection of OWNER \cite{genest2025owner}.
 CrossNER \cite{liu2021crossner} contributes five domain-specific sets, evaluated separately (artificial intelligence, literature, music, politics, science).
@@ -66,7 +66,7 @@ To homogenise evaluation cost across systems, we cap each test split at $1000$ s
 \subsection{Baselines}
 \label{sec:exp:baselines}
 
-\begin{table}[H]
+\begin{table*}[tp]
 \centering
 \caption{Backbones and size of the re-measured baselines and OPENER, in the spirit of OWNER \cite{genest2025owner}.}
 \label{tab:baselines}
@@ -95,7 +95,7 @@ Qwen2.5-1.5B & Qwen2.5 & Decoder & qwen2.5-1.5b-instruct & 1.5B & 3.2$\times$ \\
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
+\end{table*}
 
 We compare OPENER with representative open-world systems, all run end-to-end on the same splits and scored with the same protocol (\autoref{sec:exp:protocol}). \autoref{tab:baselines} summarises their backbones and sizes.
 \begin{itemize}
@@ -134,7 +134,7 @@ The quality metrics, in contrast, are fully deterministic: with the fixed seed a
 Because inference is deterministic, the only remaining source of uncertainty in quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets, we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals in \autoref{tab:bootstrap}. The uncertainty is small (bootstrap std of at most $1.5$ AMI, $95\%$ CIs within roughly $\pm 3$ AMI) and the bootstrap means coincide with the released model's full-test-set scores, indicating that the reported figures are stable rather than fragile seed-specific artefacts.
 \autoref{tab:hyperparams} collects the complete OPENER configuration used throughout. The embedder is retrained under each of the three seeds ($7$, $42$, $123$) while every other component is fixed.
 
-\begin{table}[t]
+\begin{table*}[tp]
 \centering
 \caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets.}
 \label{tab:bootstrap}
@@ -155,9 +155,9 @@ OPENER-Sup & $71.7 \pm 1.5$ ~[$68.9$, $74.6$] & $72.4 \pm 0.9$ ~[$70.6$, $74.2$]
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
+\end{table*}
 
-\begin{table}[t]
+\begin{table*}[tp]
 \centering
 \caption{OPENER configuration.}
 \label{tab:hyperparams}
@@ -186,7 +186,7 @@ Random seeds       & $7$ / $42$ / $123$ (full embedder retraining per seed; $42$
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
+\end{table*}
 
 \subsection{Main Results}
 \label{sec:exp:results}
@@ -208,7 +208,7 @@ For reference, the only generative LLM that fits our $6$\,GB GPU, Qwen2.5-1.5B-I
 OPENER-Sup remains the stronger configuration ($40.1$ end-to-end, $62.3$ on gold), so OPENER-ZS is best read as the frugal, annotation-free operating point of the same pipeline.
 A per-domain analysis of these results, the detection bottleneck and the learned embedding geometry follows in \autoref{sec:exp:analysis}.
 
-\begin{table}[H]
+\begin{table*}[tp]
 \centering
 \caption{Open-world NER, end-to-end. AMI ($\times 100$, $\uparrow$).}
 \label{tab:main}
@@ -251,8 +251,8 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
-\begin{figure}[H]
+\end{table*}
+\begin{figure*}[tp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -294,9 +294,9 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 \end{tikzpicture}
 \caption{End-to-end AMI per dataset (\autoref{tab:main}, OPENER curves show the three-seed means). \emph{Zero-shot} systems are drawn solid. OPENER-Sup is the dashed red line. $^\dagger$\,CoNLL-2003 (shaded) is in-domain for OWNER and OPENER. $^\ddagger$\,Qwen is evaluated on a $150$-sentence subsample per set.}
 \label{fig:main}
-\end{figure}
+\end{figure*}
 
-\begin{table}[H]
+\begin{table*}[tp]
 \centering
 \caption{Median per-sentence latency (ms, $\downarrow$), end-to-end.}
 \label{tab:latency}
@@ -335,8 +335,8 @@ OWNER$^\S$ & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 & 558 & 719$^\d
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
-\begin{figure}[H]
+\end{table*}
+\begin{figure*}[tp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -372,9 +372,9 @@ OWNER$^\S$ & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 & 558 & 719$^\d
 \end{tikzpicture}
 \caption{Per-sentence inference latency (p50, ms, \emph{log} scale) per dataset (\autoref{tab:latency}). Same systems and styling as \autoref{fig:main}. OPENER-Sup is the dashed red line. The OPENER variants track GLiNER-L, while GNER and the Qwen LLM are one to two orders of magnitude slower.}
 \label{fig:latency}
-\end{figure}
+\end{figure*}
 
-\begin{table}[H]
+\begin{table*}[tp]
 \centering
 \caption{Energy consumption per run (Wh, $\downarrow$), end-to-end.}
 \label{tab:energy}
@@ -413,8 +413,8 @@ OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & 2
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
-\begin{figure}[H]
+\end{table*}
+\begin{figure*}[tp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -450,12 +450,12 @@ OWNER$^\S$ & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 13.4 & 17.1 & 2
 \end{tikzpicture}
 \caption{Per-run energy consumption (Wh, \emph{log} scale) per dataset (\autoref{tab:energy}). Same systems and styling as \autoref{fig:main}. The OPENER variants sit an order of magnitude below OWNER and the generative GNER/Qwen baselines.}
 \label{fig:energy}
-\end{figure}
+\end{figure*}
 % RESOLVED[2026-06-13]: the 22.76 Wh CodeCarbon glitch on crossner_music is gone in the
 % hard-mining e2e re-run (Mus = 1.72 Wh). OPENER energy row + averages now come from that
 % clean run; true mean energy is 1.88 Wh (was 3.39, inflated by the single glitched cell).
 
-\begin{table}[H]
+\begin{table*}[tp]
 \centering
 \caption{Quality vs efficiency, $13$-set means.}
 \label{tab:efficiency}
@@ -491,7 +491,7 @@ OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
+\end{table*}
 
 \pgfplotsset{
   metricbar/.style={
@@ -507,7 +507,7 @@ OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
     enlarge x limits=0.04,
   }
 }
-\begin{figure}[H]
+\begin{figure*}[tp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[metricbar, title={AMI ($\uparrow$)}, ymin=24, ymax=42, ytick={24,28,32,36,40}]
@@ -569,7 +569,7 @@ OWNER$^\S$ & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 \end{tikzpicture}
 \caption{Per-model means on the four axes ($13$-set averages, \autoref{tab:efficiency}). The light dotted line separates the \emph{zero-shot} systems (left) from the \emph{supervised} OPENER-Sup (right). Latency, energy and CO\textsubscript{2} use a log scale. Labels: GL-S/M/L $=$ GLiNER sizes, OWN $=$ OWNER, ZS$_i$ $=$ \zsind, ZS$_t$ $=$ \zstr, Sup $=$ OPENER-Sup.}
 \label{fig:metrics-bars}
-\end{figure}
+\end{figure*}
 
 \subsection{Analysis}
 \label{sec:exp:analysis}
@@ -595,7 +595,7 @@ The most frequent type confusions are DNA vs.\ protein (BioNLP), the FabNER proc
 Frozen and unmodified, the Nomic embedding intermixes entity types. The contrastive step already pulls same-type mentions together, and the hard-negative mining pass sharpens the boundaries between the types it most often confuses, yielding compact, well-separated clusters.
 The type geometry learned on CoNLL thus transfers to an unseen domain, which is what makes the cheap label-name and linear typing heads effective.
 
-\begin{figure}[tbp]
+\begin{figure*}[tp]
 \centering
 \IfFileExists{assets/umap_contrastive.pdf}{%
   \includegraphics[width=\linewidth]{assets/umap_contrastive.pdf}%
@@ -604,7 +604,7 @@ The type geometry learned on CoNLL thus transfers to an unseen domain, which is 
 }{\fbox{\parbox{0.92\linewidth}{\centering\small UMAP figure pending, run \texttt{scripts/make\_umap.py} to generate \texttt{assets/umap\_contrastive.pdf}.}}}}
 \caption{UMAP of WNUT-17 (held-out) entity embeddings, coloured by gold type, across the three embedder stages: frozen Nomic v1.5, $+$ contrastive fine-tuning, $+$ hard-negative mining. The contrastive stages progressively separate the types into compact clusters on a domain unseen during training.}
 \label{fig:umap}
-\end{figure}
+\end{figure*}
 
 \subsection{Ablations}
 \label{sec:exp:ablations}
@@ -621,7 +621,7 @@ A separate efficiency axis emerges in the \emph{training} cost (\autoref{tab:abl
 
 \autoref{fig:matryoshka} plots typing-on-gold quality against the Matryoshka dimension $d$. Quality degrades smoothly as $d$ shrinks, with clearly diminishing returns rather than a cliff: $d{=}256$ already reaches $61.2$ AMI (within $1.3$ of the full $62.5$) and the curve flattens above it. Truncation therefore trades a little quality for a large cut in the typing-head fit cost, and, crucially, this confirms that the Matryoshka structure \emph{survives} our contrastive fine-tuning: the embedder can still be truncated and renormalised, exposing a graceful cost/quality knob.
 
-\begin{figure}[t]
+\begin{figure*}[tp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -644,13 +644,13 @@ A separate efficiency axis emerges in the \emph{training} cost (\autoref{tab:abl
 \end{tikzpicture}
 \caption{Typing-on-gold quality vs the Matryoshka truncation dimension $d$. Both AMI and macro-$F_1$ degrade smoothly, with diminishing returns rather than a cliff, and flatten above $d{=}256$. Truncation is therefore a graceful cost/quality knob, and the Matryoshka structure survives the contrastive fine-tuning. Data from \autoref{tab:ablation} (dimension axis, released seed, $13$-set means, log-spaced $d$).}
 \label{fig:matryoshka}
-\end{figure}
+\end{figure*}
 
 To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
 One cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie, with the largest seed variance of the table ($\pm 7.1$), which we attribute to attribute-like label names (PLOT, REVIEW, TRAILER) carrying little lexical signal in a corpus where every mention is movie-related, leaving the prototypes poorly anchored. The transductive refinement of \zstr recovers most of this gap ($44.8$).
 The higher end-to-end value of \zsind on the same set ($32.8$, \autoref{tab:main}) does not contradict the gold score: the sentinel labels added by the end-to-end protocol reshape both partitions, so the two AMI values are not directly comparable.
 
-\begin{table}[tbp]
+\begin{table*}[tp]
 \centering
 \caption{OPENER architecture search: one component is varied at a time around the default pipeline (\textbf{bold}).}
 \label{tab:ablation}
@@ -705,9 +705,9 @@ Configuration & AMI\,$\uparrow$ & F\textsubscript{1}\,$\uparrow$ & Fit\,(ms)\,$\
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
+\end{table*}
 
-\begin{table}[tbp]
+\begin{table*}[tp]
 \centering
 \caption{Entity typing on gold mentions (detection bypassed): OPENER vs OWNER (AMI $\times 100$, $\uparrow$).}
 \label{tab:et-gold}
@@ -743,10 +743,10 @@ OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
+\end{table*}
 % (per-dataset end-to-end line chart is placed next to tab:main as fig:main)
 
-\begin{table}[tbp]
+\begin{table*}[tp]
 \centering
 \caption{Zero-shot typing: effect of the contrastive embedder on \zsind (typing-on-gold, $13$-set means at the released seed ($42$)).}
 \label{tab:zs-embedder}
@@ -768,7 +768,7 @@ Pile-NER (entity$\leftrightarrow$label) & Pile-NER only & 42.2 & \textbf{50.6} &
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\end{table}
+\end{table*}
 %       --       RAW per-dataset AMI x100 (OPENER-ZS gold), order AI..GEN, preserved 2026-06-14       --
 % hard_big (selected) : 41.4 61.4 55.2 50.7 58.0 33.0 42.6 18.4 35.6 54.1 65.9 31.1 30.2 | 44.4
 % pilener BASE        : 48.8 52.9 58.2 64.9 66.6 38.3 26.8  9.5 23.8 42.2 50.4 30.7 35.2 | 42.2

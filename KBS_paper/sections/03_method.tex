@@ -24,7 +24,7 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
 \subsection{Architecture Overview}
 \label{sec:method:overview}
 
-\begin{figure}[H]
+\begin{figure*}[tp]
 \centering
 % Prefers the exported SVG diagram (opener-architecture-v3.pdf) if present in
 % paper/assets or repo-root assets; otherwise falls back to the native TikZ schematic.
@@ -84,7 +84,7 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
 }}
 \caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (Nomic, contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head (the only target-fitted component) has two operating points: the \emph{zero-shot} \zstr ($\bigstar$, selected) and OPENER-Sup (\emph{supervised}, the upper bound). All upstream components are ready-to-use.}
 \label{fig:pipeline}
-\end{figure}
+\end{figure*}
 
 OPENER is a three-stage pipeline, Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type (\autoref{fig:pipeline}), assembled from ready-to-use components so that no encoder is trained from scratch.
 Three principles guide the design.
