@@ -57,6 +57,9 @@
 \usepackage{array}         % >{...} column prefixes + p{} wrapping cells (tab:datasets)
 \usepackage{placeins}      % \FloatBarrier: keep floats within their section
 \usepackage{float}         % [H] specifier: pin floats exactly where declared
+\usepackage{dblfloatfix}   % two-column starred floats: allow same-page and [b]
+                           % placement, keeps tables/figures closer to the text
+                           % order (without it they drift to later pages)
 \usepackage{hyperref}      % clickable links/cross-refs
 % elsarticle.cls forces blue link colors in an \AtBeginDocument hook, which
 % would override a plain \hypersetup here. Registering ours afterwards wins.
