@@ -619,6 +619,9 @@ We further probed whether the zero-shot head could be improved by aligning entit
 Although strictly domain-agnostic, since it never sees any target-side data, it does not improve mean AMI ($42.2$ vs $44.4$), and a second label-name hard-mining pass degrades it further ($39.7$) because Pile-NER's GPT-generated types contain many near-synonyms (e.g.\ \emph{person}/\emph{per}, \emph{location}/\emph{loc}) whose mined ``confusions'' pull apart labels that should stay close.
 We therefore retain the target-tuned embedder for OPENER-ZS and report the Pile-NER variants as a negative ablation.
 A separate efficiency axis emerges in the \emph{training} cost (\autoref{tab:ablation}, Fit): per-sentence inference is governed by the detector alone (truncating the Matryoshka dimension or swapping the classifier leaves it unchanged), whereas fitting the typing head is $7\times$ cheaper at dimension $64$ than at $768$ (for only a $4.6$-point AMI drop, $62.5\!\to\!57.9$) and $4.5\times$ cheaper for balanced logistic regression than for the linear SVM, a speed/quality knob orthogonal to inference.
+To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
+One cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie, with the largest seed variance of the table ($\pm 7.1$), which we attribute to attribute-like label names (PLOT, REVIEW, TRAILER) carrying little lexical signal in a corpus where every mention is movie-related, leaving the prototypes poorly anchored. The transductive refinement of \zstr recovers most of this gap ($44.8$).
+The higher end-to-end value of \zsind on the same set ($32.8$, \autoref{tab:main}) does not contradict the gold score: the sentinel labels added by the end-to-end protocol reshape both partitions, so the two AMI values are not directly comparable.
 
 \begin{table*}[tp]
 \centering
@@ -703,10 +706,6 @@ Configuration & AMI\,$\uparrow$ & F\textsubscript{1}\,$\uparrow$ & Fit\,(ms)\,$\
 \caption{Typing-on-gold quality vs the Matryoshka truncation dimension $d$. Both AMI and macro-$F_1$ degrade smoothly, with diminishing returns rather than a cliff, and flatten above $d{=}256$. Truncation is therefore a graceful cost/quality knob, and the Matryoshka structure survives the contrastive fine-tuning. Data from \autoref{tab:ablation} (dimension axis, released seed, $13$-set means, log-spaced $d$).}
 \label{fig:matryoshka}
 \end{figure*}
-
-To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
-One cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie, with the largest seed variance of the table ($\pm 7.1$), which we attribute to attribute-like label names (PLOT, REVIEW, TRAILER) carrying little lexical signal in a corpus where every mention is movie-related, leaving the prototypes poorly anchored. The transductive refinement of \zstr recovers most of this gap ($44.8$).
-The higher end-to-end value of \zsind on the same set ($32.8$, \autoref{tab:main}) does not contradict the gold score: the sentinel labels added by the end-to-end protocol reshape both partitions, so the two AMI values are not directly comparable.
 
 \begin{table*}[tp]
 \centering
