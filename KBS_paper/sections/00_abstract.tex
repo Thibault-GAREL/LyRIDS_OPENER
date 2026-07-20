@@ -1,17 +1,19 @@
-% Abstract KBS (2026-07-16): condensed from the IEEE version (~450 words)
-% to fit the Elsevier/KBS hard limit of 250 words. Same headline numbers:
-% means over 3 retraining seeds (7/42/123): 62.3 gold (sup.), 39.5 e2e
-% (ZS fusion), 40.1 e2e (sup.), 1.7 Wh (seed-42 run). No references,
-% no non-standard abbreviations (KBS abstract rules).
-Named Entity Recognition (NER) rarely operates over a static, predefined set of entity classes in real-world applications.
-Open-world NER therefore asks systems to assign entity types that were not fixed at training time.
-Recent systems either train a dedicated encoder or prompt billion-parameter language models, and are compared almost exclusively on accuracy, ignoring compute and energy cost.
-We present OPENER, an open-world NER pipeline assembled from ready-to-use components: a frozen mention detector, a Matryoshka-truncatable sentence embedder sharpened by a light contrastive fine-tuning with error-driven hard-negative mining, and a swappable typing head, so that no encoder is trained from scratch.
-The typing head comes in two forms.
-OPENER-ZS is zero-shot: it types each mention against label-name prototypes and needs no target labels.
-OPENER-Sup fits a lightweight supervised probe when a domain's entity classes are fixed and labelled.
-We benchmark OPENER against GLiNER, GNER, OWNER and a 4-bit Qwen2.5-1.5B language model on 13 datasets along three axes: quality (Adjusted Mutual Information, AMI), median per-sentence latency, and energy consumption.
-Averaged over three embedder-retraining seeds, OPENER-ZS is the most accurate zero-shot system end-to-end ($39.5$ AMI, ahead of GLiNER-L's $38.9$ and OWNER's $34.3$) while staying frugal: $1.7$\,Wh and roughly $180$\,ms per sentence, versus $14.3$\,Wh and $616$\,ms for OWNER.
-OPENER-Sup is the most accurate system overall ($40.1$ AMI).
-On gold mentions, typing alone reaches $62.3$ AMI, pinning the open-world bottleneck on mention detection.
-We release the code, configurations, fine-tuned embedders, and full benchmark.
+% Abstract KBS v3 (2026-07-18): faithful compression of the IEEE abstract
+% (447 words) under the Elsevier/KBS hard limit of 250 words, WITH the
+% contextual opening (NER = foundational NLP task) requested by Thibault.
+% Every claim of the IEEE version is kept (trade-off positioning,
+% transfer-learning design, gold vs end-to-end separation, order-of-magnitude
+% efficiency gaps, both variants leading their category, detection bottleneck).
+% Same headline numbers: means over 3 retraining seeds (7/42/123): 62.3 gold
+% (sup.), 39.5 e2e (ZS fusion), 40.1 e2e (sup.), 1.7 Wh (seed-42 run).
+% No references, no undefined abbreviations (KBS abstract rules).
+Named Entity Recognition (NER), a foundational Natural Language Processing task, extracts entities (persons, dates, locations) from raw text. Yet, real-world applications rarely afford a static class inventory.
+Open-world NER therefore assigns types not fixed at training time, by training a dedicated encoder or prompting billion-parameter language models, compared on accuracy alone, ignoring energy cost.
+We present OPENER, an open-world NER pipeline redefining the optimal trade-off between accuracy, latency, and energy frugality.
+Uncommonly, this transfer-learning pipeline trains no encoder from scratch: a frozen mention detector, a Matryoshka-truncatable embedder sharpened by contrastive fine-tuning with error-driven hard-negative mining, and a swappable typing head.
+OPENER-ZS, the zero-shot head, types mentions against label-name prototypes without target labels, while OPENER-Sup fits a lightweight supervised probe on labelled classes, trading openness for accuracy.
+We benchmark OPENER against GLiNER, GNER, OWNER and a 4-bit Qwen2.5-1.5B model on 13 datasets along three axes (Adjusted Mutual Information (AMI), latency, energy and CO\textsubscript{2}), separating gold-mention typing from end-to-end, exposing order-of-magnitude gaps that accuracy-only evaluations hide.
+Over three retraining seeds, both variants lead their category: OPENER-ZS is the most accurate zero-shot system end-to-end ($39.5$ AMI vs $38.9$ for GLiNER-L, $34.3$ for OWNER) while staying frugal ($1.7$\,Wh, $180$\,ms, versus $14.3$\,Wh, $616$\,ms for OWNER).
+With target labels, OPENER-Sup is the most accurate overall ($40.1$ AMI).
+On gold mentions, typing alone reaches $62.3$ AMI versus OWNER's $43.0$, pinning the open-world bottleneck on mention detection, the clearest axis for future gains.
+We release code, configurations, fine-tuned embedders, and benchmark.

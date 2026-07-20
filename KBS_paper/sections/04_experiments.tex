@@ -252,6 +252,7 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 \end{threeparttable}
 \end{adjustbox}
 \end{table*}
+
 \begin{figure*}[tp]
 \centering
 \begin{tikzpicture}
@@ -295,44 +296,8 @@ OWNER & \textbf{43.9} & 44.0 & 46.6 & \textbf{50.9} & 50.3 & 22.3 & 7.6 & 24.0 &
 \caption{End-to-end AMI per dataset (\autoref{tab:main}, OPENER curves show the three-seed means). \emph{Zero-shot} systems are drawn solid. OPENER-Sup is the dashed red line. $^\dagger$\,CoNLL-2003 (shaded) is in-domain for OWNER and OPENER. $^\ddagger$\,Qwen is evaluated on a $150$-sentence subsample per set.}
 \label{fig:main}
 \end{figure*}
+\FloatBarrier
 
-\begin{figure*}[tp]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-  width=\linewidth, height=6.6cm,
-  ymode=log, ymin=15, ymax=13000, log origin=infty,
-  ylabel={Latency p50 (ms, log)}, ylabel style={font=\small},
-  symbolic x coords={AI,Lit,Mus,Pol,Sci,WNUT,Rest,Movie,Fab,Bio,CoNLL,GUM,GEN},
-  xtick=data, xticklabel style={rotate=40, anchor=east, font=\scriptsize},
-  yticklabel style={font=\scriptsize},
-  grid=both, major grid style={black!12},
-  enlarge x limits=0.04,
-  legend style={at={(0.5,1.02)}, anchor=south, legend columns=4, font=\scriptsize, draw=none,
-                /tikz/every even column/.append style={column sep=6pt}},
-]
-\addplot[figsky, semithick, mark=o, mark size=1.2pt] coordinates
-  {(AI,21)(Lit,22)(Mus,21)(Pol,21)(Sci,21)(WNUT,20)(Rest,19)(Movie,20)(Fab,20)(Bio,22)(CoNLL,20)(GUM,21)(GEN,21)};
-\addplot[figcyan!85!black, semithick, mark=square, mark size=1.2pt] coordinates
-  {(AI,36)(Lit,36)(Mus,37)(Pol,38)(Sci,39)(WNUT,39)(Rest,38)(Movie,40)(Fab,41)(Bio,42)(CoNLL,44)(GUM,46)(GEN,45)};
-\addplot[blue!60!black, semithick, mark=diamond, mark size=1.4pt] coordinates
-  {(AI,144)(Lit,149)(Mus,153)(Pol,149)(Sci,155)(WNUT,137)(Rest,132)(Movie,145)(Fab,147)(Bio,143)(CoNLL,131)(GUM,141)(GEN,137)};
-\addplot[figgreen!65!black, semithick, mark=triangle, mark size=1.5pt] coordinates
-  {(AI,3431)(Lit,5408)(Mus,7461)(Pol,6472)(Sci,7110)(WNUT,2906)(Rest,1610)(Movie,3344)(Fab,4310)(Bio,5034)(CoNLL,2914)(GUM,3435)(GEN,1500)};
-\addplot[figviolet, thick, mark=x, mark size=2pt] coordinates
-  {(AI,4857)(Lit,6757)(Mus,9396)(Pol,7700)(Sci,8261)(WNUT,3553)(Rest,2142)(Movie,5014)(Fab,2921)(Bio,4737)(CoNLL,2260)(GUM,4265)(GEN,3806)};
-\addplot[figpink, semithick, mark=pentagon, mark size=1.5pt] coordinates
-  {(AI,500)(Lit,712)(Mus,895)(Pol,920)(Sci,757)(WNUT,311)(Rest,281)(Movie,532)(Fab,438)(Bio,558)(CoNLL,719)(GUM,759)(GEN,626)};
-\addplot[figgold!90!black, very thick, mark=square*, mark size=1.6pt] coordinates
-  {(AI,218)(Lit,254)(Mus,291)(Pol,277)(Sci,289)(WNUT,185)(Rest,173)(Movie,205)(Fab,84)(Bio,98)(CoNLL,92)(GUM,104)(GEN,97)};
-\addplot[figred, very thick, densely dashed, mark=*, mark size=1.6pt] coordinates
-  {(AI,222)(Lit,271)(Mus,293)(Pol,159)(Sci,132)(WNUT,100)(Rest,92)(Movie,98)(Fab,104)(Bio,108)(CoNLL,89)(GUM,100)(GEN,94)};
-\legend{GLiNER-S, GLiNER-M, GLiNER-L, GNER, Qwen2.5-1.5B, OWNER, \zstr, OPENER-Sup}
-\end{axis}
-\end{tikzpicture}
-\caption{Per-sentence inference latency (p50, ms, \emph{log} scale) per dataset (\autoref{tab:latency}). Same systems and styling as \autoref{fig:main}. OPENER-Sup is the dashed red line. The OPENER variants track GLiNER-L, while GNER and the Qwen LLM are one to two orders of magnitude slower.}
-\label{fig:latency}
-\end{figure*}
 \begin{table*}[tp]
 \centering
 \caption{Median per-sentence latency (ms, $\downarrow$), end-to-end.}
@@ -373,6 +338,43 @@ OWNER$^\S$ & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 & 558 & 719$^\d
 \end{threeparttable}
 \end{adjustbox}
 \end{table*}
+\begin{figure*}[tp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=\linewidth, height=6.6cm,
+  ymode=log, ymin=15, ymax=13000, log origin=infty,
+  ylabel={Latency p50 (ms, log)}, ylabel style={font=\small},
+  symbolic x coords={AI,Lit,Mus,Pol,Sci,WNUT,Rest,Movie,Fab,Bio,CoNLL,GUM,GEN},
+  xtick=data, xticklabel style={rotate=40, anchor=east, font=\scriptsize},
+  yticklabel style={font=\scriptsize},
+  grid=both, major grid style={black!12},
+  enlarge x limits=0.04,
+  legend style={at={(0.5,1.02)}, anchor=south, legend columns=4, font=\scriptsize, draw=none,
+                /tikz/every even column/.append style={column sep=6pt}},
+]
+\addplot[figsky, semithick, mark=o, mark size=1.2pt] coordinates
+  {(AI,21)(Lit,22)(Mus,21)(Pol,21)(Sci,21)(WNUT,20)(Rest,19)(Movie,20)(Fab,20)(Bio,22)(CoNLL,20)(GUM,21)(GEN,21)};
+\addplot[figcyan!85!black, semithick, mark=square, mark size=1.2pt] coordinates
+  {(AI,36)(Lit,36)(Mus,37)(Pol,38)(Sci,39)(WNUT,39)(Rest,38)(Movie,40)(Fab,41)(Bio,42)(CoNLL,44)(GUM,46)(GEN,45)};
+\addplot[blue!60!black, semithick, mark=diamond, mark size=1.4pt] coordinates
+  {(AI,144)(Lit,149)(Mus,153)(Pol,149)(Sci,155)(WNUT,137)(Rest,132)(Movie,145)(Fab,147)(Bio,143)(CoNLL,131)(GUM,141)(GEN,137)};
+\addplot[figgreen!65!black, semithick, mark=triangle, mark size=1.5pt] coordinates
+  {(AI,3431)(Lit,5408)(Mus,7461)(Pol,6472)(Sci,7110)(WNUT,2906)(Rest,1610)(Movie,3344)(Fab,4310)(Bio,5034)(CoNLL,2914)(GUM,3435)(GEN,1500)};
+\addplot[figviolet, thick, mark=x, mark size=2pt] coordinates
+  {(AI,4857)(Lit,6757)(Mus,9396)(Pol,7700)(Sci,8261)(WNUT,3553)(Rest,2142)(Movie,5014)(Fab,2921)(Bio,4737)(CoNLL,2260)(GUM,4265)(GEN,3806)};
+\addplot[figpink, semithick, mark=pentagon, mark size=1.5pt] coordinates
+  {(AI,500)(Lit,712)(Mus,895)(Pol,920)(Sci,757)(WNUT,311)(Rest,281)(Movie,532)(Fab,438)(Bio,558)(CoNLL,719)(GUM,759)(GEN,626)};
+\addplot[figgold!90!black, very thick, mark=square*, mark size=1.6pt] coordinates
+  {(AI,218)(Lit,254)(Mus,291)(Pol,277)(Sci,289)(WNUT,185)(Rest,173)(Movie,205)(Fab,84)(Bio,98)(CoNLL,92)(GUM,104)(GEN,97)};
+\addplot[figred, very thick, densely dashed, mark=*, mark size=1.6pt] coordinates
+  {(AI,222)(Lit,271)(Mus,293)(Pol,159)(Sci,132)(WNUT,100)(Rest,92)(Movie,98)(Fab,104)(Bio,108)(CoNLL,89)(GUM,100)(GEN,94)};
+\legend{GLiNER-S, GLiNER-M, GLiNER-L, GNER, Qwen2.5-1.5B, OWNER, \zstr, OPENER-Sup}
+\end{axis}
+\end{tikzpicture}
+\caption{Per-sentence inference latency (p50, ms, \emph{log} scale) per dataset (\autoref{tab:latency}). Same systems and styling as \autoref{fig:main}. OPENER-Sup is the dashed red line. The OPENER variants track GLiNER-L, while GNER and the Qwen LLM are one to two orders of magnitude slower.}
+\label{fig:latency}
+\end{figure*}
 
 \begin{table*}[tp]
 \centering
@@ -619,37 +621,6 @@ Although strictly domain-agnostic, since it never sees any target-side data, it 
 We therefore retain the target-tuned embedder for OPENER-ZS and report the Pile-NER variants as a negative ablation.
 A separate efficiency axis emerges in the \emph{training} cost (\autoref{tab:ablation}, Fit): per-sentence inference is governed by the detector alone (truncating the Matryoshka dimension or swapping the classifier leaves it unchanged), whereas fitting the typing head is $7\times$ cheaper at dimension $64$ than at $768$ (for only a $4.6$-point AMI drop, $62.5\!\to\!57.9$) and $4.5\times$ cheaper for balanced logistic regression than for the linear SVM, a speed/quality knob orthogonal to inference.
 
-\autoref{fig:matryoshka} plots typing-on-gold quality against the Matryoshka dimension $d$. Quality degrades smoothly as $d$ shrinks, with clearly diminishing returns rather than a cliff: $d{=}256$ already reaches $61.2$ AMI (within $1.3$ of the full $62.5$) and the curve flattens above it. Truncation therefore trades a little quality for a large cut in the typing-head fit cost, and, crucially, this confirms that the Matryoshka structure \emph{survives} our contrastive fine-tuning: the embedder can still be truncated and renormalised, exposing a graceful cost/quality knob.
-
-\begin{figure*}[tp]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-  width=0.92\linewidth, height=5cm,
-  xlabel={Matryoshka dimension $d$ (log spacing)},
-  ylabel={Typing-on-gold ($\times100$)},
-  symbolic x coords={64,128,256,512,768},
-  xtick=data,
-  ymin=56, ymax=73,
-  ymajorgrids, grid style={gray!18},
-  tick label style={font=\scriptsize},
-  label style={font=\small},
-  legend style={font=\scriptsize, draw=none, at={(0.98,0.03)}, anchor=south east},
-]
-\addplot[figsky, thick, mark=*] coordinates {(64,57.9) (128,59.9) (256,61.2) (512,62.0) (768,62.5)};
-\addlegendentry{AMI}
-\addplot[figviolet, thick, densely dashed, mark=square*] coordinates {(64,67.7) (128,69.7) (256,70.6) (512,71.2) (768,71.8)};
-\addlegendentry{macro-$F_1$}
-\end{axis}
-\end{tikzpicture}
-\caption{Typing-on-gold quality vs the Matryoshka truncation dimension $d$. Both AMI and macro-$F_1$ degrade smoothly, with diminishing returns rather than a cliff, and flatten above $d{=}256$. Truncation is therefore a graceful cost/quality knob, and the Matryoshka structure survives the contrastive fine-tuning. Data from \autoref{tab:ablation} (dimension axis, released seed, $13$-set means, log-spaced $d$).}
-\label{fig:matryoshka}
-\end{figure*}
-
-To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
-One cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie, with the largest seed variance of the table ($\pm 7.1$), which we attribute to attribute-like label names (PLOT, REVIEW, TRAILER) carrying little lexical signal in a corpus where every mention is movie-related, leaving the prototypes poorly anchored. The transductive refinement of \zstr recovers most of this gap ($44.8$).
-The higher end-to-end value of \zsind on the same set ($32.8$, \autoref{tab:main}) does not contradict the gold score: the sentinel labels added by the end-to-end protocol reshape both partitions, so the two AMI values are not directly comparable.
-
 \begin{table*}[tp]
 \centering
 \caption{OPENER architecture search: one component is varied at a time around the default pipeline (\textbf{bold}).}
@@ -706,6 +677,37 @@ Configuration & AMI\,$\uparrow$ & F\textsubscript{1}\,$\uparrow$ & Fit\,(ms)\,$\
 \end{threeparttable}
 \end{adjustbox}
 \end{table*}
+
+\autoref{fig:matryoshka} plots typing-on-gold quality against the Matryoshka dimension $d$. Quality degrades smoothly as $d$ shrinks, with clearly diminishing returns rather than a cliff: $d{=}256$ already reaches $61.2$ AMI (within $1.3$ of the full $62.5$) and the curve flattens above it. Truncation therefore trades a little quality for a large cut in the typing-head fit cost, and, crucially, this confirms that the Matryoshka structure \emph{survives} our contrastive fine-tuning: the embedder can still be truncated and renormalised, exposing a graceful cost/quality knob.
+
+\begin{figure*}[tp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.92\linewidth, height=5cm,
+  xlabel={Matryoshka dimension $d$ (log spacing)},
+  ylabel={Typing-on-gold ($\times100$)},
+  symbolic x coords={64,128,256,512,768},
+  xtick=data,
+  ymin=56, ymax=73,
+  ymajorgrids, grid style={gray!18},
+  tick label style={font=\scriptsize},
+  label style={font=\small},
+  legend style={font=\scriptsize, draw=none, at={(0.98,0.03)}, anchor=south east},
+]
+\addplot[figsky, thick, mark=*] coordinates {(64,57.9) (128,59.9) (256,61.2) (512,62.0) (768,62.5)};
+\addlegendentry{AMI}
+\addplot[figviolet, thick, densely dashed, mark=square*] coordinates {(64,67.7) (128,69.7) (256,70.6) (512,71.2) (768,71.8)};
+\addlegendentry{macro-$F_1$}
+\end{axis}
+\end{tikzpicture}
+\caption{Typing-on-gold quality vs the Matryoshka truncation dimension $d$. Both AMI and macro-$F_1$ degrade smoothly, with diminishing returns rather than a cliff, and flatten above $d{=}256$. Truncation is therefore a graceful cost/quality knob, and the Matryoshka structure survives the contrastive fine-tuning. Data from \autoref{tab:ablation} (dimension axis, released seed, $13$-set means, log-spaced $d$).}
+\label{fig:matryoshka}
+\end{figure*}
+
+To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
+One cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie, with the largest seed variance of the table ($\pm 7.1$), which we attribute to attribute-like label names (PLOT, REVIEW, TRAILER) carrying little lexical signal in a corpus where every mention is movie-related, leaving the prototypes poorly anchored. The transductive refinement of \zstr recovers most of this gap ($44.8$).
+The higher end-to-end value of \zsind on the same set ($32.8$, \autoref{tab:main}) does not contradict the gold score: the sentinel labels added by the end-to-end protocol reshape both partitions, so the two AMI values are not directly comparable.
 
 \begin{table*}[tp]
 \centering
