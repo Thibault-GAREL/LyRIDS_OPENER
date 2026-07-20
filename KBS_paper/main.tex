@@ -60,6 +60,13 @@
 \usepackage{dblfloatfix}   % two-column starred floats: allow same-page and [b]
                            % placement, keeps tables/figures closer to the text
                            % order (without it they drift to later pages)
+% Relax the double-column float area limits (defaults are too tight for this
+% many large table*/figure* pairs): lets two starred floats share one page top
+% instead of the second one drifting to the next page, which fixed the
+% table/figure interleaving order in section 04 (Table 5/Fig.2/Table 6/...).
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\dblfloatpagefraction}{0.85}
+\setcounter{dbltopnumber}{4}
 \usepackage{hyperref}      % clickable links/cross-refs
 % elsarticle.cls forces blue link colors in an \AtBeginDocument hook, which
 % would override a plain \hypersetup here. Registering ours afterwards wins.
