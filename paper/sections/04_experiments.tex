@@ -1,7 +1,7 @@
 \section{Experiments}
 \label{sec:experiments}
 
-% Double-blind: hardware kept anonymous ("consumer-grade GPU, 6 GB VRAM").
+% Non-blind: exact hardware disclosed (NVIDIA GTX 1660 Ti Max-Q, 6 GB VRAM).
 
 \subsection{Datasets}
 \label{sec:exp:datasets}
@@ -118,7 +118,7 @@ We also quantify the test-set sampling uncertainty with a bootstrap on the relea
 
 \subsection{Experimental Settings}
 \label{sec:exp:impl}
-All experiments run on our single consumer-grade GPU with $6$\,GB of VRAM (CUDA~12.1, PyTorch~2.5.1 \cite{paszke2019pytorch}). The goal of using such modest hardware was to verify that the models could also run on standard personal computers, demonstrating that our approach is highly versatile.
+All experiments run on a single consumer-grade GPU, an NVIDIA GeForce GTX 1660 Ti Max-Q with $6$\,GB of VRAM (CUDA~12.1, PyTorch~2.5.1 \cite{paszke2019pytorch}). The goal of using such modest hardware was to verify that the models could also run on standard personal computers, demonstrating that our approach is highly versatile.
 We use the HuggingFace Transformers library \cite{wolf2020transformers} for baselines, sentence-transformers \cite{reimers2019sbert} for the Matryoshka embedder \cite{nussbaum2024nomic, kusupati2022matryoshka}, and scikit-learn \cite{pedregosa2011scikit} for the linear classifier, whose solver is LIBLINEAR \cite{fan2008liblinear}.
 Latency is measured with two warmup passes followed by timed passes with GPU synchronisation, reporting p50, p95 and p99 per sentence.
 Energy is measured with CodeCarbon \cite{luccioni2019quantifying} in offline mode using the French grid carbon intensity. When hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
