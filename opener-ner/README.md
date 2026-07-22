@@ -15,8 +15,11 @@ The fine-tuned embedder is hosted on the Hugging Face Hub and pulled by
 
 ## Install
 
+> Not yet published on PyPI, install from source in the meantime:
+
 ```bash
-pip install opener-ner
+git clone https://github.com/Thibault-GAREL/LyRIDS_OPENER.git
+pip install -e ./LyRIDS_OPENER/opener-ner
 ```
 
 ## Zero-shot (no training)

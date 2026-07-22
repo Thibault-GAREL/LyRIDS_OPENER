@@ -37,6 +37,103 @@ Companion to my earlier project [LyRIDS OWNER](https://github.com/Thibault-GAREL
 
 ## 📄 Full Paper
 
+Two write-ups of the same method and benchmark: the **KBS submission** below is the one actually under review at *Knowledge-Based Systems* (Elsevier), the **LyRIDS Symposium** write-up is a companion, non-blind internal version (IEEE format).
+
+### Knowledge-Based Systems submission (Elsevier, under review)
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-01.png" alt="OPENER KBS paper, page 01" width="800">
+</p>
+
+<details>
+<summary>📄 Click to expand the remaining 20 pages (Knowledge-Based Systems, Elsevier)</summary>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-02.png" alt="OPENER KBS paper, page 02" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-03.png" alt="OPENER KBS paper, page 03" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-04.png" alt="OPENER KBS paper, page 04" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-05.png" alt="OPENER KBS paper, page 05" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-06.png" alt="OPENER KBS paper, page 06" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-07.png" alt="OPENER KBS paper, page 07" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-08.png" alt="OPENER KBS paper, page 08" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-09.png" alt="OPENER KBS paper, page 09" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-10.png" alt="OPENER KBS paper, page 10" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-11.png" alt="OPENER KBS paper, page 11" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-12.png" alt="OPENER KBS paper, page 12" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-13.png" alt="OPENER KBS paper, page 13" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-14.png" alt="OPENER KBS paper, page 14" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-15.png" alt="OPENER KBS paper, page 15" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-16.png" alt="OPENER KBS paper, page 16" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-17.png" alt="OPENER KBS paper, page 17" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-18.png" alt="OPENER KBS paper, page 18" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-19.png" alt="OPENER KBS paper, page 19" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-20.png" alt="OPENER KBS paper, page 20" width="800">
+</p>
+
+<p align="center">
+  <img src="assets/paper_pages_kbs/page-21.png" alt="OPENER KBS paper, page 21" width="800">
+</p>
+
+</details>
+
+Full PDF (text-selectable): [`OPENER - KBS paper.pdf`](KBS_paper/OPENER%20-%20KBS%20paper.pdf)
+
+### LyRIDS Symposium 2026 write-up (IEEE, non-blind internal version)
+
 <p align="center">
   <img src="assets/paper_pages/page-01.png" alt="OPENER IEEE paper, page 01" width="800">
 </p>
@@ -308,7 +405,7 @@ OPENER is evaluated on **13 evaluation sets** spanning very different domains, t
 ## 📂 Repository structure
 
 ```bash
-LyRIDS_Opener/
+LyRIDS_OPENER/
 ├── opener-ner/                      # pip-installable package (turnkey OPENER-ZS / OPENER-Sup)
 │   ├── opener/                      # OpenerZS, OpenerSup, shared HF loading logic
 │   └── cards/                       # Hugging Face model cards (opener-zs, opener-sup)
@@ -373,8 +470,8 @@ LyRIDS_Opener/
 Clone the repository and install the `opener-ner` package from source (the model weights are pulled from the Hugging Face Hub at runtime, no local checkpoint needed):
 
 ```bash
-git clone https://github.com/Thibault-GAREL/LyRIDS_Opener.git
-cd LyRIDS_Opener
+git clone https://github.com/Thibault-GAREL/LyRIDS_OPENER.git
+cd LyRIDS_OPENER
 
 python -m venv .venv # if you don't have a virtual environment
 source .venv/bin/activate   # Linux / macOS
