@@ -1,4 +1,4 @@
-# LaTeX compilation artifacts
+# LaTeX compilation artifacts (applies recursively to lyrids_ieee/ and kbs/)
 *.aux
 *.log
 *.out
@@ -7,6 +7,7 @@
 *.lot
 *.bbl
 *.blg
+*.spl
 *.fls
 *.fdb_latexmk
 *.synctex.gz
@@ -45,3 +46,9 @@ IEEE-conference-template-062824/
 # Local backup folder (anciens templates, zips IEEE, PDFs HOWTO, .synctex.gz):
 # utile en local pour référence, inutile à push.
 ref/
+
+# Scratch render folders (page-by-page compile checks), local only
+.tmp/
+
+# Third-party Elsevier sample paper kept locally for layout reference, not ours to redistribute
+kbs/Example of KDS paper.pdf

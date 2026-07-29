@@ -14,7 +14,7 @@
 ![Contributions](https://img.shields.io/badge/contributions-welcome-orange.svg)
 
 <p align="center">
-  <img src="assets/logo.webp" alt="logo LyRIDS" width="500">
+  <img src="assets/opener-promo-v3-hq.gif" alt="gif OPENER" width="80%">
 </p>
 
 ---
@@ -32,6 +32,11 @@ Both fine-tuned embedders are hosted on the Hugging Face Hub, ready for `from_pr
 The method and a **13-dataset benchmark** (quality, latency and energy) are written up in full in the paper (submitted to *Knowledge-Based Systems*, Elsevier), linked in the Inspiration / Sources section below.
 
 Companion to my earlier project [LyRIDS OWNER](https://github.com/Thibault-GAREL/LyRIDS_OWNER_recreating), which takes the opposite design (training a dedicated encoder with Triplet Loss and K-means clustering). OPENER instead starts from pretrained models and only adds a light contrastive step on top.
+
+<p align="center">
+  <img src="assets/logo.webp" alt="logo LyRIDS" width="50%">
+</p>
+
 
 ---
 
@@ -130,7 +135,7 @@ Two write-ups of the same method and benchmark: the **KBS submission** below is 
 
 </details>
 
-Full PDF (text-selectable): [`OPENER - KBS paper.pdf`](KBS_paper/OPENER%20-%20KBS%20paper.pdf)
+Full PDF (text-selectable): [`OPENER - KBS paper.pdf`](paper/kbs/OPENER%20-%20KBS%20paper.pdf)
 
 ### LyRIDS Symposium 2026 write-up (IEEE, non-blind internal version)
 
@@ -219,7 +224,7 @@ Full PDF (text-selectable): [`OPENER - KBS paper.pdf`](KBS_paper/OPENER%20-%20KB
 
 </details>
 
-Full PDF (text-selectable): [`OPENER IEEE with authors - LyRIDS Symposium 2026.pdf`](paper/OPENER%20IEEE%20with%20authors%20-%20LyRIDS%20Symposium%202026.pdf)
+Full PDF (text-selectable): [`OPENER IEEE with authors - LyRIDS Symposium 2026.pdf`](paper/lyrids_ieee/OPENER%20IEEE%20with%20authors%20-%20LyRIDS%20Symposium%202026.pdf)
 
 ---
 
@@ -410,8 +415,9 @@ LyRIDS_OPENER/
 │   ├── opener/                      # OpenerZS, OpenerSup, shared HF loading logic
 │   └── cards/                       # Hugging Face model cards (opener-zs, opener-sup)
 │
-├── KBS_paper/                       # journal submission (Knowledge-Based Systems, Elsevier)
-├── paper/                           # internal LyRIDS Symposium write-up (same method)
+├── paper/                           # all LaTeX sources (shared references.bib + reference PDFs at root)
+│   ├── kbs/                         # journal submission (Knowledge-Based Systems, Elsevier)
+│   └── lyrids_ieee/                 # LyRIDS Symposium write-up, IEEE format (same method)
 │
 ├── configs/
 │   ├── opener_default.yaml          # toy / smoke-test config
@@ -540,7 +546,7 @@ This project is based on:
 - 📄 [GLiNER](https://github.com/urchade/GLiNER), zero-shot Generalist NER.
 - 🔗 [LyRIDS OWNER](https://github.com/Thibault-GAREL/LyRIDS_OWNER_recreating), companion project with the opposite design (Triplet Loss and K-means clustering).
 
-Full method and benchmark: paper PDF [`OPENER - KBS paper.pdf`](KBS_paper/OPENER%20-%20KBS%20paper.pdf) (submitted to *Knowledge-Based Systems*, Elsevier).
+Full method and benchmark: paper PDF [`OPENER - KBS paper.pdf`](paper/kbs/OPENER%20-%20KBS%20paper.pdf) (submitted to *Knowledge-Based Systems*, Elsevier).
 
 Fine-tuned models on the Hugging Face Hub: 🤗 [`opener-zs`](https://huggingface.co/Thibault-GAREL/opener-zs) (zero-shot) and 🤗 [`opener-sup`](https://huggingface.co/Thibault-GAREL/opener-sup) (supervised).
 

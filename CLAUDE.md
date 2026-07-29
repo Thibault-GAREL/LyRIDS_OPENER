@@ -6,16 +6,19 @@ Document de pilotage du projet. À lire **avant** toute intervention sur le repo
 
 ## 🎯 Vue d'ensemble
 
-**Opener** — *Open Partitioning Embedding for Named Entity Recognition*.
+**OPENER** — *Open Partitioning Embedding for Named Entity Recognition*.
 
-Approche NER ouverte qui combine :
-1. **Mention Detection** déléguée à un modèle pré-entraîné (GLiNER) — pas d'entraînement de MD.
-2. **Embedding** des entités via un modèle **Matryoshka** (Nomic v1.5) — dim troncable de 768 à 64.
-3. **Entity Typing par GMM** : un GMM par label, initialisé sur l'embedding d'**anchor words** (ex. "person", "scientist") pour avoir un bon point de départ. Maintenant, on a vu que c'est SVM-balanced + un embedding qui a été entrainné sur du contrastive learning.
-4. **Hiérarchie inférée a posteriori** : si la bulle "scientist" est contenue dans "person", on en déduit la relation parent/enfant.  Pour le premier papier, on laisse cette idée de côté !
-5. **Détection OOD** : un embedding éloigné de tous les GMMs → marqué "inconnu", candidat pour entraînement futur. Pour le premier papier, on laisse cette idée de côté !
+Approche NER ouverte assemblée à partir de briques pré-entraînées (aucun encodeur entraîné de zéro) :
 
-**Différence clé avec OWNER** : OWNER apprend un encodeur d'entités via Triplet Loss + clustering K-means non-supervisé. Opener part d'un embedding pré-entraîné et utilise des GMMs **semi-supervisés** (init sur anchor words), sans réentraîner l'embedding lui-même.
+1. **Mention Detection** déléguée à **GLiNER-L**, zero-shot et **gelé** (jamais fine-tuné).
+2. **Embedding** des entités via un modèle **Matryoshka** (Nomic v1.5), **fine-tuné en contrastif** (triplet loss) puis affiné par **hard-negative mining** piloté par les erreurs. Dim troncable de 768 à 64.
+3. **Entity Typing**, deux points de fonctionnement sur le **même** embedder :
+   - **OPENER-Sup** : `LinearSVC(class_weight='balanced')` fitté sur les labels cibles. Le plus précis.
+   - **OPENER-ZS** : prototypes construits sur les noms de labels, raffinés en **transductif** sur les mentions de test, puis **fusionnés** avec la prédiction zero-shot du détecteur. Aucun label cible requis.
+
+**Différence clé avec OWNER** : OWNER apprend un encodeur d'entités de zéro (Triplet Loss + K-means non-supervisé). OPENER part d'un embedding pré-entraîné, ajoute un fine-tuning contrastif léger, et type avec une tête linéaire (ou des prototypes), sans réentraîner un encodeur complet.
+
+> **⚠️ V1 legacy (ablation seulement)** : la toute première version (un **GMM par label** initialisé sur des **anchor words**, avec **détection OOD** et **hiérarchie inférée** a posteriori) reste présente dans le code (`src/models/label_clusterer.py`, `src/pipeline.py`) mais **n'est plus la voie principale**. Elle sert uniquement d'ablation. Ne pas la confondre avec le pipeline retenu ci-dessus.
 
 ---
 
@@ -27,156 +30,132 @@ Approche NER ouverte qui combine :
   ```powershell
   & c:\0-Code_py_temp\pytorch_cuda_env\Scripts\Activate.ps1
   ```
-- **Dépendances supplémentaires** à installer (avant le premier run) :
-  ```powershell
-  pip install gliner sentence-transformers einops
-  ```
-- **Déjà installé** : torch (cu121), transformers, scikit-learn, pyyaml, numpy, pandas.
+- **Dépendances clés** : `gliner`, `sentence-transformers`, `einops` (en plus de torch cu121, transformers, scikit-learn, pyyaml, numpy, pandas, datasets, joblib, codecarbon).
 
 ### CUDA
 
-GPU ~6 Go VRAM. Nomic v1.5 est léger (~140 Mo), GLiNER medium ~200 Mo. Tient largement.
+GPU ~6 Go VRAM. Nomic v1.5 (~140 Mo) + GLiNER-L (~330 Mo) tiennent largement. La baseline LLM 4-bit (Qwen2.5-1.5B) utilise l'offload disque (`offload/`).
 
 ### Configuration
 
-- **Hyperparams** dans `configs/opener_default.yaml`.
-- **Labels à détecter** dans `configs/labels.yaml` (séparé pour itérer facilement).
+- **Hyperparams** dans `configs/` (`opener_default.yaml` pour le smoke test, `opener_benchmark.yaml` pour le bench 13 datasets).
+- **Labels** dans `configs/labels.yaml`. Anchor words (V1) dans `configs/anchor_dictionaries.yaml`.
 - Loader : `src/utils/config.py`.
 
-### Architecture
+### Architecture (pipeline retenu)
 
 ```
 Texte
   │
   ▼
-MentionDetector  ─── GLiNER zero-shot (boite noire)
+MentionDetector ── GLiNER-L zero-shot, GELÉ (jamais fine-tuné)
   │
   ▼  spans (start, end, text)
-Embedder  ─────── Nomic Matryoshka (boite noire), truncate_dim configurable
-  │
-  ▼  embedding (D dims)
-LabelClusterer ── GMM par label, fit semi-supervisé sur anchor words
-  │
-  ▼  (label_id, log_likelihood) ou "OOD"
+Embedder ───────── Nomic v1.5 Matryoshka FINE-TUNÉ contrastif (triplet + hard-negative mining)
+  │                truncate_dim configurable (768 → 64)
+  ▼  embedding
+Typing head ────── OPENER-Sup : LinearSVC(class_weight='balanced')
+  │                OPENER-ZS  : prototypes label-name + raffinement transductif + fusion détecteur
+  ▼  label
 Sortie
 ```
 
 ### Git
 
-Pareil que LyRIDS_OWNER : commit checkpoint avant changement structurel. `mlflow.db` et `outputs/models/*` dans `.gitignore`.
+Commit checkpoint avant changement structurel. `mlflow.db`, `outputs/models/*`, `outputs/results/*` (sauf `results_all.json`), les logs/caches d'`outputs/`, `data/` et les artefacts LaTeX sont gitignorés. Les sources LaTeX ont leur propre `paper/.gitignore` (récursif sur les deux sous-dossiers). **Claude ne commit/push pas par défaut** : il laisse les changements dans le working tree et propose un message prêt à copier.
 
 ### Lancement standard
 
 ```powershell
-# Pipeline complet sur un texte de test
+# Smoke test end-to-end (toy corpus)
 python -m tests.test_opener_pipeline
 
-# Avec une config custom
-python -m tests.test_opener_pipeline configs/my_experiment.yaml
+# Éval end-to-end sur un dataset
+python -m scripts.run_opener_e2e --datasets crossner_ai            # OPENER-Sup
+python -m scripts.run_opener_zs_e2e_fusion --datasets crossner_ai  # OPENER-ZS
+
+# Reproduction multi-seed complète (3 seeds, 13 datasets)
+bash scripts/run_multiseed.sh ; python -m scripts.aggregate_multiseed
 ```
 
 ---
 
-## ✅ État actuel (2026-07-08)
+## ✅ État actuel (2026-07-22)
 
-**Papier complet et soumissible : 18 p, IEEEtran double-blind, benchmark 13/13, multi-seed.** Pipeline retenu : `GLiNER-L (MD, frozen) → Nomic v1.5 Matryoshka fine-tuné contrastif + hard-negative mining → tête de typing`. Deux points de fonctionnement : **OPENER-Sup** (LinearSVC balanced, le plus précis : 40.1 ±0.5 e2e / 62.3 ±1.0 gold) et **OPENER-ZS** (prototypes label-name + transductif + fusion détecteur, meilleur zéro-shot : 39.5 ±0.1 e2e). Tous les chiffres OPENER = mean±std sur 3 seeds de re-training complet (7/42/123 ; `scripts/run_multiseed.sh` + `scripts/aggregate_multiseed.py`, validé cellule à cellule) ; les ablations restent seed-42. La V1 (GMM + anchor words + OOD + hiérarchie) reste une ablation.
+**Deux rédactions du même travail, soumissibles, code + modèles publiés.**
 
-- **Benchmark 13 datasets**, 3 axes (AMI + latence p50 + énergie/CO₂ via CodeCarbon) : GLiNER S/M/L, GNER T5-base, OWNER (transfert zéro-shot), Qwen2.5-1.5B 4-bit, OPENER (Sup + ZS). Asymétrie de supervision explicitée (OPENER-Sup supervisé sur train cible ; les autres zéro-shot).
-- **Paper rédigé en entier** : Abstract, Intro (cadrage transfer learning), Related Work (6 sous-parties, ~20 réfs), Method (formalisme + 7 équations), Experiments (Datasets + distributions de types, Baselines + table backbones/tailles, Experimental Settings + config, Main Results, **Analysis** + UMAP, Ablations), Conclusion, Acknowledgments (disclosure IA).
-- **Figures** : Fig 1 architecture (SVG→PDF), Fig 2 AMI, Fig 3 latence, Fig 4 énergie consumption, Fig 5 bar charts 4 métriques, Fig 6 **UMAP 3-panneaux** (contrastive en action, held-out WNUT — `scripts/make_umap.py`). Tables I-X.
-- **Overleaf** : `opener_overleaf.zip` (racine repo) prêt pour « Upload Project » (main.tex + sections + assets PDF + IEEEtran).
-- **Glitch énergie crossner_music** (22.76 Wh) : **résolu** (re-run hard-mining, 1.72 Wh).
-- **Multi-seed (2026-07-08)** : fait. `run_multiseed.sh` est frugal (évals dataset par dataset avec resume fin, `HF_HUB_OFFLINE=1` obligatoire pour les runs nocturnes, threads OMP/MKL=4, priorité BelowNormal). Protocoles exacts des variantes : ZS gold = `run_opener_zs_sweep` (`raw (baseline)` = ZS-ind, `ensemble+refine` = ZS-trans) ; ZS e2e = fusion `inductive['0']` / `transductive['0.05']` ; Sup e2e = `by_threshold['0.3']['linear_svm_balanced']`.
-- **Reste avant soumission** : mots-clés IEEE définitifs (le bloc IEEEkeywords de `main.tex` contient encore des notes de brouillon en français !), proofread final, recompiler `paper/main.pdf` et régénérer `opener_overleaf.zip`.
+- **Soumission principale** : *Knowledge-Based Systems* (Elsevier, `elsarticle` 2 colonnes) → `paper/kbs/`. Déclarations Elsevier complètes (CRediT, conflits, financement, disclosure IA, data availability), cover letter + highlights.
+- **Version companion** : LyRIDS Symposium, format IEEE (`IEEEtran`), **non-blind** → `paper/lyrids_ieee/`.
+- **Communs** à la racine `paper/` : `references.bib` **partagé** (les deux `main.tex` pointent vers `../references`), `paper_used/` (PDF de référence, local), `_check_cites.py`.
+- **Package pip livrable** : `opener-ner/` (`OpenerZS` / `OpenerSup`, `from_pretrained()` depuis le HF Hub). Pas encore sur PyPI (install depuis les sources).
+- **Modèles publiés** : 🤗 `Thibault-GAREL/opener-zs` et `Thibault-GAREL/opener-sup`.
+
+**Chiffres finaux** (mean±std, 3 seeds 7/42/123 ; ablations en seed-42) :
+- **OPENER-Sup** : 40.1 ±0.5 e2e / 62.3 ±1.0 gold (le plus précis).
+- **OPENER-ZS** (fusion transductive) : 39.5 ±0.1 e2e (meilleur des systèmes zero-shot comparés).
+- Benchmark **13 datasets**, 3 axes (AMI + latence p50 + énergie/CO₂ via CodeCarbon). Baselines : GLiNER S/M/L, GNER, Qwen2.5-1.5B 4-bit, OWNER. Agrégat unique : `outputs/results/aggregate/results_all.json` (alimente toutes les tables et figures).
 
 ### Composants livrés
 
-- `src/models/{mention_detector,embedder,label_clusterer}.py` — GLiNER / Nomic Matryoshka / GMM (V1).
-- `scripts/train_contrastive_embedder.py` — fine-tuning contrastif (triplet loss).
-- `scripts/run_balanced_classifiers.py` (typing sur gold) + `scripts/run_opener_e2e.py` (end-to-end, offsets + sentinels).
-- `scripts/baselines/` — GLiNER, GNER, LLM int4, OWNER (`owner_export/make_configs/collect` + `run_owner_eval.ps1`).
-- `scripts/_gen_tables.py` — génère les lignes LaTeX des tables depuis l'agrégat.
+- `src/models/{mention_detector,embedder,label_clusterer}.py` — GLiNER / Nomic Matryoshka / GMM (V1 legacy).
+- `scripts/train_contrastive_embedder.py` + `scripts/train_contrastive_hard.py` — fine-tuning contrastif et hard-negative mining.
+- `scripts/run_balanced_classifiers.py` (typing sur gold) + `scripts/run_opener_e2e.py` (end-to-end Sup) + `scripts/run_opener_zs_e2e_fusion.py` (end-to-end ZS).
+- `scripts/run_multiseed.sh` + `scripts/aggregate_multiseed.py` — étude 3 seeds.
+- `scripts/baselines/` — GLiNER, GNER, LLM int4, OWNER.
+- `scripts/make_umap.py`, `scripts/make_figures.py`, `scripts/_gen_tables.py` — figures + lignes LaTeX des tables.
+- `scripts/analysis/{dist,stats}.py` — analyses ad hoc citées dans le papier (distributions de types, écart gold/e2e).
 - `src/utils/{energy,timing}.py` — mesure énergie + latence (p50/p95/p99).
 - `tests/test_opener_pipeline.py` — smoke test end-to-end.
-
----
-
-## 🚧 Roadmap
-
-### Court terme
-
-1. **Installer les dépendances** :
-   ```powershell
-   pip install gliner sentence-transformers einops
-   ```
-2. **Valider le pipeline** sur un mini-texte (smoke test) — vérifie que GLiNER + Nomic + GMM fonctionnent ensemble.
-3. **Adapter `configs/labels.yaml`** à ton cas d'usage (anchor words, n_components par label).
-
-### Moyen terme
-
-1. **Fit le GMM sur des entités réelles** :
-   - Prendre un corpus (CoNLL, Pile-NER) ou textes libres.
-   - Détecter les mentions avec GLiNER.
-   - Embedder.
-   - Initialiser les GMMs avec les anchor words puis fitter sur ces embeddings réels.
-2. **Inférer la hiérarchie automatiquement** : matrice d'inclusion entre bulles (Mahalanobis containment).
-3. **Détecter les zones OOD** : régions de l'espace embedding mal couvertes → candidats pour de nouveaux labels.
-4. **Évaluer** vs OWNER : reprendre les mêmes datasets de test (CrossNER, WNUT 17, FabNER, etc.) et comparer AMI/ARI.
-
-### Long terme
-
-1. **Active learning** : utiliser les zones OOD pour proposer à l'utilisateur de nouveaux labels.
-2. **Visualisation 2D** des bulles (UMAP/t-SNE de l'espace embedding) pour interpréter la hiérarchie.
-3. **Matryoshka dim sweep** : comparer perf à 768 vs 512 vs 256 vs 128 vs 64 dims — quel compromis idéal ?
 
 ---
 
 ## 📂 Structure
 
 ```
-LyRIDS_Opener/
+LyRIDS_OPENER/
+├── opener-ner/              # package pip livrable (OpenerZS / OpenerSup + model cards)
+├── paper/
+│   ├── references.bib       # biblio PARTAGÉE (les deux papiers pointent vers ../references)
+│   ├── paper_used/          # PDF de référence, local
+│   ├── kbs/                 # soumission Knowledge-Based Systems (Elsevier)
+│   └── lyrids_ieee/         # version LyRIDS Symposium, format IEEE
 ├── src/
-│   ├── data/
-│   │   ├── schema.py            # Document, Entity, MiniDocument (format OWNER)
-│   │   └── serialization.py     # load/save JSON
-│   ├── models/
-│   │   ├── mention_detector.py  # GLiNER wrapper
-│   │   ├── embedder.py          # Nomic Matryoshka wrapper
-│   │   └── label_clusterer.py   # GMM par label + OOD + hiérarchie
-│   ├── utils/
-│   │   └── config.py            # YAML loader
-│   └── pipeline.py              # orchestrateur Detect → Embed → Cluster
-├── configs/
-│   ├── opener_default.yaml      # config globale
-│   └── labels.yaml              # liste de labels avec anchor_words
-├── data/
-│   ├── 1-raw/                   # données brutes
-│   └── 2-processed/             # format OWNER (.json)
-├── outputs/
-│   ├── models/                  # GMMs fittés (joblib)
-│   └── results/                 # rapports d'éval
+│   ├── data/                # schema.py + loaders (conll, crossner, gum, owner_datasets)
+│   ├── models/              # mention_detector, embedder, label_clusterer (V1)
+│   ├── utils/               # config, energy, timing
+│   └── pipeline.py          # orchestrateur V1 (Detect → Embed → Cluster)
+├── scripts/                 # entraînement contrastif, éval Sup/ZS, baselines, agrégation, figures
+│   └── analysis/            # dist.py, stats.py (analyses du papier)
+├── configs/                 # yaml (default, benchmark, conll, labels, anchors)
+├── data/                    # brut + processed (gitignoré)
+├── outputs/                 # models / results / logs / cache (gitignoré sauf results_all.json)
 ├── tests/
-│   └── test_opener_pipeline.py
-├── README.md
-├── CLAUDE.md
-└── .gitignore
+├── assets/                  # figures du README
+├── README.md · CLAUDE.md · LICENSE · .gitignore
 ```
 
 ---
 
 ## 🧠 Décisions de design
 
-- **Pas de fine-tuning de l'embedding** : on s'appuie sur Nomic v1.5 brut. Si le pipeline marche, c'est validation que l'espace embedding pré-entraîné est déjà suffisant pour discriminer des types d'entités. Sinon → axe d'amélioration.
-- **GMM `covariance_type='full'`** par défaut : chaque composante a sa propre matrice de cov. Permet des bulles ellipsoïdales orientées. Plus précis mais O(D²) en params.
-- **Anchor words → centroid initial** : on prend la moyenne des embeddings des anchor words comme `means_init[0]` du GMM. Les autres composantes (si `n_components > 1`) sont initialisées avec un jitter aléatoire autour, puis raffinées par EM.
-- **OOD via log-likelihood** : un embedding pour lequel `max(log_lik(label)) < threshold` est considéré OOD. Threshold configurable.
-- **Hiérarchie inférée spatialement** : si la masse d'une bulle B est majoritairement contenue dans une bulle A (Mahalanobis), A est parent de B. Pas de hiérarchie déclarée a priori.
+- **Fine-tuning contrastif léger de l'embedder** (voie retenue) : on part de Nomic v1.5 pré-entraîné et on l'affine en triplet loss + hard-negative mining. L'embedding brut ne discrimine pas assez les types ; le contrastif rend l'espace linéairement séparable (visible sur l'UMAP held-out WNUT). Le détecteur, lui, reste **gelé**.
+- **Détection = goulot d'étranglement** : le typing sur mentions gold atteint 62.3 AMI, mais l'end-to-end est plafonné par le rappel du détecteur sur les spans cryptiques (FabNER, MIT-Movie). L'écart gold→e2e est plus fort sur les schémas spécialisés que sur l'encyclopédique.
+- **Tête de typing balanced** (`class_weight='balanced'`) : évite d'ignorer silencieusement les labels rares.
+- **Matryoshka via `truncate_dim`** : la troncature se fait à l'`encode(...)`, pas par slicing manuel (les premiers N dims portent l'info la plus importante).
+
+### V1 legacy (ablation, conservée dans le code)
+
+- **GMM `covariance_type='full'`** par label : bulles ellipsoïdales orientées, O(D²) en params.
+- **Anchor words → centroïde initial** : moyenne des embeddings des anchor words comme `means_init[0]`, autres composantes jitterées puis raffinées par EM.
+- **OOD via log-likelihood** : `max(log_lik(label)) < threshold` → OOD.
+- **Hiérarchie inférée spatialement** : si la masse d'une bulle B est contenue dans A (Mahalanobis), A est parent de B. **Mise de côté pour le premier papier.**
 
 ---
 
 ## ⚠️ Pièges connus
 
 - **Nomic v1.5 nécessite `trust_remote_code=True`** dans sentence-transformers (custom layers).
-- **GLiNER attend une liste de labels** comme argument à `predict_entities`. Si on veut le mode "open" (détecter n'importe quel span), on lui passe `['entity']` ou `['named entity']` — mais c'est sous-optimal. Idéalement, on lui passe les noms réels de nos labels pour qu'il filtre déjà.
-- **Embedding du span vs du contexte** : on a choisi d'embedder *l'entité dans son contexte* (`"[text...] entity [...text]"`) pour mieux désambiguïser ("apple" entreprise vs fruit). À tester.
-- **Matryoshka truncation** se fait via `.encode(..., truncate_dim=N)` dans sentence-transformers — pas via slicing manuel. Le modèle a été entraîné pour que les premiers N dims contiennent l'info la plus importante.
+- **GLiNER attend une liste de labels** en argument de `predict_entities`. Le mode "open" (`['entity']`) est sous-optimal ; on lui passe idéalement les vrais noms de labels.
+- **Embedding du span dans son contexte** (`"[...] entity [...]"`) pour désambiguïser ("apple" entreprise vs fruit).
+- **Bibliographie partagée** : après un `git mv` d'un `main.tex`, vérifier que `\bibliography{../references}` et le `graphicspath` (`{assets/}{../assets/}`) résolvent toujours. Recompiler les deux papiers pour valider (0 citation/référence non résolue attendu).
+- **Runs nocturnes** : `HF_HUB_OFFLINE=1` obligatoire, threads OMP/MKL=4, priorité BelowNormal (voir `scripts/run_multiseed.sh`).

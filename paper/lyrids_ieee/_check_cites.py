@@ -9,7 +9,7 @@ for f in ["main.tex"] + glob.glob("sections/*.tex"):
             cited.add(k.strip())
 
 bibkeys = [m.group(1).strip()
-           for m in re.finditer(r"@\w+\{([^,]+),", open("references.bib", encoding="utf-8").read())]
+           for m in re.finditer(r"@\w+\{([^,]+),", open("../references.bib", encoding="utf-8").read())]
 uncited = [k for k in bibkeys if k not in cited]
 missing = [k for k in cited if k and k not in bibkeys]
 

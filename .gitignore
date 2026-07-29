@@ -1,3 +1,7 @@
+# Internal working notes and stray LaTeX log, kept locally, not for the public repo
+BRIEF_2026-06-09.md
+texput.log
+
 # Données (volumineuses, à reproduire localement)
 data/1-raw/*
 data/2-processed/*
@@ -73,30 +77,5 @@ Thumbs.db
 
 *.zip
 
-# LaTeX build artifacts (paper)
-paper/*.aux
-paper/*.log
-paper/*.out
-paper/*.bbl
-paper/*.blg
-paper/*.toc
-paper/*.synctex.gz
-paper/sections/*.aux
-
-# Scratch render PNGs at paper/ root (real figures live in assets/)
-paper/*.png
-paper/.tmp/
-# LaTeX build artifacts (KBS_paper)
-KBS_paper/*.aux
-KBS_paper/*.log
-KBS_paper/*.out
-KBS_paper/*.bbl
-KBS_paper/*.blg
-KBS_paper/*.toc
-KBS_paper/*.spl
-KBS_paper/*.synctex.gz
-KBS_paper/sections/*.aux
-# Scratch render PNGs at KBS_paper/ root (real figures live in assets/)
-KBS_paper/*.png
-KBS_paper/.tmp/
-KBS_paper/Example of KDS paper.pdf
+# LaTeX build artifacts for both papers (lyrids_ieee/ and kbs/) are handled
+# recursively by paper/.gitignore. Nothing paper-specific is needed here.
