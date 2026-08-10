@@ -506,9 +506,9 @@ pip install torch --index-url https://download.pytorch.org/whl/cu121
 pip install gliner sentence-transformers einops scikit-learn pyyaml datasets joblib codecarbon
 ```
 
-> On my own setup I use the project venv `pytorch_cuda_env` instead:
+> On my own setup I use the project venv `pytorch_py310` instead:
 > ```powershell
-> & c:\0-Code_py_temp\pytorch_cuda_env\Scripts\Activate.ps1
+> & c:\0-Code_py_temp\pytorch_py310\Scripts\Activate.ps1
 > ```
 
 **1. Smoke test** (toy corpus, ~30 s), detects mentions, fits a tiny clusterer, predicts on a held-out sentence:

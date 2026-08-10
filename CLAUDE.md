@@ -26,9 +26,9 @@ Approche NER ouverte assemblée à partir de briques pré-entraînées (aucun en
 
 ### Environnement Python
 
-- **Venv obligatoire** : `pytorch_cuda_env`.
+- **Venv obligatoire** : `pytorch_py310`.
   ```powershell
-  & c:\0-Code_py_temp\pytorch_cuda_env\Scripts\Activate.ps1
+  & c:\0-Code_py_temp\pytorch_py310\Scripts\Activate.ps1
   ```
 - **Dépendances clés** : `gliner`, `sentence-transformers`, `einops` (en plus de torch cu121, transformers, scikit-learn, pyyaml, numpy, pandas, datasets, joblib, codecarbon).
 

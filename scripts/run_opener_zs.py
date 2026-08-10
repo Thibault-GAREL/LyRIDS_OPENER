@@ -28,7 +28,7 @@ permutations).
 
 Lancement type (la nuit, en arriere-plan + log horodate)
 --------------------------------------------------------
-    & c:\\0-Code_py_temp\\pytorch_cuda_env\\Scripts\\Activate.ps1
+    & c:\\0-Code_py_temp\\pytorch_py310\\Scripts\\Activate.ps1
     python -m scripts.run_opener_zs *> outputs/logs/opener_zs_<date>.log 2>&1
     Get-Content outputs/logs/opener_zs_<date>.log -Wait -Tail 30
 

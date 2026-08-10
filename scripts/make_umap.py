@@ -8,7 +8,7 @@ source) with three embedders and projects each to 2D with UMAP, coloured by gold
 
 Output: paper/assets/umap_contrastive.{pdf,png}
 
-Run from repo root with the pytorch_cuda_env venv. Deterministic (seed 42).
+Run from repo root with the pytorch_py310 venv. Deterministic (seed 42).
 """
 import json
 import random

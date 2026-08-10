@@ -8,7 +8,7 @@
 # Ajuste $maxEval / commente des modeles selon le temps dispo (7B genratif = lent).
 
 $ErrorActionPreference = 'Continue'
-$py   = 'c:\0-Code_py_temp\pytorch_cuda_env\Scripts\python.exe'
+$py   = 'c:\0-Code_py_temp\pytorch_py310\Scripts\python.exe'
 $root = 'd:\Loisir\Code_python\LyRIDS_Opener'
 Set-Location $root
 

@@ -18,7 +18,7 @@
 #  - Lancer le script en priorite BelowNormal (herite par les python enfants) :
 #    powershell Start-Process bash -ArgumentList '-lc','bash scripts/run_multiseed.sh >> LOG 2>&1' -WindowStyle Hidden ; puis baisser la priorite.
 set -u
-PY=/c/0-Code_py_temp/pytorch_cuda_env/Scripts/python.exe
+PY=/c/0-Code_py_temp/pytorch_py310/Scripts/python.exe
 export OMP_NUM_THREADS=4
 export MKL_NUM_THREADS=4
 # Mode offline HuggingFace : modeles (GLiNER, Nomic) et datasets sont deja dans

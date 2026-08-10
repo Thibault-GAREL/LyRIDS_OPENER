@@ -18,7 +18,7 @@ Le modèle entraîné se réutilise tel quel : son chemin local remplace le nom
 HF dans n'importe quel script (`--embedder outputs/models/embedder_contrastive`).
 
 # Lancement type (la nuit)
-    & c:\\0-Code_py_temp\\pytorch_cuda_env\\Scripts\\Activate.ps1
+    & c:\\0-Code_py_temp\\pytorch_py310\\Scripts\\Activate.ps1
     python -m scripts.train_contrastive_embedder
     # puis
     python -m scripts.run_balanced_classifiers --embedder outputs/models/embedder_contrastive

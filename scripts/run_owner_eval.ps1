@@ -16,7 +16,7 @@
 # Lancement :  powershell -ExecutionPolicy Bypass -File scripts\run_owner_eval.ps1
 
 $ErrorActionPreference = 'Continue'
-$venvPy = 'c:\0-Code_py_temp\pytorch_cuda_env\Scripts\python.exe'
+$venvPy = 'c:\0-Code_py_temp\pytorch_py310\Scripts\python.exe'
 $root   = 'd:\Loisir\Code_python\LyRIDS_Opener'
 Set-Location $root
 

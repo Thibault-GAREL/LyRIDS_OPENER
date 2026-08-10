@@ -23,7 +23,7 @@ hors GPU) et reprend directement le fine-tuning.
 
 Lancement type (la nuit, detache + log horodate)
 ------------------------------------------------
-    & c:\\0-Code_py_temp\\pytorch_cuda_env\\Scripts\\Activate.ps1
+    & c:\\0-Code_py_temp\\pytorch_py310\\Scripts\\Activate.ps1
     python -m scripts.train_contrastive_pilener --use-fp16 *> outputs/logs/pilener_<date>.log 2>&1
     Get-Content outputs/logs/pilener_<date>.log -Wait -Tail 30
 
