@@ -1,0 +1,81 @@
+%% Standalone figure source (JIIS submission). Generated from the KBS
+%% version, content unchanged unless wrapped in ... (red).
+\documentclass[border=0pt]{standalone}
+\input{_fig_preamble}
+\begin{document}
+\begin{minipage}{160mm}
+\centering
+\pgfplotsset{
+  metricbar/.style={
+    width=0.45\linewidth, height=3.9cm,
+    ybar, bar width=4pt,
+    xmin=0.4, xmax=9.6,
+    xtick={1,2,3,4,5,6,7,8,9},
+    xticklabels={GL-S,GL-M,GL-L,GNER,Qwen,OWN,ZS$_i$,ZS$_t$,Sup},
+    xticklabel style={rotate=55, anchor=east, font=\tiny},
+    yticklabel style={font=\tiny},
+    title style={font=\scriptsize, yshift=-2pt},
+    ymajorgrids, major grid style={black!10},
+    enlarge x limits=0.04,
+  }
+}
+\begin{tikzpicture}
+\begin{axis}[metricbar, title={AMI ($\uparrow$)}, ymin=24, ymax=42, ytick={24,28,32,36,40}]
+\addplot[ybar,bar shift=0pt,fill=figsky,draw=figsky!65!black] coordinates {(1,36.5)};
+\addplot[ybar,bar shift=0pt,fill=figcyan!85!black,draw=figcyan!55!black] coordinates {(2,37.1)};
+\addplot[ybar,bar shift=0pt,fill=blue!60!black,draw=blue!40!black] coordinates {(3,38.9)};
+\addplot[ybar,bar shift=0pt,fill=figgreen!65!black,draw=figgreen!45!black] coordinates {(4,37.9)};
+\addplot[ybar,bar shift=0pt,fill=figviolet,draw=figviolet!65!black] coordinates {(5,26.1)};
+\addplot[ybar,bar shift=0pt,fill=figpink,draw=figpink!65!black] coordinates {(6,34.3)};
+\addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,33.8)};
+\addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,39.5)};
+\addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,40.1)};
+\draw[densely dotted, semithick, black!55] (axis cs:8.5,24) -- (axis cs:8.5,42);
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[metricbar, ymode=log, log origin=infty, title={Latency p50, ms ($\downarrow$)}, ymin=10, ymax=9000]
+\addplot[ybar,bar shift=0pt,fill=figsky,draw=figsky!65!black] coordinates {(1,21)};
+\addplot[ybar,bar shift=0pt,fill=figcyan!85!black,draw=figcyan!55!black] coordinates {(2,40)};
+\addplot[ybar,bar shift=0pt,fill=blue!60!black,draw=blue!40!black] coordinates {(3,143)};
+\addplot[ybar,bar shift=0pt,fill=figgreen!65!black,draw=figgreen!45!black] coordinates {(4,4226)};
+\addplot[ybar,bar shift=0pt,fill=figviolet,draw=figviolet!65!black] coordinates {(5,5051)};
+\addplot[ybar,bar shift=0pt,fill=figpink,draw=figpink!65!black] coordinates {(6,616)};
+\addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,137)};
+\addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,182)};
+\addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,143)};
+\draw[densely dotted, semithick, black!55] (axis cs:8.5,10) -- (axis cs:8.5,9000);
+\end{axis}
+\end{tikzpicture}
+
+\smallskip
+\begin{tikzpicture}
+\begin{axis}[metricbar, ymode=log, log origin=infty, title={Energy consumption, Wh ($\downarrow$)}, ymin=0.1, ymax=80]
+\addplot[ybar,bar shift=0pt,fill=figsky,draw=figsky!65!black] coordinates {(1,0.31)};
+\addplot[ybar,bar shift=0pt,fill=figcyan!85!black,draw=figcyan!55!black] coordinates {(2,0.58)};
+\addplot[ybar,bar shift=0pt,fill=blue!60!black,draw=blue!40!black] coordinates {(3,1.18)};
+\addplot[ybar,bar shift=0pt,fill=figgreen!65!black,draw=figgreen!45!black] coordinates {(4,36.51)};
+\addplot[ybar,bar shift=0pt,fill=figviolet,draw=figviolet!65!black] coordinates {(5,11.4)};
+\addplot[ybar,bar shift=0pt,fill=figpink,draw=figpink!65!black] coordinates {(6,14.3)};
+\addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,1.85)};
+\addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,1.70)};
+\addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,1.59)};
+\draw[densely dotted, semithick, black!55] (axis cs:8.5,0.1) -- (axis cs:8.5,80);
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[metricbar, ymode=log, log origin=infty, title={CO\textsubscript{2}, g ($\downarrow$)}, ymin=0.01, ymax=4]
+\addplot[ybar,bar shift=0pt,fill=figsky,draw=figsky!65!black] coordinates {(1,0.02)};
+\addplot[ybar,bar shift=0pt,fill=figcyan!85!black,draw=figcyan!55!black] coordinates {(2,0.03)};
+\addplot[ybar,bar shift=0pt,fill=blue!60!black,draw=blue!40!black] coordinates {(3,0.07)};
+\addplot[ybar,bar shift=0pt,fill=figgreen!65!black,draw=figgreen!45!black] coordinates {(4,2.05)};
+\addplot[ybar,bar shift=0pt,fill=figviolet,draw=figviolet!65!black] coordinates {(5,0.60)};
+\addplot[ybar,bar shift=0pt,fill=figpink,draw=figpink!65!black] coordinates {(6,0.74)};
+\addplot[ybar,bar shift=0pt,fill=figgold!55!black,draw=figgold!40!black] coordinates {(7,0.10)};
+\addplot[ybar,bar shift=0pt,fill=figgold!90!black,draw=figgold!60!black] coordinates {(8,0.10)};
+\addplot[ybar,bar shift=0pt,fill=figred,draw=figred!65!black] coordinates {(9,0.09)};
+\draw[densely dotted, semithick, black!55] (axis cs:8.5,0.01) -- (axis cs:8.5,4);
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\end{document}

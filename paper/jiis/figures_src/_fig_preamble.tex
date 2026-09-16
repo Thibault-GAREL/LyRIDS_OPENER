@@ -1,0 +1,34 @@
+% =====================================================================
+% Shared preamble of the standalone figure sources (Fig3, Fig4, Fig5,
+% Fig6, Fig7). Each figure is compiled on its own to FigN.pdf, because
+% the JIIS guidelines ask for figures supplied as separate files named
+% "Fig" + number, uploaded without subfolders.
+%
+% Every figure body sits in a 160mm minipage (76mm, one column, for Fig7): this is the full text width
+% of sn-jnl in its two-column (iicol) layout, so \linewidth keeps the
+% exact meaning it had inside the figure* floats of the KBS version, and
+% main.tex includes each PDF at its natural size.
+% =====================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, fit, backgrounds}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% --- figure palette (matches the repository architecture diagram) ---
+\definecolor{figamber}{HTML}{F59E0B}
+\definecolor{figcyan}{HTML}{06B6D4}
+\definecolor{figsky}{HTML}{0EA5E9}
+\definecolor{figviolet}{HTML}{8B5CF6}
+\definecolor{figgold}{HTML}{EAB308}
+\definecolor{figgreen}{HTML}{10B981}
+\definecolor{figpink}{HTML}{EC4899}
+\definecolor{figred}{HTML}{DC2626}
+
+% --- OPENER-ZS operating points ---
+\newcommand{\zstr}{OPENER-ZS\textsubscript{trans}}
+\newcommand{\zsind}{OPENER-ZS\textsubscript{ind}}

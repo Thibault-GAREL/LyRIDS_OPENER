@@ -1,0 +1,41 @@
+%% Standalone figure source (JIIS submission). Generated from the KBS
+%% version, content unchanged unless wrapped in ... (red).
+\documentclass[border=0pt]{standalone}
+\input{_fig_preamble}
+\begin{document}
+\begin{minipage}{160mm}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=\linewidth, height=6.6cm,
+  ymode=log, ymin=0.1, ymax=95, log origin=infty,
+  ylabel={Energy consumption (Wh, log)}, ylabel style={font=\small},
+  symbolic x coords={AI,Lit,Mus,Pol,Sci,WNUT,Rest,Movie,Fab,Bio,CoNLL,GUM,GEN},
+  xtick=data, xticklabel style={rotate=40, anchor=east, font=\scriptsize},
+  yticklabel style={font=\scriptsize},
+  grid=both, major grid style={black!12},
+  enlarge x limits=0.04,
+  legend style={at={(0.5,1.02)}, anchor=south, legend columns=4, font=\scriptsize, draw=none,
+                /tikz/every even column/.append style={column sep=6pt}},
+]
+\addplot[figsky, semithick, mark=o, mark size=1.2pt] coordinates
+  {(AI,0.19)(Lit,0.17)(Mus,0.20)(Pol,0.27)(Sci,0.22)(WNUT,0.27)(Rest,0.35)(Movie,0.39)(Fab,0.40)(Bio,0.42)(CoNLL,0.37)(GUM,0.41)(GEN,0.40)};
+\addplot[figcyan!85!black, semithick, mark=square, mark size=1.2pt] coordinates
+  {(AI,0.31)(Lit,0.29)(Mus,0.33)(Pol,0.48)(Sci,0.40)(WNUT,0.50)(Rest,0.66)(Movie,0.76)(Fab,0.77)(Bio,0.79)(CoNLL,0.69)(GUM,0.82)(GEN,0.75)};
+\addplot[blue!60!black, semithick, mark=diamond, mark size=1.4pt] coordinates
+  {(AI,0.68)(Lit,0.67)(Mus,0.77)(Pol,1.04)(Sci,0.91)(WNUT,1.01)(Rest,1.37)(Movie,1.51)(Fab,1.54)(Bio,1.49)(CoNLL,1.38)(GUM,1.52)(GEN,1.43)};
+\addplot[figgreen!65!black, semithick, mark=triangle, mark size=1.5pt] coordinates
+  {(AI,17.13)(Lit,24.28)(Mus,39.75)(Pol,50.88)(Sci,44.76)(WNUT,20.60)(Rest,17.02)(Movie,37.17)(Fab,49.11)(Bio,63.50)(CoNLL,45.22)(GUM,38.69)(GEN,26.50)};
+\addplot[figviolet, thick, mark=x, mark size=2pt] coordinates
+  {(AI,12.7)(Lit,15.1)(Mus,17.5)(Pol,18.4)(Sci,18.0)(WNUT,7.9)(Rest,4.6)(Movie,9.5)(Fab,7.0)(Bio,11.1)(CoNLL,7.3)(GUM,10.2)(GEN,9.5)};
+\addplot[figpink, semithick, mark=pentagon, mark size=1.5pt] coordinates
+  {(AI,6.6)(Lit,9.0)(Mus,12.7)(Pol,18.3)(Sci,12.6)(WNUT,6.5)(Rest,8.6)(Movie,16.3)(Fab,13.4)(Bio,17.1)(CoNLL,22.0)(GUM,23.2)(GEN,19.1)};
+\addplot[figgold!90!black, very thick, mark=square*, mark size=1.6pt] coordinates
+  {(AI,1.14)(Lit,1.23)(Mus,1.58)(Pol,2.08)(Sci,1.82)(WNUT,1.41)(Rest,1.82)(Movie,2.23)(Fab,1.62)(Bio,1.87)(CoNLL,1.63)(GUM,1.90)(GEN,1.79)};
+\addplot[figred, very thick, densely dashed, mark=*, mark size=1.6pt] coordinates
+  {(AI,1.10)(Lit,1.26)(Mus,0.87)(Pol,1.76)(Sci,1.41)(WNUT,1.31)(Rest,1.75)(Movie,1.87)(Fab,1.96)(Bio,1.97)(CoNLL,1.73)(GUM,1.91)(GEN,1.78)};
+\legend{GLiNER-S, GLiNER-M, GLiNER-L, GNER, Qwen2.5-1.5B, OWNER, \zstr, OPENER-Sup}
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\end{document}

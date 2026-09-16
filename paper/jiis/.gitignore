@@ -1,0 +1,9 @@
+# Synced copy of the shared ../references.bib (made by _compile.ps1)
+references.bib
+
+# Final upload bundle (made by _build_submission.ps1)
+submission/
+submission.zip
+
+# Standalone figure builds (the FigN.pdf copies next to main.tex are kept)
+figures_src/*.pdf

@@ -1,0 +1,28 @@
+%% Standalone figure source (JIIS submission). Generated from the KBS
+%% version, content unchanged unless wrapped in ... (red).
+\documentclass[border=0pt]{standalone}
+\input{_fig_preamble}
+\begin{document}
+\begin{minipage}{76mm}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=\linewidth, height=4.8cm,
+  xlabel={Matryoshka dimension $d$ (log spacing)},
+  ylabel={Typing-on-gold ($\times100$)},
+  symbolic x coords={64,128,256,512,768},
+  xtick=data,
+  ymin=56, ymax=73,
+  ymajorgrids, grid style={gray!18},
+  tick label style={font=\scriptsize},
+  label style={font=\small},
+  legend style={font=\scriptsize, draw=none, at={(0.98,0.03)}, anchor=south east},
+]
+\addplot[figsky, thick, mark=*] coordinates {(64,57.9) (128,59.9) (256,61.2) (512,62.0) (768,62.5)};
+\addlegendentry{AMI}
+\addplot[figviolet, thick, densely dashed, mark=square*] coordinates {(64,67.7) (128,69.7) (256,70.6) (512,71.2) (768,71.8)};
+\addlegendentry{macro-$F_1$}
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\end{document}

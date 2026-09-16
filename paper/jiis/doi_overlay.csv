@@ -1,0 +1,38 @@
+key,doi,source
+aly2021zeroshot,10.18653/v1/2021.acl-long.120,Crossref exact match (title + first author + year)
+aoyama2023gentle,10.18653/v1/2023.law-1.17,Crossref exact match (title + first author + year)
+cai2025handling,10.18653/v1/2025.naacl-long.540,Crossref exact match (title + first author + year)
+das2022container,10.18653/v1/2022.acl-long.439,Crossref exact match (title + first author + year)
+dempster1977em,10.1111/j.2517-6161.1977.tb01600.x,"Crossref, journal/volume/year checked against paper_used PDF (JSTOR)"
+derczynski2017wnut,10.18653/v1/w17-4418,Crossref exact match (title + first author + year)
+dettmers2023qlora,10.52202/075280-0441,Crossref exact match (title + first author + year)
+devlin2019bert,10.18653/v1/n19-1423,Crossref exact match (title + first author + year)
+ding2021fewnerd,10.18653/v1/2021.acl-long.248,Crossref exact match (title + first author + year)
+ding2024gner,10.18653/v1/2024.findings-acl.206,Crossref exact match (title + first author + year)
+hu2023entity,10.18653/v1/2023.findings-acl.578,Crossref exact match (title + first author + year)
+kim2003genia,10.1093/bioinformatics/btg1023,printed in paper_used PDF
+kim2004jnlpba,10.3115/1567594.1567610,Crossref exact match (title + first author + year)
+kumar2022fabner,10.1007/s10845-021-01807-x,printed in paper_used PDF
+kusupati2022matryoshka,10.52202/068431-2192,Crossref exact match (title + first author + year)
+lai2025gcse,10.18653/v1/2025.acl-long.244,Crossref exact match (title + first author + year)
+lample2016ner,10.18653/v1/n16-1030,Crossref exact match (title + first author + year)
+li2020mrc,10.18653/v1/2020.acl-main.519,Crossref exact match (title + first author + year)
+li2022survey,10.1109/tkde.2020.2981314,Crossref exact match (title + first author + year)
+li2024aoe,10.18653/v1/2024.acl-long.101,Crossref exact match (title + first author + year)
+liu2013asgard,10.1109/icassp.2013.6639301,Crossref exact match (title + first author + year)
+liu2021crossner,10.1609/aaai.v35i15.17587,Crossref exact match (title + first author + year)
+luccioni2024power,10.1145/3630106.3658542,Crossref exact match (title + first author + year)
+ma2016end,10.18653/v1/p16-1101,Crossref exact match (title + first author + year)
+nguyen2023span,10.18653/v1/2023.eacl-main.146,Crossref exact match (title + first author + year)
+reimers2019sbert,10.18653/v1/d19-1410,Crossref exact match (title + first author + year)
+schroff2015facenet,10.1109/cvpr.2015.7298682,Crossref exact match (title + first author + year)
+schwartz2020greenai,10.1145/3381831,Crossref exact match (title + first author + year)
+shannon1948,10.1002/j.1538-7305.1948.tb01338.x,Crossref exact match (title + first author + year)
+strubell2019energy,10.18653/v1/p19-1355,Crossref exact match (title + first author + year)
+tjongkimsang2003conll,10.3115/1119176.1119195,"Crossref, CoNLL-2003 proceedings (ACL legacy DOI)"
+wang2018joint,10.18653/v1/p18-1216,Crossref exact match (title + first author + year)
+wolf2020transformers,10.18653/v1/2020.emnlp-demos.6,Crossref exact match (title + first author + year)
+xiao2024cpack,10.1145/3626772.3657878,Crossref exact match (title + first author + year)
+yu2020biaffine,10.18653/v1/2020.acl-main.577,Crossref exact match (title + first author + year)
+zaratiana2024gliner,10.18653/v1/2024.naacl-long.300,Crossref exact match (title + first author + year)
+zeldes2017gum,10.1007/s10579-016-9343-x,"Crossref, journal/volume checked against references.bib"
