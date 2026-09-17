@@ -796,7 +796,7 @@ We justify each architectural choice with a one-factor-at-a-time search: startin
 Among embedder variants, an error-driven \emph{hard-negative mining} pass, fine-tuning the contrastive embedder on the entity pairs it most often confuses (e.g.\ \emph{writer}/\emph{person}, \emph{album}/\emph{band}, \emph{country}/\emph{location}), mixed with correctly-typed mentions for diversity, raises typing-on-gold AMI from $54.0$ to $60.1$. Scaling the mined triplets ($3000\!\to\!8000$) and epochs ($2\!\to\!3$) lifts it further to $62.5$ ($+8.5$ over the contrastive embedder, better on $12$ of $13$ sets), our selected configuration.
 \autoref{tab:ablation} reports this search.
 
-\begin{table*}[!tp]
+\begin{table*}[!t]
 \centering
 \caption{OPENER architecture search: one component is varied at a time around the default pipeline (\textbf{bold}).}
 \label{tab:ablation}
@@ -864,7 +864,7 @@ To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OP
 One cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie, with the largest seed variance of the table ($\pm 7.1$), which we attribute to attribute-like label names (PLOT, REVIEW, TRAILER) carrying little lexical signal in a corpus where every mention is movie-related, leaving the prototypes poorly anchored. The transductive refinement of \zstr recovers most of this gap ($44.8$).
 The higher end-to-end value of \zsind on the same set ($32.8$, \autoref{tab:main}) does not contradict the gold score: the sentinel labels added by the end-to-end protocol reshape both partitions, so the two AMI values are not directly comparable.
 
-\begin{table*}[!tp]
+\begin{table*}[!t]
 \centering
 \caption{Entity typing on gold mentions (detection bypassed): OPENER vs OWNER (AMI $\times 100$, $\uparrow$).}
 \label{tab:et-gold}
@@ -901,7 +901,7 @@ OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52
 \end{threeparttable}
 \end{adjustbox}
 \end{table*}
-\begin{table*}[!tp]
+\begin{table*}[!t]
 \centering
 \caption{Zero-shot typing: effect of the contrastive embedder on \zsind (typing-on-gold, $13$-set means at the released seed ($42$)).}
 \label{tab:zs-embedder}

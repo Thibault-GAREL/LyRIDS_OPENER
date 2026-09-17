@@ -6,8 +6,9 @@
 % Compilation: pdflatex cover_letter.tex
 % =====================================================================
 
-\documentclass[11pt]{article}
-\usepackage[a4paper, top=1.8cm, bottom=1.5cm, left=2.3cm, right=2.3cm]{geometry}
+\documentclass[10pt]{article}
+% One A4 page with real margins (no \enlargethispage, which pushed the text to the paper edge)
+\usepackage[a4paper, top=1.8cm, bottom=1.8cm, left=2.0cm, right=2.0cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -18,10 +19,9 @@
 
 \pagestyle{empty}
 \setlength{\parskip}{0.45em}
-\linespread{0.96}
+\linespread{1.0}
 
 \begin{document}
-\enlargethispage{5\baselineskip}
 
 % --- Letterhead ---
 \noindent
