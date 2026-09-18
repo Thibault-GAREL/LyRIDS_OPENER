@@ -81,10 +81,6 @@
 % Tighter reference list: the class sets \bibsep to 1em between entries.
 \setlength{\bibsep}{2pt}
 
-% --- REVIEW ONLY: rewritten passages in red. For the final version, replace the
-% definition below by \newcommand{\rev}{} (or remove the {\rev ...} wrappers).
-\newcommand{\rev}{\color{red}}
-
 \raggedbottom
 
 \begin{document}
@@ -121,7 +117,7 @@ We release code, configurations, fine-tuned embedders, and benchmark.}
 \section{Introduction}
 \label{sec:introduction}
 
-{\rev
+{
 Named Entity Recognition (NER) is a core task of Natural Language Processing (NLP).
 It locates and classifies key elements of unstructured text into predefined categories (e.g., extracting "Marie Curie" as a PERSON or "1898" as a DATE) and supports the analysis of legal or medical documents, the routing of support tickets and search.
 However, real-world NER rarely operates with a static label set, as novel categories emerge across new domains.
@@ -152,13 +148,13 @@ The rest of the paper is organised as follows.
 \section{Related Work}
 \label{sec:related}
 
-{\rev
+{
 We position OPENER with respect to closed-set, open-world and LLM-based NER, to contrastive entity representations, and to energy-aware machine learning.
 \par}
 
 \subsection{Closed-set and Span-based NER}
 \label{sec:related:closed}
-{\rev
+{
 Traditional NER is cast as supervised sequence labeling over a fixed inventory of types.
 Early neural taggers combined recurrent encoders with a CRF layer \cite{lample2016ner}, and fine-tuning a pretrained transformer such as BERT \cite{devlin2019bert} further increased in-domain accuracy.
 Span-based formulations classify candidate spans directly, which eases nested entities \cite{nguyen2023span}, either with a biaffine scorer \cite{yu2020biaffine} or by recasting typing as machine reading comprehension over natural-language type descriptions \cite{li2020mrc}, a use of label semantics our zero-shot head also exploits.
@@ -167,7 +163,7 @@ These models reach high accuracy on in-domain benchmarks such as CoNLL-2003 \cit
 
 \subsection{Open-world and Zero-shot NER}
 \label{sec:related:openworld}
-{\rev
+{
 Open-world NER recognises entity types that were not fixed at training time, and zero-shot NER, its most demanding setting, types entities without any labelled example of the target types.
 GLiNER \cite{zaratiana2024gliner} treats the candidate type names as queries to a DeBERTaV3 encoder \cite{he2023debertav3} and scores every span against them in a single forward pass.
 GNER \cite{ding2024gner} casts NER as generation with a sequence-to-sequence model \cite{raffel2020t5} that regenerates the sentence with inline type tags and explicitly models non-entity tokens.
@@ -178,7 +174,7 @@ OPENER adopts the decoupled detect-then-type view of OWNER, but replaces the tra
 
 \subsection{LLM-based and Few-shot NER}
 \label{sec:related:llm}
-{\rev
+{
 LLM-based NER prompts or instruction-tunes large language models to extract entities from a description of the target types, while few-shot NER learns new types from a handful of labelled examples.
 UniversalNER \cite{zhou2024universalner} distils a chat model into a LLaMA-based student \cite{touvron2023llama} over tens of thousands of entity types, and GoLLIE \cite{sainz2024gollie} conditions a code language model on annotation guidelines.
 Few-shot methods reduce supervision further, for instance with token-level contrastive objectives such as CONTaiNER \cite{das2022container}.
@@ -188,7 +184,7 @@ As a runnable reference point at the small end of this family, we include Qwen2.
 
 \subsection{Entity Representations and Contrastive Learning}
 \label{sec:related:repr}
-{\rev
+{
 Entity representations map each mention to a vector whose geometry reflects its type, and contrastive learning shapes this geometry by pulling same-type mentions together and pushing different types apart.
 Nomic Embed \cite{nussbaum2024nomic}, from the Sentence-BERT line of work \cite{reimers2019sbert}, is trained with the Matryoshka objective \cite{kusupati2022matryoshka}, so its representations can be truncated without retraining.
 We sharpen its entity-type geometry with a triplet objective in the spirit of FaceNet \cite{schroff2015facenet}, and mining hard negatives, as in GCSE \cite{lai2025gcse}, is close in spirit to our error-driven hard-negative mining.
@@ -199,7 +195,7 @@ Unlike methods that train a dedicated encoder, OPENER keeps a general-purpose sp
 
 \subsection{Efficient and Green AI}
 \label{sec:related:green}
-{\rev
+{
 Prior work has quantified the cost of training NLP models \cite{strubell2019energy}, promoted efficiency as an evaluation criterion under the \emph{Green AI} agenda \cite{schwartz2020greenai}, and called for the systematic reporting of energy and carbon \cite{henderson2020systematic}, which tools such as CodeCarbon \cite{luccioni2019quantifying} make practical.
 At inference time, general-purpose generative models are orders of magnitude more expensive per query than task-specific ones \cite{luccioni2024power}.
 Yet open-world NER systems are still compared almost exclusively on quality, and existing methods either train a dedicated encoder \cite{genest2025owner} or query costly LLMs \cite{zhou2024universalner, sainz2024gollie}.
@@ -284,7 +280,8 @@ which pulls same-type spans together and pushes different-type spans apart, i.e.
 Training runs for $3$ epochs with batch size $16$, learning rate $2\times10^{-5}$ and $100$ warmup steps.
 This single step lifts typing-on-gold AMI from $25.8$ to $54.0$. The UMAP projection in \autoref{fig:umap} shows how Stage 1 reshapes the embedding space.
 
-\begin{figure*}[!tp]
+% [!bp]: bottom of the page where it is first cited, so it never sits above the citation
+\begin{figure*}[!bp]
 \centering
 \includegraphics[width=119mm]{Fig2}
 \caption{UMAP of WNUT-17 (held-out) entity embeddings, coloured by gold type, across the three embedder stages: frozen Nomic v1.5, $+$ contrastive fine-tuning, $+$ hard-negative mining. The contrastive stages progressively separate the types into compact clusters on a domain unseen during training}
@@ -368,11 +365,11 @@ After using this tool, the authors reviewed and edited the content as needed and
 \toprule
 Dataset & Abbr. & Domain & Test & Entity types (share \%) \\
 \midrule
-CrossNER-AI & AI & \textcolor{red}{Encyclopaedic} & 430 & task 12, field 11, product 11, metrics 11, misc 10, algorithm 10, researcher 9, organisation 8, conference 5, person 4, programlang 3, country 2, location 2, university 2 \\
-CrossNER-Literature & Lit & \textcolor{red}{Encyclopaedic} & 416 & writer 25, book 18, misc 11, literarygenre 9, person 8, award 6, poem 5, organisation 5, country 4, location 4, magazine 3, event 2 \\
-CrossNER-Music & Mus & \textcolor{red}{Encyclopaedic} & 465 & musicalartist 15, musicgenre 15, band 14, location 10, album 10, award 8, song 7, organisation 6, misc 5, country 5, person 2, event 2, musicalinstrument 1 \\
-CrossNER-Politics & Pol & \textcolor{red}{Encyclopaedic} & 651 & politicalparty 23, location 14, organisation 12, politician 12, election 10, country 10, person 8, misc 6, event 5 \\
-CrossNER-Science & Sci & \textcolor{red}{Encyclopaedic} & 543 & misc 17, scientist 15, astronomicalobject 11, organisation 9, person 7, academicjournal 6, location 6, chemicalcompound 5, protein 5, award 5, university 4, chemicalelement 3, enzyme 3, discipline 2, event 1, country 1, theory 1 \\
+CrossNER-AI & AI & Encyclopaedic & 430 & task 12, field 11, product 11, metrics 11, misc 10, algorithm 10, researcher 9, organisation 8, conference 5, person 4, programlang 3, country 2, location 2, university 2 \\
+CrossNER-Literature & Lit & Encyclopaedic & 416 & writer 25, book 18, misc 11, literarygenre 9, person 8, award 6, poem 5, organisation 5, country 4, location 4, magazine 3, event 2 \\
+CrossNER-Music & Mus & Encyclopaedic & 465 & musicalartist 15, musicgenre 15, band 14, location 10, album 10, award 8, song 7, organisation 6, misc 5, country 5, person 2, event 2, musicalinstrument 1 \\
+CrossNER-Politics & Pol & Encyclopaedic & 651 & politicalparty 23, location 14, organisation 12, politician 12, election 10, country 10, person 8, misc 6, event 5 \\
+CrossNER-Science & Sci & Encyclopaedic & 543 & misc 17, scientist 15, astronomicalobject 11, organisation 9, person 7, academicjournal 6, location 6, chemicalcompound 5, protein 5, award 5, university 4, chemicalelement 3, enzyme 3, discipline 2, event 1, country 1, theory 1 \\
 WNUT-17 & WNUT & Social media & 689 & person 40, group 15, location 14, creative-work 13, product 12, corporation 6 \\
 MIT-Restaurant & Rest & Restaurant search & 1000 & Location 21, Dish 18, Amenity 16, Hours 15, Restaurant\_Name 11, Price 10, Cuisine 5, Rating 4 \\
 MIT-Movie & Movie & Movie trivia & 1000 & TITLE 19, ACTOR 16, YEAR 16, GENRE 16, RATING 9, CHARACTER 9, TRAILER 5, REVIEW 3, RATINGS\_AVERAGE 3, PLOT 2, DIRECTOR 2, SONG 1 \\
@@ -432,7 +429,7 @@ Qwen2.5-1.5B & Qwen2.5 & Decoder & qwen2.5-1.5b-instruct & 1.5B & 3.2$\times$ \\
 \end{adjustbox}
 \end{table*}
 
-{\rev
+{
 We compare OPENER with representative open-world systems, all run end-to-end on the same splits and scored with the same protocol (\autoref{sec:exp:protocol}), and summarise their backbones and sizes in \autoref{tab:baselines}.
 \textbf{GLiNER} \cite{zaratiana2024gliner} is a fast span classifier on a DeBERTaV3 encoder \cite{he2023debertav3}, run at three sizes (S/M/L) to trace a size/efficiency trade-off.
 \textbf{GNER} \cite{ding2024gner} is a generative T5 tagger \cite{raffel2020t5} (base checkpoint), accurate but slowed down by autoregressive decoding.
@@ -444,7 +441,7 @@ Larger LLM systems such as UniversalNER \cite{zhou2024universalner}, GoLLIE \cit
 \subsection{Metrics and Evaluation Protocol}
 \label{sec:exp:metrics}
 \label{sec:exp:protocol}
-{\rev
+{
 Quality is measured by AMI \cite{vinh2010ami} over the aligned mentions, following OWNER \cite{genest2025owner} and complemented by macro-averaged $F_1$ and accuracy.
 As defined in \autoref{sec:method:problem}, predicted and gold mentions are aligned by exact character offsets, unmatched mentions receive distinct sentinel labels, and the typing-on-gold and end-to-end protocols are never mixed.
 Efficiency is reported as the median (p50) latency per sentence and as the energy (Wh) and carbon (gCO\textsubscript{2}eq) per run.
@@ -490,7 +487,7 @@ Random seeds       & $7$ / $42$ / $123$ (full embedder retraining per seed, $42$
 
 \subsection{Experimental Settings}
 \label{sec:exp:impl}
-{\rev \autoref{tab:hyperparams} collects the complete OPENER configuration used throughout. The embedder is retrained under each of the three seeds ($7$, $42$, $123$) while every other component is fixed.}
+{\autoref{tab:hyperparams} collects the complete OPENER configuration used throughout. The embedder is retrained under each of the three seeds ($7$, $42$, $123$) while every other component is fixed.}
 All experiments run on a single consumer-grade GPU, an NVIDIA GeForce GTX 1660 Ti Max-Q with $6$\,GB of VRAM (CUDA~12.1, PyTorch~2.5.1 \cite{paszke2019pytorch}). The goal of using such modest hardware was to verify that the models could also run on standard personal computers, demonstrating that our approach is highly versatile.
 We use the HuggingFace Transformers library \cite{wolf2020transformers} for baselines, sentence-transformers \cite{reimers2019sbert} for the Matryoshka embedder \cite{nussbaum2024nomic, kusupati2022matryoshka}, and scikit-learn \cite{pedregosa2011scikit} for the linear classifier, whose solver is LIBLINEAR \cite{fan2008liblinear}.
 Latency is measured with two warmup passes followed by timed passes with GPU synchronisation, reporting p50, p95 and p99 per sentence.
@@ -529,7 +526,7 @@ OPENER-Sup & $71.7 \pm 1.5$ ~[$68.9$, $74.6$] & $72.4 \pm 0.9$ ~[$70.6$, $74.2$]
 % OPENER numbers = mean±std over seeds 7/42/123, from
 % outputs/results/aggregate/results_multiseed.json (scripts/aggregate_multiseed.py,
 % 2026-07-08); baseline numbers from results_all.json (2026-06-12).
-{\rev
+{
 The tables below, starting with \autoref{tab:main}, report the benchmark on all $13$ sets, and \autoref{fig:main} plots the per-dataset end-to-end AMI of every system.
 OWNER is run in its native protocol \cite{genest2025owner}: a single model is trained once on CoNLL-2003 ($88$ minutes on our GPU) and applied zero-shot to every target set (cells marked \textsuperscript{c}), so CoNLL-2003 is in-domain for it (marked \textsuperscript{a}).
 Excluding CoNLL-2003, in-domain for both OWNER and OPENER, OWNER's $34.3$ mean becomes a $32.9$ transfer mean, against $39.1$ for \zstr on the same $12$ sets, a margin that widens from $+5.2$ to $+6.2$ AMI.
@@ -755,7 +752,7 @@ The type geometry learned on CoNLL thus transfers to an unseen domain, which is 
 
 \subsection{Ablations}
 \label{sec:exp:ablations}
-{\rev
+{
 We justify each architectural choice with a one-factor-at-a-time search (\autoref{tab:ablation}): starting from the default pipeline, we vary one component, hold the others fixed and keep the setting with the highest mean AMI.
 On the embedder axis, the error-driven hard-negative mining pass, which fine-tunes the contrastive embedder on its most confused type pairs (e.g.\ \emph{writer}/\emph{person}, \emph{album}/\emph{band}), raises typing-on-gold AMI from $54.0$ to $60.1$, and scaling it ($8000$ triplets, $3$ epochs) reaches $62.5$ ($+8.5$, better on $12$ of $13$ sets), our selected configuration.
 \par}
@@ -816,7 +813,7 @@ Configuration & AMI\,$\uparrow$ & F\textsubscript{1}\,$\uparrow$ & Fit\,(ms)\,$\
 \end{threeparttable}
 \end{adjustbox}
 \end{table*}
-{\rev
+{
 Among frozen base encoders, Nomic v1.5 is the most discriminative ($25.8$ AMI, ahead of E5, mxbai, MPNet and BGE), but frozen embeddings remain weak and the contrastive step is what makes the space usable ($+28.2$).
 The detector trades quality for cost (GLiNER-S to L: $37.7$ to $40.2$ AMI at $51$ to $143$\,ms), and OPENER's typing on GLiNER-L's spans ($40.2$) even beats GLiNER-L's own typing ($38.9$).
 A closed-set detector (BERT or RoBERTa-NER trained on CoNLL) collapses to near-zero recall outside PER/ORG/LOC/MISC, dragging macro-$F_1$ to $17.9$/$24.6$ (vs $30.5$), which confirms that open-world detection is required.
@@ -869,7 +866,7 @@ OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52
 \end{table*}
 
 
-{\rev
+{
 \autoref{fig:matryoshka} shows that quality degrades smoothly as $d$ shrinks: $d{=}256$ already reaches $61.2$ AMI (within $1.3$ of the full $62.5$). Truncation thus trades a little quality for a large cut in the typing-head fit cost, and the Matryoshka structure survives our contrastive fine-tuning.
 \par}
 
@@ -906,7 +903,7 @@ OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52
 \section{Conclusion}
 \label{sec:conclusion}
 
-{\rev
+{
 We presented OPENER, an open-world NER pipeline assembled entirely from ready-to-use components (a frozen detector, a pretrained Matryoshka embedder sharpened by a light contrastive fine-tuning with error-driven hard-negative mining, and a swappable typing head), with no encoder trained from scratch.
 Its modularity let us select every component on measured evidence, and the Matryoshka structure survives the fine-tuning as a compute/quality knob (\autoref{fig:matryoshka}).
 
