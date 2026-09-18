@@ -1,0 +1,108 @@
+% =====================================================================
+% Online Resource 1 (Electronic Supplementary Material) of the JIIS paper
+% "OPENER: Open Partitioning Embedding for Named Entity Recognition".
+% Upload ESM_1.pdf in "Supplementary material". The main text cites it as
+% "Online Resource 1" (Tables S1-S2, Fig. S1).
+% References to the main article (Table 5, Fig. 3, Section 4.7, ...) are read
+% from ../main.aux with the xr package: compile the main article first.
+% Compilation (from this folder): pdflatex ESM_1 && pdflatex ESM_1
+% =====================================================================
+\documentclass[10pt]{article}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{adjustbox}
+\usepackage[labelfont=bf, labelsep=space, font=small]{caption}
+\usepackage{xr}
+\externaldocument[M-]{../main}
+
+\definecolor{hlyellow}{rgb}{1,0.93,0.5}
+\definecolor{hlred}{HTML}{FECACA}
+\newcommand{\zstr}{OPENER-ZS\textsubscript{trans}}
+\newcommand{\zsind}{OPENER-ZS\textsubscript{ind}}
+
+% Supplementary numbering: Table S1, Fig. S1, ...
+\renewcommand{\figurename}{Fig.}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\pagestyle{plain}
+
+\begin{document}
+
+% --- Required header (JIIS: title, journal, authors, affiliation and e-mail of the corresponding author)
+\begin{center}
+{\Large\bfseries Online Resource 1}\\[6pt]
+{\large OPENER: Open Partitioning Embedding for Named Entity Recognition}\\[4pt]
+\textit{Journal of Intelligent Information Systems}\\[6pt]
+Thibault Garel, Faiza Belbachir, Assia Soukane\\
+LyRIDS, ECE Engineering School, Paris, France\\
+Corresponding author: Thibault Garel, \texttt{garel.thibault14@gmail.com}
+\end{center}
+
+\medskip
+\noindent This Online Resource gathers supplementary tables and figures cited in the main article: the test-set bootstrap of the released model (Table~S1), the four-axis means of every system (Fig.~S1), and the zero-shot embedder comparison with Pile-NER (Table~S2).
+
+% ------------------------------------------------------------------ Table S1
+\begin{table}[h]
+\centering
+\caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets}
+\label{tab:bootstrap}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\begin{tabular}{lccc}
+\toprule
+Model & CoNLL-2003 & CrossNER-Music & FabNER \\
+\midrule
+\zsind{}   & $66.1 \pm 1.4$ ~[$63.5$, $69.0$] & $55.5 \pm 0.9$ ~[$53.8$, $57.3$] & $36.2 \pm 0.7$ ~[$34.7$, $37.5$] \\
+OPENER-Sup & $71.7 \pm 1.5$ ~[$68.9$, $74.6$] & $72.4 \pm 0.9$ ~[$70.6$, $74.2$] & $59.8 \pm 0.9$ ~[$57.9$, $61.6$] \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item Typing-on-gold AMI ($\uparrow$) as bootstrap mean $\pm$ std [$95\%$ percentile CI], over $K{=}1000$ resamples of the gold mentions. The transductive refinement is excluded, as it adapts to the resampled test distribution. The bootstrap means match the full-test-set scores, and the stds stay at or below $1.5$ AMI, indicating stable scores.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+% ------------------------------------------------------------------ Fig. S1
+\begin{figure}[h]
+\centering
+\includegraphics{FigS1}
+\caption{Per-model means on the four axes ($13$-set averages, Table~\ref{M-tab:efficiency} of the main article). The light dotted line separates the \emph{zero-shot} systems (left) from the \emph{supervised} OPENER-Sup (right). Latency, energy and CO\textsubscript{2} use a log scale. Labels: GL-S/M/L $=$ GLiNER sizes, OWN $=$ OWNER, ZS$_i$ $=$ \zsind, ZS$_t$ $=$ \zstr, Sup $=$ OPENER-Sup}
+\label{fig:metrics-bars}
+\end{figure}
+
+% ------------------------------------------------------------------ Table S2
+\begin{table}[h]
+\centering
+\caption{Zero-shot typing: effect of the contrastive embedder on \zsind (typing-on-gold, $13$-set means at the released seed ($42$))}
+\label{tab:zs-embedder}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\begin{tabular}{llccc}
+\toprule
+Embedder & Training data & AMI & F\textsubscript{1} & Acc \\
+\midrule
+hard-neg.\ mining (selected) & CoNLL + targets' train & \textbf{44.4} & 46.8 & 53.6 \\
+Pile-NER (entity$\leftrightarrow$label) & Pile-NER only & 42.2 & \textbf{50.6} & \textbf{53.9} \\
+\quad + label-name hard mining & Pile-NER only & 39.7 & 41.4 & 44.7 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item The nearest label-name centroid head is fixed, only the embedder changes. AMI, macro-$F_1$, accuracy ($\times100$, $\uparrow$). Best per column in bold. The selected hard-negative-mining embedder (target-tuned) is compared with Pile-NER variants (Pile-NER is the training corpus released with UniversalNER, cited in the main article) that are strictly domain-agnostic (never see target data). We report Pile-NER as a negative ablation (Section~\ref{M-sec:exp:ablations} of the main article).
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\end{document}

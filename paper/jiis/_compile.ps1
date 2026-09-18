@@ -1,6 +1,6 @@
 # Build of the JIIS paper.
 # 1) builds references.bib = ../references.bib + verified DOIs (doi_overlay.csv),
-# 2) compiles the standalone figures Fig3, Fig4, Fig5, Fig6, Fig7,
+# 2) compiles the standalone figures Fig3 to Fig6,
 # 3) pdflatex -> bibtex -> pdflatex x2, then prints warnings and the page count (limit: 25).
 $ErrorActionPreference = 'Continue'
 Set-Location -Path $PSScriptRoot
@@ -9,7 +9,7 @@ Write-Output '=== references.bib (shared bib + DOI overlay) ==='
 & 'c:\0-Code_py_temp\basic_env\Scripts\python.exe' _sync_bib.py
 
 Write-Output '=== Figures (standalone) ==='
-foreach ($n in 3, 4, 5, 6, 7) {
+foreach ($n in 3, 4, 5, 6) {
     Push-Location 'figures_src'
     pdflatex -interaction=nonstopmode "Fig$n.tex" 2>&1 | Out-Null
     Pop-Location
@@ -38,3 +38,14 @@ Select-String -Path 'main.log' -Pattern '^!|Undefined|undefined|Overfull' | Sele
 
 Write-Output '=== Page count (JIIS limit: 25) ==='
 Select-String -Path 'main.log' -Pattern 'Output written on main.pdf'
+
+# Online Resource 1 (supplementary PDF, uploaded separately). Built after the main
+# article because its "Table 5 of the main article" references are read from main.aux.
+Write-Output '=== Online Resource 1 (esm\ESM_1.pdf -> ESM_1.pdf) ==='
+Push-Location 'esm'
+foreach ($n in 1) { pdflatex -interaction=nonstopmode "FigS$n.tex" 2>&1 | Out-Null }
+pdflatex -interaction=nonstopmode ESM_1.tex 2>&1 | Out-Null
+pdflatex -interaction=nonstopmode ESM_1.tex 2>&1 | Out-Null
+Select-String -Path 'ESM_1.log' -Pattern '^!|undefined|Output written'
+Pop-Location
+Copy-Item 'esm\ESM_1.pdf' 'ESM_1.pdf' -Force

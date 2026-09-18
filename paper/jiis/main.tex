@@ -81,6 +81,10 @@
 % Tighter reference list: the class sets \bibsep to 1em between entries.
 \setlength{\bibsep}{2pt}
 
+% --- REVIEW ONLY: rewritten passages in red. For the final version, replace the
+% definition below by \newcommand{\rev}{} (or remove the {\rev ...} wrappers).
+\newcommand{\rev}{\color{red}}
+
 \raggedbottom
 
 \begin{document}
@@ -117,100 +121,90 @@ We release code, configurations, fine-tuned embedders, and benchmark.}
 \section{Introduction}
 \label{sec:introduction}
 
-Named Entity Recognition (NER) is a critical and challenging task in the field of Natural Language
-Processing (NLP). Its primary goal is to locate and classify key elements in unstructured text into predefined categories (e.g., extracting "Marie Curie" as a PERSON or "1898" as a DATE). Its most widespread uses include automating the analysis of legal or medical documents, intelligently sorting customer support tickets, or even searching and finding this research paper itself. However, real-world NER rarely operates with a static label set, as novel categories inevitably emerge across new domains. Although traditional models accurately assign contiguous sequences of tokens, called spans, into fixed classes, this rigid training renders them blind to unobserved types, such as identifying "radium" as a CHEMICAL \cite{nguyen2023span}.
-To avoid the slow and costly process of re-annotating data and retraining from scratch, \emph{open-world} NER is designed to dynamically recognize and type entities without relying on a frozen training inventory.
+{\rev
+Named Entity Recognition (NER) is a core task of Natural Language Processing (NLP).
+It locates and classifies key elements of unstructured text into predefined categories (e.g., extracting "Marie Curie" as a PERSON or "1898" as a DATE) and supports the analysis of legal or medical documents, the routing of support tickets and search.
+However, real-world NER rarely operates with a static label set, as novel categories emerge across new domains.
+Traditional models assign contiguous sequences of tokens, called spans, to fixed classes, and this rigid training leaves them blind to unobserved types, such as "radium" as a CHEMICAL \cite{nguyen2023span}.
+To avoid re-annotating data and retraining from scratch, \emph{open-world} NER recognises and types entities without relying on a frozen training inventory.
 
-Notable examples of open-world NER models include: GLiNER \cite{zaratiana2024gliner} scores candidate spans against the target type names supplied as queries in a single forward pass, while GNER \cite{ding2024gner} recasts NER as text generation with a sequence-to-sequence model. Both can type entities whose categories were not fixed at training time, at the cost of training a dedicated model for the task.
-A complementary line prompts or instruction-tunes billion-parameter language models, such as UniversalNER \cite{zhou2024universalner} and GoLLIE \cite{sainz2024gollie}, which are accurate but slow, brittle, and often too large for commodity hardware. Even a small quantized instruction-tuned model that does fit, such as Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, which we evaluate, stays comparatively slow and costly.
-OWNER \cite{genest2025owner} takes yet another route, training a dedicated entity encoder with a triplet objective and clustering the resulting mentions into dynamically named types. But it still trains an encoder from scratch and pays a heavy per-sentence inference cost.
+Notable examples of open-world NER models include: GLiNER \cite{zaratiana2024gliner} scores candidate spans against the target type names supplied as queries in a single forward pass, while GNER \cite{ding2024gner} recasts NER as text generation with a sequence-to-sequence model. Both type entities whose categories were not fixed at training time, at the cost of training a dedicated model.
+Another line prompts or instruction-tunes billion-parameter language models, such as UniversalNER \cite{zhou2024universalner} and GoLLIE \cite{sainz2024gollie}, which are accurate but slow and often too large for commodity hardware. Even a small quantized model that fits, such as Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, remains comparatively slow and costly.
+OWNER \cite{genest2025owner} trains a dedicated entity encoder with a triplet objective and clusters the mentions into dynamically named types, but it still trains an encoder from scratch and pays a heavy per-sentence inference cost.
+Across all of these, evaluation is reported almost exclusively on accuracy, although compute, latency and energy decide what can actually be deployed.
 
-Across all of these, evaluation is reported almost exclusively on accuracy: the compute, latency, and energy consumption that separate a $467$\,M-parameter pipeline from a $7$\,B-parameter model are left out of the comparison, even though they decide what can actually be deployed.
-
-\bigskip We present \textbf{OPENER} (\textbf{O}pen \textbf{P}artitioning \textbf{E}mbedding for \textbf{N}amed \textbf{E}ntity \textbf{R}ecognition), an open-world NER pipeline built for all three axes at once: on our $13$-dataset benchmark, it is the most accurate of the compared systems while remaining fast and energy-frugal. Unusually, we train no encoder from scratch. It is assembled entirely from ready-to-use and pretrained components, a design still uncommon in open-world NER.
-Concretely, a frozen mention detector proposes spans, a pretrained Matryoshka sentence embedder (sharpened by a light contrastive fine-tuning and an error-driven hard-negative mining pass) maps each span to a vector, and a typing head assigns a type.
-The pipeline is modular: mention detector, embedder, and typing head are independently swappable. We vary each in the ablations, testing many combinations to reach the best pipeline: closed-set detectors (BERT \cite{devlin2019bert}, RoBERTa \cite{liu2019roberta}) against GLiNER \cite{zaratiana2024gliner} at three sizes, several embedders (BGE \cite{xiao2024cpack}, MPNet \cite{song2020mpnet}, mxbai \cite{li2024aoe}, E5-base \cite{wang2022e5} and Nomic \cite{nussbaum2024nomic}), the best Matryoshka \cite{kusupati2022matryoshka} dimension to trade quality for computation, and different algorithms for entity typing.
-
-The typing head exposes two operating points: OPENER-ZS, the label-free zero-shot head we put forward as the open-world default, and OPENER-Sup, a supervised upper bound for domains whose entity classes are fixed and labelled. We detail both below.
+We present \textbf{OPENER} (\textbf{O}pen \textbf{P}artitioning \textbf{E}mbedding for \textbf{N}amed \textbf{E}ntity \textbf{R}ecognition), an open-world NER pipeline designed for accuracy, latency and energy at once and assembled entirely from pretrained components, so that no encoder is trained from scratch.
+A frozen mention detector proposes spans, a pretrained Matryoshka sentence embedder, sharpened by a light contrastive fine-tuning and an error-driven hard-negative mining pass, maps each span to a vector, and a typing head assigns a type.
+The three stages are independently swappable, which lets us select each component on measured evidence (\autoref{sec:exp:ablations}).
+The typing head has two operating points: OPENER-ZS, a label-free zero-shot head that we put forward as the open-world default, and OPENER-Sup, a supervised probe for domains whose classes are fixed and labelled.
 
 Our contributions are as follows.
 \begin{itemize}
-\item \textbf{The OPENER pipeline, a new modular architecture}: to the best of our knowledge, it is the first open-world NER pipeline assembled entirely from ready-to-use, pretrained components, with no encoder trained from scratch. Instead, it relies on \emph{transfer learning} through a frozen mention detector and a Matryoshka embedder, where only the latter undergoes light fine-tuning. The pipeline's three stages (mention detection, embedding, and typing) are \emph{independently swappable}, and the typing head itself supports two interchangeable modes (zero-shot or supervised). We consider this plug-and-play modularity to be a novel contribution to open-world NER.
-The embedder is lightly refined in two steps: an initial contrastive fine-tuning to cluster same-type mentions, followed by an \emph{error-driven hard-negative mining} pass targeting the most frequently confused type pairs. This second step improves typing-on-gold AMI by $8.5$ points compared to standard contrastive fine-tuning, successfully demonstrating that a general-purpose pretrained representation transfers well enough to type open-world entities.
-\item \textbf{OPENER-ZS}: it is a label-free typing head that does not need target labels and combines three signals:
-\begin{itemize}
-\item \emph{Label-name prototypes}: we embed each candidate type \emph{name} (the words ``person'', ``location'', \dots) into a prototype vector and assign a mention to its nearest prototype: so ``Marie Curie'' is typed \textsc{person} because her mention vector lands closest to the embedding of the word ``person''.
-\item A \emph{transductive refinement}: the prototypes are re-estimated from the test mentions themselves (not just the label names), tightening each type to the domain at hand without using any labels.
-\item As \emph{a fusion} with the detector's own zero-shot type guess, GLiNER already proposes a type when it detects ``Marie Curie'', a signal that prototype matching alone would discard. It is the best zero-shot system end-to-end on our benchmark, ahead of GLiNER-L, GNER and OWNER under an identical protocol.
+\item \textbf{A modular open-world NER pipeline built by transfer learning.} To the best of our knowledge, OPENER is the first open-world NER pipeline assembled entirely from ready-to-use pretrained components. Only the embedder is lightly fine-tuned, first contrastively and then by error-driven hard-negative mining on the most confused type pairs, which improves typing-on-gold AMI by $8.5$ points over contrastive fine-tuning alone.
+\item \textbf{OPENER-ZS}, a typing head that needs no target labels. It matches each mention to prototypes built from the label names, refines them transductively on the unlabelled test mentions and fuses the result with the detector's own zero-shot type guess. It is the most accurate zero-shot system end-to-end on our benchmark, ahead of GLiNER-L, GNER and OWNER under an identical protocol.
+\item \textbf{OPENER-Sup}, a balanced linear probe (LinearSVC with class re-weighting) for fixed and labelled label sets. It trades openness for accuracy and is the most accurate configuration of the benchmark, both end-to-end and on gold mentions.
+\item \textbf{A latency and energy-aware open-world NER benchmark} on $13$ datasets that reports quality, latency and energy jointly and separates typing-on-gold from end-to-end. It shows that mention detection, not typing, is the dominant bottleneck, and that a small 4-bit instruction-tuned LLM (Qwen2.5-1.5B-Instruct) is both the least accurate and, per sentence, the most expensive system (on a $150$-sentence subsample). All OPENER results are averaged over three embedder-retraining seeds.
 \end{itemize}
-\item \textbf{OPENER-Sup}: a supervised operating point for domains whose entity classes are fixed and labelled. Where OPENER-ZS matches each mention to a label \emph{name}, OPENER-Sup instead \emph{learns} the geometry of each type from labelled examples. The principle is the following: once mentions are embedded, a linear classifier carves the high-dimensional embedding space into regions, one per entity type, separated by hyperplanes. A new span is then typed by which region its vector falls into: a mention landing in the ``chemical'' region is typed \textsc{chemical}, because same-type mentions cluster together in that space. We use a \emph{balanced} linear support-vector classifier (LinearSVC), where ``balanced'' re-weights each class inversely to its frequency so that rare types are not drowned out by frequent ones, a common issue since entity types are heavily imbalanced. This trades openness for accuracy: it is the most accurate configuration in our benchmark, the best end-to-end AMI of all compared systems, and the best typing on gold mentions, but it needs target labels.
-\item \textbf{An open-world NER latency and energy-aware benchmark} on $13$ datasets that reports quality, latency, and energy jointly, separates typing-on-gold from end-to-end, and shows that the dominant open-world bottleneck is mention detection rather than entity typing. This is why an \emph{open-world} detector is essential: closed-set NER detectors (BERT/RoBERTa) collapse on specialized domains, an efficiency/quality gap an accuracy-only evaluation would hide. The comparison also includes a small instruction-tuned LLM, Qwen2.5-1.5B-Instruct in 4-bit (the largest generative model that fits our commodity GPU), which turns out to be both the least accurate and, per sentence, the most expensive of all systems (on a $150$-sentence subsample, \autoref{sec:exp:results}). All OPENER results are averaged over three full embedder-retraining seeds ($7$, $42$, $123$) and reported as mean\,$\pm$\,std. The compared baselines are frozen checkpoints whose inference is deterministic. The differences we report are therefore robust to initialisation.
-\end{itemize}
-
 The rest of the paper is organised as follows.
 \autoref{sec:related} reviews related work, \autoref{sec:method} details the OPENER pipeline, \autoref{sec:experiments} presents the benchmark and ablations, and \autoref{sec:conclusion} concludes.
+\par}
 
 \section{Related Work}
 \label{sec:related}
 
-% Prose v1 (2026-06-10). Toutes les cles \cite ci-dessous existent et sont
-% verifiees dans references.bib. OWNER (Genest et al.) cite en 3e personne.
-% Cles encore manquantes (PDF non fourni), laissees en commentaire si besoin :
-%   BERT (Devlin 2019), survey DL-NER (Li et al. 2022), InstructUIE, GPT-NER.
-
-OPENER sits at the intersection of three lines of research: open-world and zero-shot NER, pretrained entity representations refined by contrastive learning, and energy-aware machine learning.
-We review each in turn and state how OPENER differs.
+{\rev
+We position OPENER with respect to closed-set, open-world and LLM-based NER, to contrastive entity representations, and to energy-aware machine learning.
+\par}
 
 \subsection{Closed-set and Span-based NER}
 \label{sec:related:closed}
-Traditional NER is cast as supervised sequence labeling over a fixed inventory of entity types, typically with a pretrained encoder followed by a token or span-level classifier.
-Early neural taggers replaced hand-made features with recurrent encoders over a CRF layer: the BiLSTM-CRF \cite{lample2016ner} paired character and word-level representations.
-The pretrained encoder paradigm subsequently increased in-domain accuracy further, fine-tuning a bidirectional transformer such as BERT \cite{devlin2019bert} with a lightweight classification head.
-Beyond flat tagging, span-based formulations enumerate candidate spans and classify them directly, which simplifies the handling of nested and discontinuous entities \cite{nguyen2023span}: biaffine NER \cite{yu2020biaffine} scores every span with a biaffine layer borrowed from dependency parsing, while an MRC framework \cite{li2020mrc} recasts typing as machine reading comprehension, querying the sentence with a natural-language description of each type, a use of label semantics our zero-shot head also exploits.
-These models reach high accuracy on in-domain benchmarks such as CoNLL-2003 \cite{tjongkimsang2003conll}, as documented in a comprehensive survey of deep learning for NER \cite{li2022survey}, but their label set is frozen at training time.
-Adding a new entity type requires re-annotating data and retraining the model, which is the central limitation that open-world NER seeks to remove.
+{\rev
+Traditional NER is cast as supervised sequence labeling over a fixed inventory of types.
+Early neural taggers combined recurrent encoders with a CRF layer \cite{lample2016ner}, and fine-tuning a pretrained transformer such as BERT \cite{devlin2019bert} further increased in-domain accuracy.
+Span-based formulations classify candidate spans directly, which eases nested entities \cite{nguyen2023span}, either with a biaffine scorer \cite{yu2020biaffine} or by recasting typing as machine reading comprehension over natural-language type descriptions \cite{li2020mrc}, a use of label semantics our zero-shot head also exploits.
+These models reach high accuracy on in-domain benchmarks such as CoNLL-2003 \cite{tjongkimsang2003conll}, as surveyed in \cite{li2022survey}, but their label set is frozen at training time, and adding a type requires re-annotating data and retraining.
+\par}
 
 \subsection{Open-world and Zero-shot NER}
 \label{sec:related:openworld}
-Open-world NER aims to recognise entity types that were not fixed at training time.
-GLiNER \cite{zaratiana2024gliner} treats the candidate type names as queries to a bidirectional encoder, a DeBERTaV3 backbone \cite{he2023debertav3}, and scores every span against them in a single forward pass, \emph{via a span-type similarity matrix}, offering a fast alternative to autoregressive tagging.
-GNER \cite{ding2024gner} instead casts NER as text generation with a sequence-to-sequence model \cite{raffel2020t5}: it regenerates the input sentence with inline type tags (e.g. ``\texttt{Marie Curie(person) discovered radium(chemical)}''), and shows that explicitly modeling the negative, non-entity tokens in this output sharpens type boundaries.
-Close to our work, OWNER \cite{genest2025owner} is an unsupervised open-world pipeline that decouples mention detection from entity typing: it embeds detected mentions with an encoder refined by contrastive learning and then clusters them into dynamically named types.
-Zero-shot typing has also been driven by the semantics of the type names themselves: one line of work leverages natural-language type \emph{descriptions} \cite{aly2021zeroshot} so that classes unseen at training time can still be recognised, a premise our label-name prototypes share.
-Other approaches require a general-purpose large language model to perform extraction directly, as in ChatIE \cite{wei2024chatie}.
-OPENER adopts the decoupled detect-then-type view of OWNER, but replaces the trained encoder and the unsupervised clustering with a pretrained, Matryoshka-truncatable embedding space and a balanced linear classifier, so that no encoder is trained from scratch.
+{\rev
+Open-world NER recognises entity types that were not fixed at training time, and zero-shot NER, its most demanding setting, types entities without any labelled example of the target types.
+GLiNER \cite{zaratiana2024gliner} treats the candidate type names as queries to a DeBERTaV3 encoder \cite{he2023debertav3} and scores every span against them in a single forward pass.
+GNER \cite{ding2024gner} casts NER as generation with a sequence-to-sequence model \cite{raffel2020t5} that regenerates the sentence with inline type tags and explicitly models non-entity tokens.
+Closest to our work, OWNER \cite{genest2025owner} decouples mention detection from typing: it embeds detected mentions with a contrastively refined encoder and clusters them into dynamically named types.
+Zero-shot typing can also rely on natural-language type descriptions \cite{aly2021zeroshot}, a premise our label-name prototypes share, or on a general-purpose LLM that extracts entities directly, as in ChatIE \cite{wei2024chatie}.
+OPENER adopts the decoupled detect-then-type view of OWNER, but replaces the trained encoder and the unsupervised clustering with a pretrained Matryoshka embedding space and a lightweight typing head.
+\par}
 
 \subsection{LLM-based and Few-shot NER}
 \label{sec:related:llm}
-A complementary line distils or instruction-tunes large language models for open NER.
-UniversalNER \cite{zhou2024universalner} distils a chat model into a smaller LLaMA-based student \cite{touvron2023llama} over tens of thousands of entity types, while GoLLIE \cite{sainz2024gollie} conditions a code language model on annotation guidelines to follow unseen schemas.
-Few-shot methods reduce supervision further, for instance through token-level contrastive objectives such as CONTaiNER \cite{das2022container}.
-These methods are accurate but rest on models with billions of parameters, whose inference cost, latency, and energy use are substantial, and which may not even fit on commodity hardware.
-At the small end of this family, however, a quantized instruction-tuned model does fit a commodity GPU: as a concrete, runnable reference point, we include Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, prompted to return entities as JSON, and report where it lands relative to the dedicated open-world systems (\autoref{sec:exp:results}).
-This cost is precisely what motivates the lightweight design and the energy-aware evaluation of OPENER.
+{\rev
+LLM-based NER prompts or instruction-tunes large language models to extract entities from a description of the target types, while few-shot NER learns new types from a handful of labelled examples.
+UniversalNER \cite{zhou2024universalner} distils a chat model into a LLaMA-based student \cite{touvron2023llama} over tens of thousands of entity types, and GoLLIE \cite{sainz2024gollie} conditions a code language model on annotation guidelines.
+Few-shot methods reduce supervision further, for instance with token-level contrastive objectives such as CONTaiNER \cite{das2022container}.
+These methods are accurate but rest on billion-parameter models whose latency and energy use are substantial and which may not fit commodity hardware.
+As a runnable reference point at the small end of this family, we include Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, prompted to return entities as JSON (\autoref{sec:exp:results}).
+\par}
 
 \subsection{Entity Representations and Contrastive Learning}
 \label{sec:related:repr}
-OPENER relies on a pretrained sentence embedder rather than a task-specific encoder.
-Nomic Embed \cite{nussbaum2024nomic} provides an open, long-context model trained with the Matryoshka objective \cite{kusupati2022matryoshka}, whose representations can be truncated to lower dimensions without retraining, trading quality for compute.
-Such embedders are based on the Sentence-BERT line of work \cite{reimers2019sbert}, and we sharpen entity-type geometry with a triplet margin objective in the spirit of FaceNet \cite{schroff2015facenet}.
-Refining a contrastive objective by mining and re-weighting hard negatives is a recurring recipe, as in GCSE \cite{lai2025gcse}, which down-weights false hard negatives with a Gaussian decay, close in spirit to our error-driven hard-negative mining.
-The choice of base encoder is made empirically: we compare several strong open sentence encoders (E5 \cite{wang2022e5}, BGE \cite{xiao2024cpack}, MPNet \cite{song2020mpnet} and mxbai \cite{li2024aoe}) on entity typing under a common protocol (\autoref{sec:exp:ablations}). Nomic v1.5 \cite{nussbaum2024nomic} edges them out while additionally offering native Matryoshka truncation, so we adopt it as the base and fine-tune it.
-Embedding labels and entities in a shared space \cite{wang2018joint} is a recurring idea in low-resource NER, and entity types can also be modeled with classical Gaussian mixture models fitted by expectation-maximization \cite{dempster1977em}.
-Unlike methods that train a dedicated encoder, OPENER takes transfer learning in its purest form: it keeps a general-purpose pretrained space largely frozen and only applies a light contrastive fine-tuning, testing whether such a representation is already discriminative enough for entity typing.
+{\rev
+Entity representations map each mention to a vector whose geometry reflects its type, and contrastive learning shapes this geometry by pulling same-type mentions together and pushing different types apart.
+Nomic Embed \cite{nussbaum2024nomic}, from the Sentence-BERT line of work \cite{reimers2019sbert}, is trained with the Matryoshka objective \cite{kusupati2022matryoshka}, so its representations can be truncated without retraining.
+We sharpen its entity-type geometry with a triplet objective in the spirit of FaceNet \cite{schroff2015facenet}, and mining hard negatives, as in GCSE \cite{lai2025gcse}, is close in spirit to our error-driven hard-negative mining.
+The base encoder is chosen empirically among strong open encoders (E5 \cite{wang2022e5}, BGE \cite{xiao2024cpack}, MPNet \cite{song2020mpnet} and mxbai \cite{li2024aoe}), among which Nomic v1.5 performs best (\autoref{sec:exp:ablations}).
+Embedding labels and entities in a shared space \cite{wang2018joint} is a recurring idea in low-resource NER, and entity types can also be modeled with Gaussian mixtures fitted by expectation-maximization \cite{dempster1977em}.
+Unlike methods that train a dedicated encoder, OPENER keeps a general-purpose space and only applies a light contrastive fine-tuning.
+\par}
 
 \subsection{Efficient and Green AI}
 \label{sec:related:green}
-A growing body of work argues that efficiency should be reported alongside accuracy.
-Prior work has quantified the financial and environmental cost of training NLP models \cite{strubell2019energy} and promoted efficiency as a first-class evaluation criterion under the \emph{Green AI} agenda \cite{schwartz2020greenai}.
-Complementary efforts argue for the systematic reporting of energy and carbon and provide a framework to track them per run \cite{henderson2020systematic}.
-Most relevant to deployment, a study of \emph{inference}-time cost \cite{luccioni2024power} finds general-purpose generative models to be orders of magnitude more expensive per query than task-specific ones, precisely the gap a lightweight pipeline like ours seeks to close.
-Tools such as CodeCarbon \cite{luccioni2019quantifying} make per-run energy and carbon estimates practical.
-However, open-world NER systems are still compared almost exclusively on quality.
-Instead, OPENER reports a three-axis comparison of quality, measured by Adjusted Mutual Information \cite{vinh2010ami}, inference speed, and energy, placing the frugality of each method on an equal footing with its accuracy.
-
-In summary, existing open-world NER methods either train a dedicated encoder \cite{genest2025owner} or query costly large language models \cite{zhou2024universalner, sainz2024gollie}, and are compared on accuracy alone.
-OPENER fills both gaps: it reuses pretrained components with only a light contrastive step and a balanced linear classifier, and it is evaluated jointly on quality, speed and energy.
+{\rev
+Prior work has quantified the cost of training NLP models \cite{strubell2019energy}, promoted efficiency as an evaluation criterion under the \emph{Green AI} agenda \cite{schwartz2020greenai}, and called for the systematic reporting of energy and carbon \cite{henderson2020systematic}, which tools such as CodeCarbon \cite{luccioni2019quantifying} make practical.
+At inference time, general-purpose generative models are orders of magnitude more expensive per query than task-specific ones \cite{luccioni2024power}.
+Yet open-world NER systems are still compared almost exclusively on quality, and existing methods either train a dedicated encoder \cite{genest2025owner} or query costly LLMs \cite{zhou2024universalner, sainz2024gollie}.
+OPENER reuses pretrained components with only a light contrastive step and is evaluated on three axes: quality, measured by Adjusted Mutual Information \cite{vinh2010ami}, inference speed, and energy.
+\par}
 
 \section{Method}
 \label{sec:method}
@@ -240,7 +234,7 @@ We report two protocols that are never mixed in the same comparison: \emph{typin
 
 \begin{figure*}[tp]
 \centering
-\includegraphics[width=0.82\linewidth]{Fig1}
+\includegraphics[width=0.65\linewidth]{Fig1}
 \caption{The OPENER pipeline (Detect\,$\rightarrow$\,Embed\,$\rightarrow$\,Type): a frozen GLiNER detector proposes spans, a Matryoshka embedder (Nomic, contrastively fine-tuned) maps each span in context to a vector, and a typing head assigns a type. The typing head (the only target-fitted component) has two operating points: the \emph{zero-shot} \zstr ($\bigstar$, selected) and OPENER-Sup (\emph{supervised}, the upper bound). All upstream components are ready-to-use}
 \label{fig:pipeline}
 \end{figure*}
@@ -364,40 +358,28 @@ After using this tool, the authors reviewed and edited the content as needed and
 \caption{The 13 evaluation sets and their gold entity types.}
 \label{tab:datasets}
 \scriptsize
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{3pt}
 \begin{adjustbox}{max width=\textwidth}
 \begin{threeparttable}
-% p column widened from 0.40 to 0.52\linewidth: fewer wrapped lines per cell,
-% so the table fits the page height; the enclosing adjustbox absorbs the
-% extra natural width (KBS/elsarticle 12pt text width is narrower than IEEE).
-\begin{tabular}{@{}lllr>{\raggedright\arraybackslash}p{0.52\linewidth}@{}}
+% Domain wraps in 22 mm, the entity-type column is 0.68 of the text width (smallest
+% table height at the same 7 pt font as before, measured)
+% (adjustbox shrinks the table to the text width if needed).
+\begin{tabular}{@{}ll>{\raggedright\arraybackslash}p{22mm}r>{\raggedright\arraybackslash}p{0.68\linewidth}@{}}
 \toprule
 Dataset & Abbr. & Domain & Test & Entity types (share \%) \\
 \midrule
-CrossNER-AI & AI & encyclopaedic (AI) & 430 & task 12, field 11, product 11, metrics 11, misc 10, algorithm 10, researcher 9, organisation 8, conference 5, person 4, programlang 3, country 2, location 2, university 2 \\
-\addlinespace
-CrossNER-Literature & Lit & encyclopaedic (literature) & 416 & writer 25, book 18, misc 11, literarygenre 9, person 8, award 6, poem 5, organisation 5, country 4, location 4, magazine 3, event 2 \\
-\addlinespace
-CrossNER-Music & Mus & encyclopaedic (music) & 465 & musicalartist 15, musicgenre 15, band 14, location 10, album 10, award 8, song 7, organisation 6, misc 5, country 5, person 2, event 2, musicalinstrument 1 \\
-\addlinespace
-CrossNER-Politics & Pol & encyclopaedic (politics) & 651 & politicalparty 23, location 14, organisation 12, politician 12, election 10, country 10, person 8, misc 6, event 5 \\
-\addlinespace
-CrossNER-Science & Sci & encyclopaedic (science) & 543 & misc 17, scientist 15, astronomicalobject 11, organisation 9, person 7, academicjournal 6, location 6, chemicalcompound 5, protein 5, award 5, university 4, chemicalelement 3, enzyme 3, discipline 2, event 1, country 1, theory 1 \\
-\addlinespace
+CrossNER-AI & AI & \textcolor{red}{Encyclopaedic} & 430 & task 12, field 11, product 11, metrics 11, misc 10, algorithm 10, researcher 9, organisation 8, conference 5, person 4, programlang 3, country 2, location 2, university 2 \\
+CrossNER-Literature & Lit & \textcolor{red}{Encyclopaedic} & 416 & writer 25, book 18, misc 11, literarygenre 9, person 8, award 6, poem 5, organisation 5, country 4, location 4, magazine 3, event 2 \\
+CrossNER-Music & Mus & \textcolor{red}{Encyclopaedic} & 465 & musicalartist 15, musicgenre 15, band 14, location 10, album 10, award 8, song 7, organisation 6, misc 5, country 5, person 2, event 2, musicalinstrument 1 \\
+CrossNER-Politics & Pol & \textcolor{red}{Encyclopaedic} & 651 & politicalparty 23, location 14, organisation 12, politician 12, election 10, country 10, person 8, misc 6, event 5 \\
+CrossNER-Science & Sci & \textcolor{red}{Encyclopaedic} & 543 & misc 17, scientist 15, astronomicalobject 11, organisation 9, person 7, academicjournal 6, location 6, chemicalcompound 5, protein 5, award 5, university 4, chemicalelement 3, enzyme 3, discipline 2, event 1, country 1, theory 1 \\
 WNUT-17 & WNUT & Social media & 689 & person 40, group 15, location 14, creative-work 13, product 12, corporation 6 \\
-\addlinespace
 MIT-Restaurant & Rest & Restaurant search & 1000 & Location 21, Dish 18, Amenity 16, Hours 15, Restaurant\_Name 11, Price 10, Cuisine 5, Rating 4 \\
-\addlinespace
 MIT-Movie & Movie & Movie trivia & 1000 & TITLE 19, ACTOR 16, YEAR 16, GENRE 16, RATING 9, CHARACTER 9, TRAILER 5, REVIEW 3, RATINGS\_AVERAGE 3, PLOT 2, DIRECTOR 2, SONG 1 \\
-\addlinespace
 FabNER & Fab & Manufacturing & 1000 & MATE 27, CONPRI 21, MANP 15, PRO 11, APPL 6, FEAT 6, PARA 4, MACEQ 3, BIOP 2, CHAR 2, ENAT 2, MANS $<$1 \\
-\addlinespace
 BioNLP/JNLPBA-2004 & Bio & Biomedical & 1000 & protein 53, cell\_type 22, DNA 13, cell\_line 10, RNA 1 \\
-\addlinespace
 CoNLL-2003 & CoNLL & News & 1000 & PER 32, ORG 29, LOC 28, MISC 11 \\
-\addlinespace
 GUM & GUM & Multi-genre & 1000 & abstract 38, person 17, event 12, place 10, object 8, organization 8, time 5, substance 1, animal 1, plant $<$1 \\
-\addlinespace
 GENTLE & GEN & Multi-genre (challenge) & 1000 & abstract 55, person 10, event 9, time 8, object 7, place 5, organization 4, animal 1, substance 1, plant $<$1 \\
 \bottomrule
 \end{tabular}
@@ -450,65 +432,37 @@ Qwen2.5-1.5B & Qwen2.5 & Decoder & qwen2.5-1.5b-instruct & 1.5B & 3.2$\times$ \\
 \end{adjustbox}
 \end{table*}
 
-We compare OPENER with representative open-world systems, all run end-to-end on the same splits and scored with the same protocol (\autoref{sec:exp:protocol}). \autoref{tab:baselines} summarises their backbones and sizes.
-\begin{itemize}
-\item \textbf{GLiNER} \cite{zaratiana2024gliner}: an open-world span classifier that scores every candidate span against the supplied type names in a single forward pass on a DeBERTaV3 encoder \cite{he2023debertav3}. It is a strong and fast detector, but its predicted types are limited to the names given as queries. We run all three sizes (S/M/L) to trace a size/efficiency trade-off.
-\item \textbf{GNER} \cite{ding2024gner}: a generative tagger built on T5 \cite{raffel2020t5} that regenerates the sentence with inline type tags. It is accurate, but its autoregressive decoding makes inference really slower than the encoder-based detectors. We run the T5-base checkpoint.
-\item \textbf{OWNER} \cite{genest2025owner}: our closest baseline, a DeBERTaV3 detector with a BERT typing encoder \cite{devlin2019bert} refined by contrastive learning, whose mentions are grouped into dynamically named types by a plain unsupervised $k$-means. This keeps it fully label-free, but it re-encodes and re-clusters every mention at inference time, which is costly. We execute it in its original environment.
-\item \textbf{Qwen2.5-1.5B-Instruct} \cite{qwen2025}: the only generative LLM that fits our $6$\,GB GPU, runs in 4-bit NF4 \cite{dettmers2023qlora} and prompted for JSON-formatted entities. Even at this small size, its autoregressive decoding makes it the slowest system we measure and, per sentence, the most energy-hungry, showing that generative extraction remains costly regardless of model size.
-\item \textbf{Large LLM systems}: UniversalNER \cite{zhou2024universalner}, GoLLIE \cite{sainz2024gollie} and ChatIE \cite{wei2024chatie} reach strong accuracy but rely on $7$B-parameter backbones \cite{touvron2023llama} whose compute and energy cost is far higher and which exceed our hardware even under 4-bit quantisation. We therefore discuss them qualitatively and omit them from \autoref{tab:baselines} and the measured comparison. For LLM extraction figures under a comparable AMI protocol, we refer the reader to the benchmark of OWNER \cite{genest2025owner}, whose findings are consistent with our, measurements.
-\end{itemize}
+{\rev
+We compare OPENER with representative open-world systems, all run end-to-end on the same splits and scored with the same protocol (\autoref{sec:exp:protocol}), and summarise their backbones and sizes in \autoref{tab:baselines}.
+\textbf{GLiNER} \cite{zaratiana2024gliner} is a fast span classifier on a DeBERTaV3 encoder \cite{he2023debertav3}, run at three sizes (S/M/L) to trace a size/efficiency trade-off.
+\textbf{GNER} \cite{ding2024gner} is a generative T5 tagger \cite{raffel2020t5} (base checkpoint), accurate but slowed down by autoregressive decoding.
+\textbf{OWNER} \cite{genest2025owner}, our closest baseline, pairs a DeBERTaV3 detector with a contrastively refined BERT typing encoder \cite{devlin2019bert} and groups the mentions with $k$-means. It is fully label-free but re-encodes and re-clusters every mention at inference, and we run it in its original environment.
+\textbf{Qwen2.5-1.5B-Instruct} \cite{qwen2025}, the only generative LLM that fits our $6$\,GB GPU, runs in 4-bit NF4 \cite{dettmers2023qlora} and is prompted for JSON-formatted entities.
+Larger LLM systems such as UniversalNER \cite{zhou2024universalner}, GoLLIE \cite{sainz2024gollie} and ChatIE \cite{wei2024chatie} rely on $7$B-parameter backbones \cite{touvron2023llama} that exceed our hardware even in 4-bit. We discuss them qualitatively and refer to the OWNER benchmark \cite{genest2025owner} for their AMI under a comparable protocol.
+\par}
 
-\subsection{Metrics}
+\subsection{Metrics and Evaluation Protocol}
 \label{sec:exp:metrics}
-Our primary metric is the Adjusted Mutual Information (AMI) \cite{vinh2010ami} between predicted and gold type assignments, following OWNER \cite{genest2025owner}, complemented by macro-averaged $F_1$ and accuracy.
-Because open-world predictions need not share the gold label vocabulary, AMI is computed over the aligned set of mentions, which makes it well suited to comparing dynamically named types.
-Beyond quality, we report two efficiency axes: inference \emph{speed}, as the median (p50) latency per sentence, and \emph{energy}, as kilowatt-hours and grams of CO\textsubscript{2}eq per run.
-
-\subsection{Evaluation Protocol}
 \label{sec:exp:protocol}
-The predicted and gold mentions are aligned by exact character offsets, and any unmatched mention receives a distinct sentinel label so that detection errors are penalised rather than ignored, following the sentinel-based scoring detailed in \autoref{sec:method:problem}.
-We distinguish two protocols that must not be mixed in the same comparison.
-In the \emph{typing-on-gold} protocol, the entity-typing component is applied to gold mention spans, which measures typing quality in isolation under perfect detection.
-In the \emph{end-to-end} protocol, the detector produces mentions and the sentinel labels above are active, which is a setting comparable to the baselines.
-OPENER's embedder \emph{training} is stochastic (triplet sampling and optimisation), so we retrain the complete embedder (contrastive Stage~1, then hard-negative mining Stage~2) under three random seeds ($7$, $42$, $123$) and re-evaluate every OPENER operating point on the full benchmark with each resulting embedder.
-Therefore, every OPENER cell in the result tables reports the mean\,$\pm$\,standard deviation over the three seeds. Seed $42$ is the model released.
-The compared baselines are frozen pretrained checkpoints whose inference is deterministic, so re-running them under a different seed returns identical predictions and they are reported as single runs. OWNER, the only baseline that trains, is likewise reported from a single training run of its published protocol.
-We also quantify the test-set sampling uncertainty with a bootstrap on the released model (\autoref{tab:bootstrap}), a source of uncertainty orthogonal to the retraining seed.
+{\rev
+Quality is measured by AMI \cite{vinh2010ami} over the aligned mentions, following OWNER \cite{genest2025owner} and complemented by macro-averaged $F_1$ and accuracy.
+As defined in \autoref{sec:method:problem}, predicted and gold mentions are aligned by exact character offsets, unmatched mentions receive distinct sentinel labels, and the typing-on-gold and end-to-end protocols are never mixed.
+Efficiency is reported as the median (p50) latency per sentence and as the energy (Wh) and carbon (gCO\textsubscript{2}eq) per run.
+OPENER's embedder training is stochastic, so we retrain the complete embedder (Stage~1, then Stage~2) under three seeds ($7$, $42$, $123$) and report every OPENER cell as mean\,$\pm$\,std. Seed $42$ is the released model.
+The baselines are frozen checkpoints with deterministic inference and are reported as single runs, as is OWNER, trained once with its published protocol.
+A test-set bootstrap on the released model, a source of uncertainty orthogonal to the retraining seed, is reported in Online Resource~1 (Table~S1).
+\par}
 
-\subsection{Experimental Settings}
-\label{sec:exp:impl}
-% Tables 3 and 4 are declared at the start of this subsection (not after its text), so they
-% do not pile up with Tables 1-2 nor delay Table 5 / Fig. 3.
-\begin{table*}[!t]
-\centering
-\caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets.}
-\label{tab:bootstrap}
-\small
-\begin{adjustbox}{max width=\textwidth}
-\begin{threeparttable}
-\begin{tabular}{lccc}
-\toprule
-Model & CoNLL-2003 & CrossNER-Music & FabNER \\
-\midrule
-\zsind{}   & $66.1 \pm 1.4$ ~[$63.5$, $69.0$] & $55.5 \pm 0.9$ ~[$53.8$, $57.3$] & $36.2 \pm 0.7$ ~[$34.7$, $37.5$] \\
-OPENER-Sup & $71.7 \pm 1.5$ ~[$68.9$, $74.6$] & $72.4 \pm 0.9$ ~[$70.6$, $74.2$] & $59.8 \pm 0.9$ ~[$57.9$, $61.6$] \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\footnotesize
-\item Typing-on-gold AMI ($\uparrow$) as bootstrap mean $\pm$ std [$95\%$ percentile CI], over $K{=}1000$ resamples of the gold mentions. The transductive refinement is excluded, as it adapts to the resampled test distribution. The bootstrap means match the full-test-set scores, and the stds stay at or below $1.5$ AMI, indicating stable scores.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table*}
-\begin{table*}[!t]
+% Table 3 sits here, between Metrics and Experimental Settings ([!h]: [H] of the
+% float package clashes with the sn-jnl table environment, and a \FloatBarrier
+% would flush Tables 1-2 onto half-empty float pages).
+\begin{table}[!h]
 \centering
 \caption{OPENER configuration.}
 \label{tab:hyperparams}
 \small
-\begin{adjustbox}{max width=\textwidth}
-\begin{threeparttable}
+% no threeparttable nor adjustbox here: sn-jnl's (non-starred) table environment
+% already opens a threeparttable, which needs the tabular directly inside it
 \begin{tabular}{ll}
 \toprule
 Component & Setting \\
@@ -529,16 +483,17 @@ Random seeds       & $7$ / $42$ / $123$ (full embedder retraining per seed, $42$
 \footnotesize
 \item The detector and embedder are ready-to-use. The contrastive and hard-mining stages produce the shared embedder. The typing head is fitted (supervised) or label-free (zero-shot).
 \end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table*}
+\end{table}
+
+\subsection{Experimental Settings}
+\label{sec:exp:impl}
 All experiments run on a single consumer-grade GPU, an NVIDIA GeForce GTX 1660 Ti Max-Q with $6$\,GB of VRAM (CUDA~12.1, PyTorch~2.5.1 \cite{paszke2019pytorch}). The goal of using such modest hardware was to verify that the models could also run on standard personal computers, demonstrating that our approach is highly versatile.
 We use the HuggingFace Transformers library \cite{wolf2020transformers} for baselines, sentence-transformers \cite{reimers2019sbert} for the Matryoshka embedder \cite{nussbaum2024nomic, kusupati2022matryoshka}, and scikit-learn \cite{pedregosa2011scikit} for the linear classifier, whose solver is LIBLINEAR \cite{fan2008liblinear}.
 Latency is measured with two warmup passes followed by timed passes with GPU synchronisation, reporting p50, p95 and p99 per sentence.
 Energy is measured with CodeCarbon \cite{luccioni2019quantifying} in offline mode using the French grid carbon intensity. When hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
 All systems are measured on the same machine. Our consumer GPU is subject to \emph{thermal throttling} (it lowers its clock frequency under sustained load to stay within its temperature limit), so per-sentence latency and per-run energy carry roughly $\pm15\%$ run-to-run variance. Therefore, we read the per-system averages as indicative and do not over-interpret individual per-dataset cells.
 The quality metrics, in contrast, are fully deterministic: with the fixed seed and the released model, no stage of the OPENER pipeline is stochastic at inference, so its AMI and $F_1$ reproduce exactly across re-runs (we verified identical CrossNER scores on an independent re-run), and only latency and energy fluctuate.
-Because inference is deterministic, the only remaining source of uncertainty in quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets, we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals in \autoref{tab:bootstrap}. The uncertainty is small (bootstrap std of at most $1.5$ AMI, $95\%$ CIs within roughly $\pm 3$ AMI) and the bootstrap means coincide with the released model's full-test-set scores, indicating that the reported figures are stable rather than fragile seed-specific artefacts.
+Because inference is deterministic, the only remaining source of uncertainty in quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets, we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals {\rev of Table~S1 in Online Resource~1}. The uncertainty is small (bootstrap std of at most $1.5$ AMI, $95\%$ CIs within roughly $\pm 3$ AMI) and the bootstrap means coincide with the released model's full-test-set scores, indicating that the reported figures are stable rather than fragile seed-specific artefacts.
 \autoref{tab:hyperparams} collects the complete OPENER configuration used throughout. The embedder is retrained under each of the three seeds ($7$, $42$, $123$) while every other component is fixed.
 
 
@@ -548,11 +503,22 @@ Because inference is deterministic, the only remaining source of uncertainty in 
 % OPENER numbers = mean±std over seeds 7/42/123, from
 % outputs/results/aggregate/results_multiseed.json (scripts/aggregate_multiseed.py,
 % 2026-07-08); baseline numbers from results_all.json (2026-06-12).
-% OWNER in its native zero-shot transfer protocol (train once on CoNLL-2003,
-% infer on every target). $\S$ = zero-shot transfer; $\dagger$ = in-domain (CoNLL source).
+{\rev
 The tables below, starting with \autoref{tab:main}, report the benchmark on all $13$ sets, and \autoref{fig:main} plots the per-dataset end-to-end AMI of every system.
+OWNER is run in its native protocol \cite{genest2025owner}: a single model is trained once on CoNLL-2003 ($88$ minutes on our GPU) and applied zero-shot to every target set (cells marked \textsuperscript{c}), so CoNLL-2003 is in-domain for it (marked \textsuperscript{a}).
+Excluding CoNLL-2003, in-domain for both OWNER and OPENER, OWNER's $34.3$ mean becomes a $32.9$ transfer mean, against $39.1$ for \zstr on the same $12$ sets, a margin that widens from $+5.2$ to $+6.2$ AMI.
+One asymmetry must be kept in mind: OPENER-Sup fits a linear probe on each target's training split, whereas OWNER, GLiNER and GNER use no target labels.
+OPENER-Sup thus needs labels but stays cheap at test time, while OWNER needs none but re-encodes and re-clusters every mention at inference, an order of magnitude above OPENER in latency and energy (\autoref{tab:latency} and \autoref{fig:latency}, \autoref{tab:energy} and \autoref{fig:energy}).
+OPENER-ZS closes this asymmetry. Its un-refined nearest-centroid form, \zsind, already sits within half a point of OWNER end-to-end ($33.8$ vs $34.3$) and matches it on gold ($43.2$ vs $43.0$, \autoref{sec:exp:ablations}) at a far lower cost ($137$\,ms and $1.85$\,Wh vs $616$\,ms and $14.3$\,Wh).
+The transductive refinement and the fusion with the detector's own labels then build \zstr, which reaches $39.5$ end-to-end, the best zero-shot system, ahead of GLiNER-L ($38.9$) and within $0.6$ AMI of OPENER-Sup, without any target label.
+The only generative LLM that fits our $6$\,GB GPU, Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, trails every dedicated system ($26.1$ mean AMI on a $150$-sentence subsample) while being the slowest per sentence ($5.1$\,s) and the most energy-hungry once normalised by sentence count, about twice GNER's per-sentence draw (\autoref{tab:efficiency}).
+OPENER-Sup remains the strongest configuration ($40.1$ end-to-end, $62.3$ on gold), so OPENER-ZS is best read as the frugal, annotation-free operating point of the same pipeline.
+The four-axis means are plotted in Online Resource~1 (Fig.~S1), and a per-domain analysis follows in \autoref{sec:exp:analysis}.
+\par}
 
-% --- Float page A: Table 5, Fig. 3, Table 6 (one float, no text in between)
+% --- Result floats, all in a row after the Main Results text (no text in between):
+% AMI table, AMI figure, latency table, latency figure, energy table, energy figure,
+% then the quality/efficiency table. Each group is one float so LaTeX cannot split them.
 \begin{table*}[p]
 \centering
 \caption{Open-world NER, end-to-end. AMI ($\times 100$, $\uparrow$).}
@@ -643,7 +609,6 @@ OWNER\textsuperscript{c} & 500 & 712 & 895 & 920 & 757 & 311 & 281 & 532 & 438 &
 \end{threeparttable}
 \end{adjustbox}
 \end{table*}
-% --- Float page B: Fig. 4, Table 7, Fig. 5 (one float, right after page A)
 \begin{table*}[p]
 \figurecaptype
 \centering
@@ -697,22 +662,7 @@ OWNER\textsuperscript{c} & 6.6 & 9.0 & 12.7 & 18.3 & 12.6 & 6.5 & 8.6 & 16.3 & 1
 \caption{Per-run energy consumption (Wh, \emph{log} scale) per dataset (\autoref{tab:energy}). Same systems and styling as \autoref{fig:main}. The OPENER variants sit an order of magnitude below OWNER and the generative GNER/Qwen baselines}
 \label{fig:energy}
 \end{table*}
-
-OWNER is run in its native protocol \cite{genest2025owner}: a single model is trained once on the CoNLL-2003 source (a one-time cost of $88$ minutes on our 6\,GB GPU) and then applied \emph{zero-shot} to every target set (cells marked \textsuperscript{c}).
-CoNLL-2003 is therefore in-domain for OWNER (marked \textsuperscript{a}) and is excluded when reading OWNER as a transfer system.
-Concretely, excluding CoNLL-2003 (in-domain for both OWNER and OPENER), OWNER's reported $34.3$ thirteen-set mean becomes a $32.9$ transfer mean, still well below \zstr ($39.1$ on the same $12$ sets). The margin in fact widens from $+5.2$ to $+6.2$ AMI under this fair transfer reading.
-One protocol asymmetry must be kept in mind when reading the typing scores: OPENER-Sup fits a lightweight linear classifier on each target's training split (a supervised probe), whereas OWNER, GLiNER and GNER use no target-side labels.
-The two systems thus trade annotation for inference cost: OPENER-Sup needs target labels but stays cheap at test time, while OWNER needs none but pays a heavy per-sentence cost, it re-encodes every mention and clusters at inference time, an order of magnitude above OPENER (\autoref{tab:latency} and \autoref{fig:latency}, \autoref{tab:energy} and \autoref{fig:energy}).
-
-
-To close this asymmetry, we also evaluate OPENER-ZS, a zero-shot variant that drops the supervised probe and types each mention against label-name prototypes, using no target labels.
-Its un-refined nearest-centroid baseline, \zsind, already sits within half a point of the zero-shot OWNER baseline end-to-end ($33.8$ vs $34.3$ mean AMI) and matches it on gold ($43.2$ vs $43.0$, \autoref{sec:exp:ablations}), while keeping OPENER's frugal inference profile ($137$\,ms, $1.85$\,Wh vs $616$\,ms, $14.3$\,Wh).
-Two label-free refinements then build \zstr: a transductive k-means on the prototypes, and \emph{fusing in the detector's own zero-shot label predictions}, a signal the centroid otherwise discards, which together reach $39.5$ end-to-end, the best of all compared zero-shot systems, ahead of GLiNER-L ($38.9$) and within $0.6$ AMI of OPENER-Sup, all without any target label.
-For reference, the only generative LLM that fits our $6$\,GB GPU, Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, prompted for JSON-formatted entities, trails every dedicated system ($26.1$ mean AMI on a $150$-sentence subsample, \autoref{tab:main}) while being the slowest per sentence ($5.1$\,s) and the most energy-hungry once normalised by sentence count ($11.4$\,Wh over only $150$ sentences, about twice GNER's per-sentence draw, \autoref{tab:efficiency} and \autoref{fig:metrics-bars}): a small open LLM pays on both axes at once.
-
-% --- Table 8 + Fig. 6: table and figure in ONE float, so LaTeX keeps them together and in order
-% ([!t] only: at the top of a page with text below, not alone on a half-empty float page)
-\begin{table*}[!t]
+\begin{table*}[!tp]
 \centering
 \caption{Quality vs efficiency, $13$-set means.}
 \label{tab:efficiency}
@@ -748,25 +698,7 @@ OWNER\textsuperscript{c} & 294M & 34.3 & 616 & 14.3 & 0.74 \\
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
-\par\bigskip
-\figurecaptype
-\centering
-\includegraphics{Fig6}
-\caption{Per-model means on the four axes ($13$-set averages, \autoref{tab:efficiency}). The light dotted line separates the \emph{zero-shot} systems (left) from the \emph{supervised} OPENER-Sup (right). Latency, energy and CO\textsubscript{2} use a log scale. Labels: GL-S/M/L $=$ GLiNER sizes, OWN $=$ OWNER, ZS$_i$ $=$ \zsind, ZS$_t$ $=$ \zstr, Sup $=$ OPENER-Sup}
-\label{fig:metrics-bars}
 \end{table*}
-
-OPENER-Sup remains the stronger configuration ($40.1$ end-to-end, $62.3$ on gold), so OPENER-ZS is best read as the frugal, annotation-free operating point of the same pipeline.
-A per-domain analysis of these results, the detection bottleneck and the learned embedding geometry follows in \autoref{sec:exp:analysis}.
-
-
-
-
-% RESOLVED[2026-06-13]: the 22.76 Wh CodeCarbon glitch on crossner_music is gone in the
-% hard-mining e2e re-run (Mus = 1.72 Wh). OPENER energy row + averages now come from that
-% clean run; true mean energy is 1.88 Wh (was 3.39, inflated by the single glitched cell).
-
-
 
 \subsection{Analysis}
 \label{sec:exp:analysis}
@@ -797,9 +729,10 @@ The type geometry learned on CoNLL thus transfers to an unseen domain, which is 
 
 \subsection{Ablations}
 \label{sec:exp:ablations}
-We justify each architectural choice with a one-factor-at-a-time search: starting from the default pipeline, we vary a single component, hold the others fixed, and keep the setting with the highest mean AMI.
-Among embedder variants, an error-driven \emph{hard-negative mining} pass, fine-tuning the contrastive embedder on the entity pairs it most often confuses (e.g.\ \emph{writer}/\emph{person}, \emph{album}/\emph{band}, \emph{country}/\emph{location}), mixed with correctly-typed mentions for diversity, raises typing-on-gold AMI from $54.0$ to $60.1$. Scaling the mined triplets ($3000\!\to\!8000$) and epochs ($2\!\to\!3$) lifts it further to $62.5$ ($+8.5$ over the contrastive embedder, better on $12$ of $13$ sets), our selected configuration.
-\autoref{tab:ablation} reports this search.
+{\rev
+We justify each architectural choice with a one-factor-at-a-time search (\autoref{tab:ablation}): starting from the default pipeline, we vary one component, hold the others fixed and keep the setting with the highest mean AMI.
+On the embedder axis, the error-driven hard-negative mining pass, which fine-tunes the contrastive embedder on its most confused type pairs (e.g.\ \emph{writer}/\emph{person}, \emph{album}/\emph{band}), raises typing-on-gold AMI from $54.0$ to $60.1$, and scaling it ($8000$ triplets, $3$ epochs) reaches $62.5$ ($+8.5$, better on $12$ of $13$ sets), our selected configuration.
+\par}
 
 \begin{table*}[!t]
 \centering
@@ -857,17 +790,19 @@ Configuration & AMI\,$\uparrow$ & F\textsubscript{1}\,$\uparrow$ & Fit\,(ms)\,$\
 \end{threeparttable}
 \end{adjustbox}
 \end{table*}
-The remaining axes confirm the rest of the pipeline: among frozen ready-to-use base encoders, Nomic v1.5 is the most discriminative for entity typing ($25.8$ AMI, ahead of e5-base $25.3$, mxbai $24.4$, MPNet $24.1$ and BGE $23.6$) and is selected (the heaviest candidate, mxbai-large, is moreover $\sim$8$\times$ slower per sentence for no quality gain). Even so, frozen embeddings are only weakly discriminative, so the contrastive step is what makes the space usable ($+28.2$). The detector trades quality for cost (GLiNER-S\,$\to$\,L: $37.7\!\to\!40.2$ AMI at $51\!\to\!143$\,ms end-to-end), and OPENER's typing on GLiNER-L's spans ($40.2$) even beats GLiNER-L's own typing ($38.9$, \autoref{tab:main}). A closed-set NER detector (BERT or RoBERTa-NER, CoNLL-trained) used in its place collapses to $\sim$0 recall outside PER/ORG/LOC/MISC (MIT, FabNER, BioNLP), dragging macro-$F_1$ to $17.9$/$24.6$ (vs $30.5$) and confirming that open-world detection is required. And for typing a balanced linear SVM edges out a per-class GMM and logistic regression ($62.5$ vs $56.1$ vs $55.6$).
-Replacing the supervised typing head with a label-name nearest-centroid removes target supervision entirely, at a cost of $18.1$ AMI ($62.5\!\to\!44.4$). This base variant, \zsind, stays on par with the zero-shot OWNER baseline ($43.2$ vs $43.0$ over the three seeds, \autoref{tab:et-gold}) while fitting in $293$\,ms instead of $2.2$\,s, making it the frugal choice when no target labels are available.
-A label-free \emph{transductive} refinement of the prototypes, spherical k-means seeded by the label names and run once on the unlabelled test mentions, recovers $7.0$ AMI on gold mentions ($44.4\!\to\!51.4$, \autoref{tab:ablation}) and $2.6$ end-to-end at the released seed ($34.2\!\to\!36.8$, above OWNER's $34.3$), widening \zstr's margin over OWNER while still using no target labels. This is a transductive rather than inductive setting, as it exploits the unlabelled test distribution.
-We further probed whether the zero-shot head could be improved by aligning entity mentions and label names in a shared space, trained on the large label vocabulary of Pile-NER \cite{zhou2024universalner} ($\approx$4.6k types, \autoref{tab:zs-embedder}).
-Although strictly domain-agnostic, since it never sees any target-side data, it does not improve mean AMI ($42.2$ vs $44.4$), and a second label-name hard-mining pass degrades it further ($39.7$) because Pile-NER's GPT-generated types contain many near-synonyms (e.g.\ \emph{person}/\emph{per}, \emph{location}/\emph{loc}) whose mined ``confusions'' pull apart labels that should stay close.
-We therefore retain the target-tuned embedder for OPENER-ZS and report the Pile-NER variants as a negative ablation.
+{\rev
+Among frozen base encoders, Nomic v1.5 is the most discriminative ($25.8$ AMI, ahead of E5, mxbai, MPNet and BGE), but frozen embeddings remain weak and the contrastive step is what makes the space usable ($+28.2$).
+The detector trades quality for cost (GLiNER-S to L: $37.7$ to $40.2$ AMI at $51$ to $143$\,ms), and OPENER's typing on GLiNER-L's spans ($40.2$) even beats GLiNER-L's own typing ($38.9$).
+A closed-set detector (BERT or RoBERTa-NER trained on CoNLL) collapses to near-zero recall outside PER/ORG/LOC/MISC, dragging macro-$F_1$ to $17.9$/$24.6$ (vs $30.5$), which confirms that open-world detection is required.
+For typing, the balanced linear SVM edges out a per-class GMM and logistic regression ($62.5$ vs $56.1$ vs $55.6$).
 
-A separate efficiency axis emerges in the \emph{training} cost (\autoref{tab:ablation}, Fit): per-sentence inference is governed by the detector alone (truncating the Matryoshka dimension or swapping the classifier leaves it unchanged), whereas fitting the typing head is $7\times$ cheaper at dimension $64$ than at $768$ (for only a $4.6$-point AMI drop, $62.5\!\to\!57.9$) and $4.5\times$ cheaper for balanced logistic regression than for the linear SVM, a speed/quality knob orthogonal to inference.
-To isolate the entity-typing component itself, \autoref{tab:et-gold} compares OPENER against OWNER on gold mentions, where detection errors are removed.
-One cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie, with the largest seed variance of the table ($\pm 7.1$), which we attribute to attribute-like label names (PLOT, REVIEW, TRAILER) carrying little lexical signal in a corpus where every mention is movie-related, leaving the prototypes poorly anchored. The transductive refinement of \zstr recovers most of this gap ($44.8$).
-The higher end-to-end value of \zsind on the same set ($32.8$, \autoref{tab:main}) does not contradict the gold score: the sentinel labels added by the end-to-end protocol reshape both partitions, so the two AMI values are not directly comparable.
+Replacing it with the label-name nearest centroid removes target supervision at a cost of $18.1$ AMI ($62.5$ to $44.4$). This \zsind head stays on par with OWNER on gold mentions ($43.2$ vs $43.0$ over three seeds, \autoref{tab:et-gold}) while fitting in $293$\,ms instead of $2.2$\,s.
+The transductive refinement recovers $7.0$ AMI on gold ($44.4$ to $51.4$) and $2.6$ end-to-end at the released seed ($34.2$ to $36.8$), a transductive rather than inductive setting since it exploits the unlabelled test distribution.
+Aligning mentions and label names on the $\approx$4.6k types of Pile-NER \cite{zhou2024universalner} does not help ($42.2$ vs $44.4$, Table~S2 in Online Resource~1), and a label-name hard-mining pass degrades it further ($39.7$), because Pile-NER's GPT-generated types contain near-synonyms (e.g.\ \emph{person}/\emph{per}) that the mining pulls apart. We therefore keep the target-tuned embedder for OPENER-ZS.
+
+Training cost forms a separate efficiency axis (Fit column): inference is governed by the detector alone, whereas fitting the typing head is $7\times$ cheaper at dimension $64$ than at $768$ (for $4.6$ AMI less) and $4.5\times$ cheaper with balanced logistic regression than with the linear SVM.
+On gold mentions (\autoref{tab:et-gold}), one cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie ($\pm 7.1$), as attribute-like label names (PLOT, REVIEW, TRAILER) carry little lexical signal when every mention is movie-related. The transductive refinement recovers most of this gap ($44.8$), and the higher end-to-end value ($32.8$) is not directly comparable, since the end-to-end sentinels reshape both partitions.
+\par}
 
 \begin{table*}[!t]
 \centering
@@ -906,38 +841,22 @@ OWNER & 55.7 & 54.3 & 59.8 & 63.2 & 63.1 & 30.5 & 29.3 & 31.8 & 31.9 & 29.2 & 52
 \end{threeparttable}
 \end{adjustbox}
 \end{table*}
-\begin{table*}[!t]
-\centering
-\caption{Zero-shot typing: effect of the contrastive embedder on \zsind (typing-on-gold, $13$-set means at the released seed ($42$)).}
-\label{tab:zs-embedder}
-\small
-\begin{adjustbox}{max width=\textwidth}
-\begin{threeparttable}
-\begin{tabular}{llccc}
-\toprule
-Embedder & Training data & AMI & F\textsubscript{1} & Acc \\
-\midrule
-hard-neg.\ mining (selected) & CoNLL + targets' train & \textbf{44.4} & 46.8 & 53.6 \\
-Pile-NER (entity$\leftrightarrow$label) & Pile-NER only & 42.2 & \textbf{50.6} & \textbf{53.9} \\
-\quad + label-name hard mining & Pile-NER only & 39.7 & 41.4 & 44.7 \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\footnotesize
-\item The nearest label-name centroid head is fixed, only the embedder changes. AMI, macro-$F_1$, accuracy ($\times100$, $\uparrow$). Best per column in bold. The selected hard-negative-mining embedder (target-tuned) is compared with Pile-NER \cite{zhou2024universalner} variants that are strictly domain-agnostic (never see target data). We report Pile-NER as a negative ablation (\autoref{sec:exp:ablations}).
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table*}
 
 
-\autoref{fig:matryoshka} plots typing-on-gold quality against the Matryoshka dimension $d$. Quality degrades smoothly as $d$ shrinks, with clearly diminishing returns rather than a cliff: $d{=}256$ already reaches $61.2$ AMI (within $1.3$ of the full $62.5$) and the curve flattens above it. Truncation therefore trades a little quality for a large cut in the typing-head fit cost, and, crucially, this confirms that the Matryoshka structure \emph{survives} our contrastive fine-tuning: the embedder can still be truncated and renormalised, exposing a graceful cost/quality knob.
+{\rev
+\autoref{fig:matryoshka} shows that quality degrades smoothly as $d$ shrinks: $d{=}256$ already reaches $61.2$ AMI (within $1.3$ of the full $62.5$). Truncation thus trades a little quality for a large cut in the typing-head fit cost, and the Matryoshka structure survives our contrastive fine-tuning.
+\par}
 
+% Fig. 6: narrow plot with the caption beside it (saves vertical space)
 \begin{figure}[!t]
+\begin{minipage}[c]{0.56\linewidth}
 \centering
-\includegraphics{Fig7}
+\includegraphics{Fig6}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.41\linewidth}
 \caption{Typing-on-gold quality vs the Matryoshka truncation dimension $d$. Both AMI and macro-$F_1$ degrade smoothly, with diminishing returns rather than a cliff, and flatten above $d{=}256$. Truncation is therefore a graceful cost/quality knob, and the Matryoshka structure survives the contrastive fine-tuning. Data from \autoref{tab:ablation} (dimension axis, released seed, $13$-set means, log-spaced $d$)}
 \label{fig:matryoshka}
+\end{minipage}
 \end{figure}
 
 
@@ -961,27 +880,24 @@ Pile-NER (entity$\leftrightarrow$label) & Pile-NER only & 42.2 & \textbf{50.6} &
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented OPENER, an open-world NER pipeline assembled entirely from ready-to-use components, a frozen detector, a pretrained Matryoshka embedder sharpened by a light contrastive fine-tuning with error-driven hard-negative mining, and a swappable typing head, with no encoder trained from scratch.
-The modular design is part of the result rather than an implementation detail. Because the three stages are independently swappable, we could search the architecture one axis at a time (\autoref{tab:ablation}) and select every component on measured evidence instead of by assumption, and the same modularity keeps the embedder's Matryoshka structure usable as a compute/quality knob even after our contrastive fine-tuning (\autoref{fig:matryoshka}).
+{\rev
+We presented OPENER, an open-world NER pipeline assembled entirely from ready-to-use components (a frozen detector, a pretrained Matryoshka embedder sharpened by a light contrastive fine-tuning with error-driven hard-negative mining, and a swappable typing head), with no encoder trained from scratch.
+Its modularity let us select every component on measured evidence, and the Matryoshka structure survives the fine-tuning as a compute/quality knob (\autoref{fig:matryoshka}).
 
-Both operating points of the typing head perform strongly, at opposite ends of the supervision axis.
-Our zero-shot head OPENER-ZS, label-name prototypes refined transductively and fused with the detector's own predictions, needs no target labels at typing time and is still the best of the compared zero-shot systems end-to-end ($39.5$ AMI, all AMI scores being reported $\times 100$ as in the tables), ahead of GLiNER-L, GNER, Qwen2.5 and OWNER, at one to two orders of magnitude lower energy than the trained-encoder and generative baselines.
-When a domain's entity classes are fixed and labelled, a balanced linear probe, OPENER-Sup, goes further. On gold mentions, the contrastive space is highly discriminative, and OPENER-Sup is the most accurate system in our benchmark, leading on all $13$ sets and surpassing a zero-shot transfer of OWNER ($62.3$ vs $43.0$ AMI). It also attains the best end-to-end AMI of the compared systems ($40.1$ AMI*100).
+Both typing heads perform strongly, at opposite ends of the supervision axis.
+OPENER-ZS needs no target labels and is the best of the compared zero-shot systems end-to-end ($39.5$ AMI), at one to two orders of magnitude lower energy than the trained-encoder and generative baselines.
+OPENER-Sup, a balanced linear probe for fixed label sets, is the most accurate system both on gold mentions ($62.3$ vs $43.0$ AMI for OWNER) and end-to-end ($40.1$ AMI).
+These results rest on a $13$-dataset benchmark that reports quality, latency and energy jointly and keeps typing-on-gold separate from end-to-end.
 
-Both results rest on a benchmark that is itself a contribution: $13$ open-world NER datasets on which quality, per-sentence latency and energy are reported jointly, typing-on-gold is kept separate from end-to-end, and the supervision asymmetry between systems is stated rather than hidden. Every OPENER number is averaged over three full embedder-retraining seeds.
-
-Two findings carry beyond the specific system.
-First, an open-world typing head need not train its own encoder: a general-purpose embedding, once sharpened by a light contrastive step, is already discriminative enough to type entities, and the cost that does matter is fitting the cheap typing head, not the embedder.
-Second, the three-axis evaluation locates the open-world bottleneck in \emph{detection} rather than typing: typing on gold mentions reaches $62.3$ AMI but end-to-end scores drop to $40.1$ as detector recall falls on specialised domains. So, improving the detector, not the typing head, is the clearest axis for future gains. The evaluation also exposes efficiency gaps that an accuracy-only comparison would hide.
+Two findings carry beyond this system.
+First, an open-world typing head need not train its own encoder: a general-purpose embedding sharpened by a light contrastive step is discriminative enough to type entities.
+Second, the bottleneck lies in detection rather than typing: typing reaches $62.3$ AMI on gold mentions but $40.1$ end-to-end as detector recall falls on specialised domains, which makes the detector the clearest axis for future gains.
 
 The approach has clear limits.
-End-to-end quality is capped by detector recall on specialised domains, the shared bottleneck, not by the typing head.
-Supervised typing needs target-domain labels, and while OPENER-ZS removes them at typing time it depends on the quality of the label names and, in its transductive form, on access to the unlabelled test mentions. The inductive zero-shot head is correspondingly weaker.
-Finally, our experiments run on deliberately modest hardware: a single consumer GPU with $6$\,GB of VRAM, subject to thermal throttling.
-This is the very setting that makes OPENER deployable, but it also bounded our experimental budget: despite an already broad benchmark ($13$ datasets, three axes and extensive ablations), we cap each test split at $1000$ sentences.
-The quality scores themselves are nonetheless well characterised: retraining the full embedder under three seeds leaves the benchmark means nearly unchanged (std of $0.1$ to $1.3$ AMI on the thirteen-set means, \autoref{sec:exp:protocol}), inference is deterministic at a fixed seed, and a test-set bootstrap confirms per-dataset stability (bootstrap std of at most $1.5$ AMI, \autoref{tab:bootstrap}). Only latency and energy fluctuate ($\pm 15\%$) and are therefore read as averages rather than precise points.
-
-Future work includes improving mention detection on specialised domains to lift the end-to-end ceiling and extending the decoupled detect-then-type design beyond NER to entity linking and relation extraction.
+Supervised typing needs target labels, and OPENER-ZS depends on the quality of the label names and, in its transductive form, on access to the unlabelled test mentions.
+Our experiments run on a single consumer GPU with $6$\,GB of VRAM, which bounded the budget (test splits capped at $1000$ sentences). The quality scores are nonetheless stable across three retraining seeds (std of $0.1$ to $1.3$ AMI) and across test-set bootstrap resamples, whereas latency and energy vary by about $\pm 15\%$ and are read as averages.
+Future work includes stronger mention detection on specialised domains and extending the detect-then-type design to entity linking and relation extraction.
+\par}
 
 \backmatter
 
