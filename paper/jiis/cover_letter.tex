@@ -64,6 +64,7 @@ We benchmark OPENER against GLiNER, GNER, OWNER and a 4-bit quantized language m
 OPENER-ZS is the most accurate zero-shot system end-to-end (39.5 AMI, ahead of GLiNER-L at 38.9 and OWNER at 34.3) while consuming roughly eight times less energy than OWNER (1.7\,Wh versus 14.3\,Wh), and OPENER-Sup is the most accurate system overall (40.1 AMI).
 The contribution is new and important in two respects: it demonstrates that a lightly refined off-the-shelf embedding space is sufficient to type open-world entities without training any encoder from scratch, and it establishes a three-axis evaluation protocol that makes the practical cost of open-world NER explicit, isolating mention detection (rather than typing) as the main bottleneck.
 The code, the configurations and the fine-tuned embedders are publicly released for full reproducibility.
+All figures are vector graphics: Fig.~1 is an SVG diagram exported to PDF, Fig.~2 was produced with matplotlib, and Figs.~3 to 7 with TikZ/pgfplots.
 
 We believe this work fits the scope of the \textit{Journal of Intelligent Information Systems} particularly well.
 It falls under the journal's topics of machine learning, knowledge discovery and intelligent information retrieval: OPENER turns unstructured text into typed entities, the structured knowledge on which retrieval, search and knowledge integration systems are built, and it does so for entity types that evolve with the application.
