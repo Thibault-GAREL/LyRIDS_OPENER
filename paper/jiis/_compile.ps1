@@ -38,14 +38,3 @@ Select-String -Path 'main.log' -Pattern '^!|Undefined|undefined|Overfull' | Sele
 
 Write-Output '=== Page count (JIIS limit: 25) ==='
 Select-String -Path 'main.log' -Pattern 'Output written on main.pdf'
-
-# Online Resource 1 (supplementary PDF, uploaded separately). Built after the main
-# article because its "Table 5 of the main article" references are read from main.aux.
-Write-Output '=== Online Resource 1 (esm\ESM_1.pdf -> ESM_1.pdf) ==='
-Push-Location 'esm'
-foreach ($n in 1) { pdflatex -interaction=nonstopmode "FigS$n.tex" 2>&1 | Out-Null }
-pdflatex -interaction=nonstopmode ESM_1.tex 2>&1 | Out-Null
-pdflatex -interaction=nonstopmode ESM_1.tex 2>&1 | Out-Null
-Select-String -Path 'ESM_1.log' -Pattern '^!|undefined|Output written'
-Pop-Location
-Copy-Item 'esm\ESM_1.pdf' 'ESM_1.pdf' -Force

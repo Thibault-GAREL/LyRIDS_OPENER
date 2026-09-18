@@ -450,7 +450,7 @@ As defined in \autoref{sec:method:problem}, predicted and gold mentions are alig
 Efficiency is reported as the median (p50) latency per sentence and as the energy (Wh) and carbon (gCO\textsubscript{2}eq) per run.
 OPENER's embedder training is stochastic, so we retrain the complete embedder (Stage~1, then Stage~2) under three seeds ($7$, $42$, $123$) and report every OPENER cell as mean\,$\pm$\,std. Seed $42$ is the released model.
 The baselines are frozen checkpoints with deterministic inference and are reported as single runs, as is OWNER, trained once with its published protocol.
-A test-set bootstrap on the released model, a source of uncertainty orthogonal to the retraining seed, is reported in Online Resource~1 (Table~S1).
+A test-set bootstrap on the released model, a source of uncertainty orthogonal to the retraining seed, is reported in \autoref{sec:exp:impl}.
 \par}
 
 % Table 3 sits here, between Metrics and Experimental Settings ([!h]: [H] of the
@@ -484,17 +484,43 @@ Random seeds       & $7$ / $42$ / $123$ (full embedder retraining per seed, $42$
 \item The detector and embedder are ready-to-use. The contrastive and hard-mining stages produce the shared embedder. The typing head is fitted (supervised) or label-free (zero-shot).
 \end{tablenotes}
 \end{table}
+% Keep Table 3 before the 4.4 heading (Tables 1-2 are already placed at this point,
+% so the barrier only holds Table 3 back).
+\FloatBarrier
 
 \subsection{Experimental Settings}
 \label{sec:exp:impl}
+{\rev \autoref{tab:hyperparams} collects the complete OPENER configuration used throughout. The embedder is retrained under each of the three seeds ($7$, $42$, $123$) while every other component is fixed.}
 All experiments run on a single consumer-grade GPU, an NVIDIA GeForce GTX 1660 Ti Max-Q with $6$\,GB of VRAM (CUDA~12.1, PyTorch~2.5.1 \cite{paszke2019pytorch}). The goal of using such modest hardware was to verify that the models could also run on standard personal computers, demonstrating that our approach is highly versatile.
 We use the HuggingFace Transformers library \cite{wolf2020transformers} for baselines, sentence-transformers \cite{reimers2019sbert} for the Matryoshka embedder \cite{nussbaum2024nomic, kusupati2022matryoshka}, and scikit-learn \cite{pedregosa2011scikit} for the linear classifier, whose solver is LIBLINEAR \cite{fan2008liblinear}.
 Latency is measured with two warmup passes followed by timed passes with GPU synchronisation, reporting p50, p95 and p99 per sentence.
 Energy is measured with CodeCarbon \cite{luccioni2019quantifying} in offline mode using the French grid carbon intensity. When hardware power counters are unavailable, we fall back to a thermal-design-power estimate and flag the measurement method in the report.
 All systems are measured on the same machine. Our consumer GPU is subject to \emph{thermal throttling} (it lowers its clock frequency under sustained load to stay within its temperature limit), so per-sentence latency and per-run energy carry roughly $\pm15\%$ run-to-run variance. Therefore, we read the per-system averages as indicative and do not over-interpret individual per-dataset cells.
 The quality metrics, in contrast, are fully deterministic: with the fixed seed and the released model, no stage of the OPENER pipeline is stochastic at inference, so its AMI and $F_1$ reproduce exactly across re-runs (we verified identical CrossNER scores on an independent re-run), and only latency and energy fluctuate.
-Because inference is deterministic, the only remaining source of uncertainty in quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets, we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals {\rev of Table~S1 in Online Resource~1}. The uncertainty is small (bootstrap std of at most $1.5$ AMI, $95\%$ CIs within roughly $\pm 3$ AMI) and the bootstrap means coincide with the released model's full-test-set scores, indicating that the reported figures are stable rather than fragile seed-specific artefacts.
-\autoref{tab:hyperparams} collects the complete OPENER configuration used throughout. The embedder is retrained under each of the three seeds ($7$, $42$, $123$) while every other component is fixed.
+Because inference is deterministic, the only remaining source of uncertainty in quality scores is the finite test set. We quantify it with a non-parametric bootstrap: for three representative datasets, we resample the gold mentions with replacement ($K{=}1000$ resamples) and recompute typing-on-gold AMI, yielding the $95\%$ confidence intervals in \autoref{tab:bootstrap}. The uncertainty is small (bootstrap std of at most $1.5$ AMI, $95\%$ CIs within roughly $\pm 3$ AMI) and the bootstrap means coincide with the released model's full-test-set scores, indicating that the reported figures are stable rather than fragile seed-specific artefacts.
+
+\begin{table*}[!t]
+\centering
+\caption{Test-set bootstrap robustness of the released (seed-$42$) model on three representative datasets.}
+\label{tab:bootstrap}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\begin{tabular}{lccc}
+\toprule
+Model & CoNLL-2003 & CrossNER-Music & FabNER \\
+\midrule
+\zsind{}   & $66.1 \pm 1.4$ ~[$63.5$, $69.0$] & $55.5 \pm 0.9$ ~[$53.8$, $57.3$] & $36.2 \pm 0.7$ ~[$34.7$, $37.5$] \\
+OPENER-Sup & $71.7 \pm 1.5$ ~[$68.9$, $74.6$] & $72.4 \pm 0.9$ ~[$70.6$, $74.2$] & $59.8 \pm 0.9$ ~[$57.9$, $61.6$] \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item Typing-on-gold AMI ($\uparrow$) as bootstrap mean $\pm$ std [$95\%$ percentile CI], over $K{=}1000$ resamples of the gold mentions. The transductive refinement is excluded, as it adapts to the resampled test distribution. The bootstrap means match the full-test-set scores, and the stds stay at or below $1.5$ AMI, indicating stable scores.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table*}
 
 
 
@@ -513,7 +539,7 @@ OPENER-ZS closes this asymmetry. Its un-refined nearest-centroid form, \zsind, a
 The transductive refinement and the fusion with the detector's own labels then build \zstr, which reaches $39.5$ end-to-end, the best zero-shot system, ahead of GLiNER-L ($38.9$) and within $0.6$ AMI of OPENER-Sup, without any target label.
 The only generative LLM that fits our $6$\,GB GPU, Qwen2.5-1.5B-Instruct \cite{qwen2025} in 4-bit, trails every dedicated system ($26.1$ mean AMI on a $150$-sentence subsample) while being the slowest per sentence ($5.1$\,s) and the most energy-hungry once normalised by sentence count, about twice GNER's per-sentence draw (\autoref{tab:efficiency}).
 OPENER-Sup remains the strongest configuration ($40.1$ end-to-end, $62.3$ on gold), so OPENER-ZS is best read as the frugal, annotation-free operating point of the same pipeline.
-The four-axis means are plotted in Online Resource~1 (Fig.~S1), and a per-domain analysis follows in \autoref{sec:exp:analysis}.
+A per-domain analysis follows in \autoref{sec:exp:analysis}.
 \par}
 
 % --- Result floats, all in a row after the Main Results text (no text in between):
@@ -798,7 +824,7 @@ For typing, the balanced linear SVM edges out a per-class GMM and logistic regre
 
 Replacing it with the label-name nearest centroid removes target supervision at a cost of $18.1$ AMI ($62.5$ to $44.4$). This \zsind head stays on par with OWNER on gold mentions ($43.2$ vs $43.0$ over three seeds, \autoref{tab:et-gold}) while fitting in $293$\,ms instead of $2.2$\,s.
 The transductive refinement recovers $7.0$ AMI on gold ($44.4$ to $51.4$) and $2.6$ end-to-end at the released seed ($34.2$ to $36.8$), a transductive rather than inductive setting since it exploits the unlabelled test distribution.
-Aligning mentions and label names on the $\approx$4.6k types of Pile-NER \cite{zhou2024universalner} does not help ($42.2$ vs $44.4$, Table~S2 in Online Resource~1), and a label-name hard-mining pass degrades it further ($39.7$), because Pile-NER's GPT-generated types contain near-synonyms (e.g.\ \emph{person}/\emph{per}) that the mining pulls apart. We therefore keep the target-tuned embedder for OPENER-ZS.
+Aligning mentions and label names on the $\approx$4.6k types of Pile-NER \cite{zhou2024universalner} does not help ($42.2$ vs $44.4$), and a label-name hard-mining pass degrades it further ($39.7$), because Pile-NER's GPT-generated types contain near-synonyms (e.g.\ \emph{person}/\emph{per}) that the mining pulls apart. We therefore keep the target-tuned embedder for OPENER-ZS.
 
 Training cost forms a separate efficiency axis (Fit column): inference is governed by the detector alone, whereas fitting the typing head is $7\times$ cheaper at dimension $64$ than at $768$ (for $4.6$ AMI less) and $4.5\times$ cheaper with balanced logistic regression than with the linear SVM.
 On gold mentions (\autoref{tab:et-gold}), one cell stands out: \zsind drops to $16.1$ AMI on MIT-Movie ($\pm 7.1$), as attribute-like label names (PLOT, REVIEW, TRAILER) carry little lexical signal when every mention is movie-related. The transductive refinement recovers most of this gap ($44.8$), and the higher end-to-end value ($32.8$) is not directly comparable, since the end-to-end sentinels reshape both partitions.

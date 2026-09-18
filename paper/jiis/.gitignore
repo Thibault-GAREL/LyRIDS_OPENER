@@ -8,6 +8,3 @@ submission.zip
 # Standalone figure builds (the FigN.pdf copies next to main.tex are kept)
 figures_src/*.pdf
 
-# Online Resource figure builds (ESM_1.pdf itself is copied next to main.tex)
-esm/FigS*.pdf
-esm/ESM_1.pdf

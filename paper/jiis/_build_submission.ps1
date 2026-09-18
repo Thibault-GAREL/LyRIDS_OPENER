@@ -4,7 +4,6 @@
 # Runs _compile.ps1, then produces:
 #   submission\                    flat folder (no subfolder), what goes in the zip
 #   OPENER_JIIS_manuscript.zip     the file to upload in "Upload manuscript"
-#   ESM_1.pdf                      Online Resource 1, to upload in "Supplementary material" (not in the zip)
 # Zip content: main.tex, sn-jnl.cls, sn-basic.bst, references.bib, main.bbl, Fig1..Fig6.pdf,
 # plus main.pdf, as the JIIS guidelines ask for "a PDF version of the compiled output".
 $ErrorActionPreference = 'Continue'
